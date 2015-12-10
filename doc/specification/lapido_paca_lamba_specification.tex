@@ -130,15 +130,89 @@
   \label{sec:isa}
   O Processador LAPI DOpaCA LAMBA possui 42 instruções de 32 bits de largura que estão organizadas nos seguintes grupos funcionais:
   \begin{itemize}
+  \item Acesso à Memória (load e store);
+  \item Constantes;  
   \item ALU;
-  \item Constantes;
   \item Transferências de controle (jump);
-  \item Memória (load e store);
   \item NOPs;
   \item Condição de término.
   \end{itemize}
   
-  In MUSE load/store architecture, operations are performed through operands held into the register file (GPR Bank) and main memory is accessed only through load and store instructions. Signed and unsigned integers of 16-bits are supported by loads that either sign-extend or zero-extend the data loaded into the register.  
+  No LAPI DOpaCA LAMBA, as operações são realizadas utilizando operandos localizados no banco de registradores. A memória principal é acessada apenas através das instruções load e store.
+  
+  \subsection{Instruções de Acesso à Memória}
+  
+    \begin{table}[H]
+      \begin{center}
+        \begin{tabular}[pos]{|c|c|c|} 
+        \hline
+			\cellcolor[gray]{0.9}\textbf{Op Código} & \cellcolor[gray] {0.9}\textbf{Mnemônico} & \cellcolor[gray] {0.9}\textbf{Operação} \\ \hline    		
+           10100 &	load c, a & C = Mem[A]\\ \hline
+		   10110 &   store a, b & 	Mem[A] = B \\ \hline
+    	\end{tabular}
+      \end{center}
+    \end{table}
+  
+  \subsection{Instruções com Constantes}
+  
+  As instruções abaixo carregam constantes para um registrador de propósito geral.
+  
+    \begin{table}[H]
+      \begin{center}
+        \begin{tabular}{|c|c|c|} 
+          \hline
+          \cellcolor[gray]{0.9}\textbf{Formato} & \cellcolor[gray]{0.9}\textbf{Mnemônico} & \cellcolor[gray]{0.9}\textbf{Operação} \\ \hline
+			I & C = Constante & loadlit c, Const \\ \hline
+            II & C = Const8 | (C \& 0xff00) &	lcl c, Const8 \\ \hline
+            II & C = (Const8 << 8) | (C \& 0x00ff) &	lch c, Const8 \\ \hline
+ 		\end{tabular}
+      \end{center}
+    \end{table}
+    \begin{table}[H]
+      \begin{center}
+        \begin{tabular}[pos]{|c|c|} 
+        \hline
+			\cellcolor[gray]{0.9}\textbf{R} & \cellcolor[gray] {0.9}\textbf{Operação} \\ \hline    		
+            0 & lcl \\ \hline
+			1 & lch \\ \hline
+    	\end{tabular}
+      \end{center}
+    \end{table}
+    
+  \subsection{Instruções ALU}
+  
+  O LAPI DOpaCA LAMBA realiza operações lógicas e aritméticas de 32-bits usando dois ou três operandos. As instruções ALU seguem o seguinte formato:
+  
+  \begin{table}[H]
+      \begin{center}
+        \begin{tabular}[pos]{|c|c|c|c|} 
+          \hline
+          \cellcolor[gray]{0.9} \textbf{Código} & \cellcolor[gray]{0.9} \textbf{Mnemônico} & \cellcolor[gray]{0.9}\textbf{Operação} & \cellcolor[gray]{0.9}\textbf{Flags Afetadas} \\ \hline
+          00000 & zeros c   &   C = 0   &   Zero \\ \hline
+          00001 & and c,a,b   &   C = A \& B   &   neg e zero \\ \hline
+          00010 & andnota c,a,b & C = (\~A) \& B & neg e zero\\ \hline
+          00011 & passa c,a & C = A  &  neg e zero\\ \hline
+          00100 & xor c,a,b & C = A xor B & neg e zero\\ \hline
+          00101 & or c,a,b & C = A | B & neg e zero \\ \hline
+          00110 & nor c,a,b & C = !(A | B) & neg e zero \\ \hline
+          00111 & xnor c,a,b & C = !(A xor B) & neg e zero \\ \hline
+          01000 & passnota c,a & C = \~A & neg e zero \\ \hline
+          01001 & ornotb c,a,b & C = A | \~B & neg e zero \\ \hline
+          01010 & nand c,a,b & C = !(A \& B) & neg e zero \\ \hline
+          01011 & ones c & C = 1 & nenhuma \\ \hline
+          01100 & add c,a,b & C = A + B & rc = ra | rb \\ \hline
+          01101 & addinc c,a,b & C = A + B + 1 & todas \\ \hline
+          01110 & inca c,a & C = A + 1 & todas\\ \hline
+          01111 & subdec c,a,b & C = A - B - 1 & todas \\ \hline
+          10000 & sub c,a,b & C = A - B &  todas\\ \hline
+          10001 & deca c,a & C = A - 1 & todas \\ \hline
+          10010 & lsl c,a & C = shift lógico para a esquerda & neg, zero e carry \\ \hline
+          10011 & lsr c,a & C = shift lógico para a direita & neg e zero \\ \hline
+          10100 & asr c,a & C = shift aritmético para a direita & neg e zero \\ \hline
+          10101 & asl c,a & C = shift aritmético para a esquerda & NÃO SEI \\ \hline
+        \end{tabular}
+      \end{center}
+    \end{table}
   
   \subsection{CPU Load and Store Instructions}
   

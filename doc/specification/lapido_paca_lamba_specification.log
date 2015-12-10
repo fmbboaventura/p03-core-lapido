@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2015.12.9)  9 DEC 2015 22:37
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (MiKTeX 2.9) (preloaded format=pdflatex 2015.12.9)  9 DEC 2015 23:37
 entering extended mode
 **lapido_paca_lamba_specification.tex
 (lapido_paca_lamba_specification.tex
@@ -977,54 +977,58 @@ File: pictures/header.png Graphic file (type png)
 Package pdftex.def Info: pictures/header.png used on input line 128.
 (pdftex.def)             Requested size: 298.75264pt x 24.3923pt.
  [4]
-Overfull \hbox (34.376pt too wide) in paragraph at lines 149--157
+File: pictures/header.png Graphic file (type png)
+ <use pictures/header.png>
+Package pdftex.def Info: pictures/header.png used on input line 216.
+(pdftex.def)             Requested size: 298.75264pt x 24.3923pt.
+ [5]
+Overfull \hbox (34.376pt too wide) in paragraph at lines 223--231
  [] 
  []
 
 
-Underfull \vbox (badness 3179) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 File: pictures/header.png Graphic file (type png)
 
 <use pictures/header.png>
-Package pdftex.def Info: pictures/header.png used on input line 195.
+Package pdftex.def Info: pictures/header.png used on input line 233.
 (pdftex.def)             Requested size: 298.75264pt x 24.3923pt.
- [5]
+ [6]
+File: pictures/header.png Graphic file (type png)
+ <use pictures/header.png>
+Package pdftex.def Info: pictures/header.png used on input line 288.
+(pdftex.def)             Requested size: 298.75264pt x 24.3923pt.
+ [7]
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/it' will be
-(Font)              scaled to size 12.0pt on input line 216.
+(Font)              scaled to size 12.0pt on input line 290.
 LaTeX Font Info:    Try loading font information for T1+LinuxLibertineMonoT-TLF
- on input line 216.
+ on input line 290.
 
 (C:\miktex\tex\latex\libertine\t1linuxlibertinemonot-tlf.fd
 File: T1LinuxLibertineMonoT-TLF.fd 2012/12/06 (autoinst) Font definitions for T
 1/LinuxLibertineMonoT-TLF.
 )
 LaTeX Font Info:    Font shape `T1/LinuxLibertineMonoT-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 216.
+(Font)              scaled to size 12.0pt on input line 290.
 File: pictures/header.png Graphic file (type png)
 
 <use pictures/header.png>
-Package pdftex.def Info: pictures/header.png used on input line 221.
+Package pdftex.def Info: pictures/header.png used on input line 299.
 (pdftex.def)             Requested size: 298.75264pt x 24.3923pt.
- [6]
-File: pictures/header.png Graphic file (type png)
- <use pictures/header.png>
-Package pdftex.def Info: pictures/header.png used on input line 225.
-(pdftex.def)             Requested size: 298.75264pt x 24.3923pt.
- [7]
-(lapido_paca_lamba_specification.aux)
+ [8] (lapido_paca_lamba_specification.aux)
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  ) 
 Here is how much of TeX's memory you used:
- 9395 strings out of 493673
- 139451 string characters out of 3151372
- 248431 words of memory out of 3000000
- 12518 multiletter control sequences out of 15000+200000
+ 9396 strings out of 493673
+ 139458 string characters out of 3151372
+ 251431 words of memory out of 3000000
+ 12519 multiletter control sequences out of 15000+200000
  51301 words of font info for 47 fonts, out of 3000000 for 9000
  1025 hyphenation exceptions out of 8191
- 49i,15n,55p,874b,457s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 49i,15n,48p,874b,457s stack positions out of 5000i,500n,10000p,200000b,50000s
 {C:/miktex/fonts/enc/dvips/libertine/lbtn_d6jdyt.enc}{C:/miktex/fonts/enc/dvi
 ps/libertine/lbtn_25tcsq.enc}{C:/miktex/fonts/enc/dvips/libertine/lbtn_afusau.e
 nc}<C:/miktex/fonts/type1/public/libertine/LinBiolinumT.pfb><C:/miktex/fonts/ty
@@ -1033,9 +1037,9 @@ LinBiolinumTI.pfb><C:/miktex/fonts/type1/public/libertine/LinLibertineMT.pfb><C
 :/miktex/fonts/type1/public/amsfonts/cm/cmmi12.pfb><C:/miktex/fonts/type1/publi
 c/amsfonts/cm/cmr12.pfb><C:/miktex/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/
 miktex/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on lapido_paca_lamba_specification.pdf (8 pages, 279135 bytes).
+Output written on lapido_paca_lamba_specification.pdf (9 pages, 293250 bytes).
 PDF statistics:
- 71 PDF objects out of 1000 (max. 8388607)
+ 74 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
  11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
