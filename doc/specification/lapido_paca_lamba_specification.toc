@@ -1,0 +1,16 @@
+\select@language {brazil}
+\contentsline {section}{\numberline {\color {gray}1}Introduc\IeC {\~a}o}{3}
+\contentsline {subsection}{\numberline {\color {gray}1.1}Prop\IeC {\'o}sito}{3}
+\contentsline {subsection}{\numberline {\color {gray}1.2}Document Outline Description}{3}
+\contentsline {subsection}{\numberline {\color {gray}1.3}Acronyms and Abbreviations}{3}
+\contentsline {section}{\numberline {\color {gray}2}Vis\IeC {\~a}o Geral}{4}
+\contentsline {subsection}{\numberline {\color {gray}2.1}Perspectives}{4}
+\contentsline {subsection}{\numberline {\color {gray}2.2}Caracter\IeC {\'\i }sticas Principais}{4}
+\contentsline {subsection}{\numberline {\color {gray}2.3}Non-functional Requirements}{4}
+\contentsline {section}{\numberline {\color {gray}3}Conjunto de Instru\IeC {\c c}\IeC {\~o}es}{5}
+\contentsline {subsection}{\numberline {\color {gray}3.1}CPU Load and Store Instructions}{5}
+\contentsline {subsection}{\numberline {\color {gray}3.2}Computational Instructions}{5}
+\contentsline {subsection}{\numberline {\color {gray}3.3}Jump/Branch Instructions}{6}
+\contentsline {subsection}{\numberline {\color {gray}3.4}No Operation Instruction}{6}
+\contentsline {subsection}{\numberline {\color {gray}3.5}End of Opperations}{7}
+\contentsline {section}{\numberline {\color {gray}4}Internal General Purpose Registers}{7}
