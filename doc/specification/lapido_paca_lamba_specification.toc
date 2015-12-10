@@ -11,9 +11,10 @@
 \contentsline {subsection}{\numberline {\color {gray}3.1}Instru\IeC {\c c}\IeC {\~o}es de Acesso \IeC {\`a} Mem\IeC {\'o}ria}{5}
 \contentsline {subsection}{\numberline {\color {gray}3.2}Instru\IeC {\c c}\IeC {\~o}es com Constantes}{5}
 \contentsline {subsection}{\numberline {\color {gray}3.3}Instru\IeC {\c c}\IeC {\~o}es ALU}{6}
-\contentsline {subsection}{\numberline {\color {gray}3.4}CPU Load and Store Instructions}{7}
-\contentsline {subsection}{\numberline {\color {gray}3.5}Computational Instructions}{7}
-\contentsline {subsection}{\numberline {\color {gray}3.6}Jump/Branch Instructions}{8}
-\contentsline {subsection}{\numberline {\color {gray}3.7}No Operation Instruction}{8}
-\contentsline {subsection}{\numberline {\color {gray}3.8}End of Opperations}{8}
-\contentsline {section}{\numberline {\color {gray}4}Internal General Purpose Registers}{8}
+\contentsline {subsection}{\numberline {\color {gray}3.4}Transfer\IeC {\^e}ncia de Controle}{6}
+\contentsline {subsection}{\numberline {\color {gray}3.5}CPU Load and Store Instructions}{7}
+\contentsline {subsection}{\numberline {\color {gray}3.6}Computational Instructions}{7}
+\contentsline {subsection}{\numberline {\color {gray}3.7}Jump/Branch Instructions}{8}
+\contentsline {subsection}{\numberline {\color {gray}3.8}No Operation Instruction}{9}
+\contentsline {subsection}{\numberline {\color {gray}3.9}End of Opperations}{9}
+\contentsline {section}{\numberline {\color {gray}4}Internal General Purpose Registers}{9}

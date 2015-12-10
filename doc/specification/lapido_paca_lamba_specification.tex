@@ -213,6 +213,51 @@
         \end{tabular}
       \end{center}
     \end{table}
+    
+  \subsection{Transferência de Controle}
+  
+  O LAPI DOpaCA LAMBA possui 5 instruções para transferencia de controle. Desvios condicionais com base no estado de uma das flags, desvio para um endereço contido num registrador, desvio para um endereço referente a um label e uma instrução para chamada de funções. 
+  
+   		 \begin{table}[H]
+      \begin{center}
+        \begin{tabular}[pos]{|c|c|c|c|} 
+        \hline
+			\cellcolor[gray]{0.9}\textbf{Formato} & \cellcolor[gray]{0.9}\textbf{Op Código} & \cellcolor[gray] {0.9}\textbf{Mnemônico} & \cellcolor[gray] {0.9}\textbf{Operação} \\ \hline    		
+          I & 00	& Jump False 	& jf.cond Destino\\ \hline
+		   I & 01 & Jump True &	jt.cond Destino \\ \hline
+           II & 10 & Jump Incondicional &	j Destino\\ \hline
+           III & 11 & Jump and Link &	jal b \\ \hline
+           VI & 11 &	Jump Register &	jr b \\ \hline
+    	\end{tabular}
+      \end{center}
+    \end{table}
+   
+   \begin{table}[H]
+      \begin{center}
+        \begin{tabular}[pos]{|c|c|} 
+        \hline
+			\cellcolor[gray]{0.9}\textbf{R} & \cellcolor[gray] {0.9}\textbf{Operação} \\ \hline    		
+            0 & Jump and Link \\ \hline
+			1 & Jump Register \\ \hline
+    	\end{tabular}
+      \end{center}
+    \end{table}
+    
+    
+    \begin{table}[H]
+      \begin{center}
+        \begin{tabular}[pos]{|c|c|c|} 
+        \hline
+			\cellcolor[gray]{0.9}\textbf{Op Código} & \cellcolor[gray] {0.9}\textbf{Mnemônico} & \cellcolor[gray] {0.9}\textbf{Condição} \\ \hline    		
+           10100 &	.neg & Resultado ALU negativo\\ \hline
+		   10110 &    	.zero & 	Resultado ALU zero \\ \hline
+           10100 &	.carry & Carry da ALU\\ \hline
+		   10110 &    	.negzero & 	Resultado ALU negativo ou zero \\ \hline
+           10100 &	.true & Resultado ALU diferente de zero\\ \hline
+		   10110 &    	.overflow & 	Resultado ALU overflow \\ \hline
+    	\end{tabular}
+      \end{center}
+    \end{table}
   
   \subsection{CPU Load and Store Instructions}
   
