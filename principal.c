@@ -9,6 +9,7 @@ void AbrirArquivo (FILE **nome_arq, char *caminho_arq, char *modo);
 void FecharArquivo (FILE **nome_arq);
 void CarregaVetorLabels ();
 void LabelSalva(char *txtPalavra, int endereco);
+void ParseLine();
 
 const int TAM_BUFFER = 255;
 
@@ -26,9 +27,8 @@ int main(){
 	FILE *codigo;
 	char *nome_arquivo;
 
-    CarregaLabels();
+  CarregaVetorLabels();
 	AbrirArquivo(&codigo, "teste1.asm", "r");
-   CarregaVetorLabels();
 
 }
 
