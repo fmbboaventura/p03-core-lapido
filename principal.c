@@ -102,6 +102,9 @@ void ParseLine (char *line)
         if(letra == ':')
         {
             printf("Label\n");
+            char label[i];
+            strncpy(label, line, i);
+            printf("%s\n", label);
         }
 
     }

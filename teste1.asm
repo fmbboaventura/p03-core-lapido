@@ -1,3 +1,4 @@
+LABEL: zeros	r1
 .module flags
 .pseg
         ; Testa flags
