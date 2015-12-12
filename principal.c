@@ -103,6 +103,7 @@ void ParseLine (char *line)
         {
             printf("Label\n");
             char label[i];
+            label[i] = '\0';
             strncpy(label, line, i);
             printf("%s\n", label);
         }
