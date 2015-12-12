@@ -25,6 +25,7 @@ int main(){
 	char *nome_arquivo;
 
 	AbrirArquivo(&codigo, "teste1.asm", "r");
+   CarregaLabels();
 
 }
 
@@ -62,5 +63,5 @@ void CarregaLabels (){
    // Alocacao da tabela de labels
    tbLabels = malloc(sizeof(tipo_label) * MAX_TAB);
    for (i=0; i<MAX_TAB; i++)
-      tbLabels[i].txtPalavra = malloc(sizeof(char) * TAM_PALAVRA);
+   tbLabels[i].txtPalavra = malloc(sizeof(char) * TAM_PALAVRA);
 }
