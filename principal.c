@@ -41,7 +41,7 @@ void AbrirArquivo (FILE **arq, char *caminho_arq, char *modo)
    if (arq != NULL){
    		char buffer[TAM_BUFFER];
    		while(fgets(buffer, TAM_BUFFER, *arq)){
-      		//printf("%s", buffer);
+      		printf("%s", buffer);
       		ParseLine(buffer);
     	}
    }
