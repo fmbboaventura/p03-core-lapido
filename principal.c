@@ -1,12 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAX_TAB 100
 #define TAM_PALAVRA 9 
 
 void AbrirArquivo (FILE **nome_arq, char *caminho_arq, char *modo);
 void FecharArquivo (FILE **nome_arq);
-void CarregaLabels ();
+void CarregaVetorLabels ();
+void LabelSalva(char *txtPalavra, int endereco);
 
 const int TAM_BUFFER = 255;
 
@@ -25,7 +27,7 @@ int main(){
 	char *nome_arquivo;
 
 	AbrirArquivo(&codigo, "teste1.asm", "r");
-   CarregaLabels();
+   CarregaVetorLabels();
 
 }
 
@@ -58,10 +60,19 @@ void FecharArquivo (FILE **arq)
    }
 }
 
-void CarregaLabels (){
+void CarregaVetorLabels (){
    int i;
    // Alocacao da tabela de labels
    tbLabels = malloc(sizeof(tipo_label) * MAX_TAB);
    for (i=0; i<MAX_TAB; i++)
    tbLabels[i].txtPalavra = malloc(sizeof(char) * TAM_PALAVRA);
+}
+
+//*txtPalavra = nome da LABEL
+//endereço = endereço de memória da LABEL
+void LabelSalva(char *txtPalavra, int endereco){
+   static int ind_tbLabels = 0;
+   strcpy(tbLabels[ind_tbLabels].txtPalavra, txtPalavra);
+   tbLabels[ind_tbLabels].endereco = endereco;
+   ind_tbLabels ++;
 }
