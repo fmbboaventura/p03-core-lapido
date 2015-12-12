@@ -41,8 +41,9 @@ void AbrirArquivo (FILE **arq, char *caminho_arq, char *modo)
    if (arq != NULL){
    		char buffer[TAM_BUFFER];
    		while(fgets(buffer, TAM_BUFFER, *arq)){
-      		printf("%s", buffer);
+      		//printf("%s", buffer);
       		ParseLine(buffer);
+      		printf("retornou\n");
     	}
    }
    else {
@@ -72,16 +73,38 @@ void CarregaVetorLabels (){
 
 void ParseLine (char *line)
 {
+    printf("%s\n", line);
     char letra;
-    int i;
-    for(letra = line[i]; line[i] != 0; i++){
+    int i = 0;
+    int line_lenght = strlen(line) - 1;
+
+    for(i = 0; i < line_lenght; i++)
+    {
+        letra = line[i];
+        printf("%c, %d\n", letra, i);
+        system("pause");
         if(isspace(letra))
+        {
+            printf("Espaço\n");
             continue;
+        }
+
         if(letra == ';')
+        {
             return;
+        }
+
+        if(letra == '.')
+        {
+            printf("Diretiva\n");
+        }
+
+        if(letra == ':')
+        {
+            printf("Label\n");
+        }
 
     }
-    printf("%s\n", line);
 }
 
 //*txtPalavra = nome da LABEL
