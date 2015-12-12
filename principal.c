@@ -1,10 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MAX_TAB 100
+#define TAM_PALAVRA 9 
+
 void AbrirArquivo (FILE **nome_arq, char *caminho_arq, char *modo);
 void FecharArquivo (FILE **nome_arq);
+void CarregaLabels ();
 
 const int TAM_BUFFER = 255;
+
+/*Definição da struct para label*/
+typedef struct 
+{
+   char *txtPalavra;
+   int endereco;
+} tipo_label;
+
+tipo_label *tbLabels;
 
 int main(){
 
@@ -42,4 +55,12 @@ void FecharArquivo (FILE **arq)
    {
       printf ("O arquivo nao pode ser fechado.\n");
    }
+}
+
+void CarregaLabels (){
+   int i;
+   // Alocacao da tabela de labels
+   tbLabels = malloc(sizeof(tipo_label) * MAX_TAB);
+   for (i=0; i<MAX_TAB; i++)
+      tbLabels[i].txtPalavra = malloc(sizeof(char) * TAM_PALAVRA);
 }
