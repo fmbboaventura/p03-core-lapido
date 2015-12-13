@@ -85,7 +85,7 @@ void ParseLine (char *line)
         system("pause");
         if(isspace(letra))
         {
-            printf("Espaço\n");
+            printf("Espaco\n");
             continue;
         }
 
