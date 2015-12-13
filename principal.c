@@ -16,20 +16,29 @@ const int TAM_BUFFER = 255;
 /*Definição da struct para label*/
 typedef struct
 {
-   char *txtPalavra;
-   int endereco;
+    char *txtPalavra;
+    int endereco;
 } tipo_label;
 
+
+
 tipo_label *tbLabels;
+int lineCount = 1;
+int ind_tbLabels = 0;
 
-int main(){
+int main()
+{
+    int i;
+    FILE *codigo;
+    char *nome_arquivo;
 
-	FILE *codigo;
-	char *nome_arquivo;
+    CarregaVetorLabels();
+    AbrirArquivo(&codigo, "teste1.asm", "r");
 
-  CarregaVetorLabels();
-	AbrirArquivo(&codigo, "teste1.asm", "r");
-
+    for(i = 0; i < ind_tbLabels; i++)
+    {
+        printf("%s, %d\n", tbLabels[i].txtPalavra, tbLabels[i].endereco);
+    }
 }
 
 /*
@@ -37,19 +46,23 @@ int main(){
  */
 void AbrirArquivo (FILE **arq, char *caminho_arq, char *modo)
 {
-   *arq = fopen (caminho_arq, modo);
-   if (arq != NULL){
-   		char buffer[TAM_BUFFER];
-   		while(fgets(buffer, TAM_BUFFER, *arq)){
-      		//printf("%s", buffer);
-      		ParseLine(buffer);
-      		printf("retornou\n");
-    	}
-   }
-   else {
-      printf ("O arquivo nao pode ser aberto.\n");
-   }
-   FecharArquivo(arq);
+    *arq = fopen (caminho_arq, modo);
+    if (arq != NULL)
+    {
+        char buffer[TAM_BUFFER];
+        while(fgets(buffer, TAM_BUFFER, *arq))
+        {
+            //printf("%s", buffer);
+            ParseLine(buffer, &lineCount);
+            printf("retornou\n");
+            printf("Line count %d\n", lineCount);
+        }
+    }
+    else
+    {
+        printf ("O arquivo nao pode ser aberto.\n");
+    }
+    FecharArquivo(arq);
 }
 
 /*
@@ -57,32 +70,33 @@ void AbrirArquivo (FILE **arq, char *caminho_arq, char *modo)
  */
 void FecharArquivo (FILE **arq)
 {
-   if (fclose (*arq))
-   {
-      printf ("O arquivo nao pode ser fechado.\n");
-   }
+    if (fclose (*arq))
+    {
+        printf ("O arquivo nao pode ser fechado.\n");
+    }
 }
 
-void CarregaVetorLabels (){
-   int i;
-   // Alocacao da tabela de labels
-   tbLabels = malloc(sizeof(tipo_label) * MAX_TAB);
-   for (i=0; i<MAX_TAB; i++)
-      tbLabels[i].txtPalavra = malloc(sizeof(char) * TAM_PALAVRA);
+void CarregaVetorLabels ()
+{
+    int i;
+    // Alocacao da tabela de labels
+    tbLabels = malloc(sizeof(tipo_label) * MAX_TAB);
+    for (i=0; i<MAX_TAB; i++)
+        tbLabels[i].txtPalavra = malloc(sizeof(char) * TAM_PALAVRA);
 }
 
 void ParseLine (char *line)
 {
     printf("%s\n", line);
     char letra;
-    int i = 0;
+    int i = 1;
     int line_lenght = strlen(line) - 1;
 
     for(i = 0; i < line_lenght; i++)
     {
         letra = line[i];
         printf("%c, %d\n", letra, i);
-        system("pause");
+        //system("pause");
         if(isspace(letra))
         {
             printf("Espaco\n");
@@ -97,6 +111,7 @@ void ParseLine (char *line)
         if(letra == '.')
         {
             printf("Diretiva\n");
+            lineCount--;
         }
 
         if(letra == ':')
@@ -106,16 +121,18 @@ void ParseLine (char *line)
             label[i] = '\0';
             strncpy(label, line, i);
             printf("%s\n", label);
+            LabelSalva(label, lineCount);
         }
 
     }
+    lineCount++;
 }
 
 //*txtPalavra = nome da LABEL
 //endereço = endereço de memória da LABEL
-void LabelSalva(char *txtPalavra, int endereco){
-   static int ind_tbLabels = 0;
-   strcpy(tbLabels[ind_tbLabels].txtPalavra, txtPalavra);
-   tbLabels[ind_tbLabels].endereco = endereco;
-   ind_tbLabels ++;
+void LabelSalva(char *txtPalavra, int endereco)
+{
+    strcpy(tbLabels[ind_tbLabels].txtPalavra, txtPalavra);
+    tbLabels[ind_tbLabels].endereco = endereco;
+    ind_tbLabels ++;
 }

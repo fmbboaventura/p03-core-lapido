@@ -1,4 +1,3 @@
-LABEL: zeros	r1
 .module flags
 .pseg
         ; Testa flags
@@ -6,7 +5,7 @@ LABEL: zeros	r1
 	; r0 points to ARR1
         lcl	r0, LOWBYTE ARR1
         lch	r0, HIGHBYTE ARR1
-	LABEL: zeros	r1
+	zeros	r1
 	deca	r2,r1
 	store	r0,r2
 	inca    r0,r0
