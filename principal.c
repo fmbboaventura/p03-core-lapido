@@ -107,8 +107,10 @@ void LerLinha (char *linha)
     int i = 0;
     int tamanhoLinha = strlen(linha);
 
+    // Se a linha começa com ;, ignore
     if(linha[0] == ';') return;
 
+    // Verifica se é diretiva
     if(linha[0] == '.')
     {
         for (i = 0; !isspace(linha[i]); i++);
@@ -116,34 +118,42 @@ void LerLinha (char *linha)
         palavra[i] = '\0';
         strncpy(palavra, linha, i);
         // palavra contém a diretiva
-        // guardar em algum lugar
 
         if (strncmp(".word", palavra, i) != 0)
         {
+            // Diretivas, excerto .word,
+            // Não contam como linha de código
             lineCount--;
         }
-    } else
-    {
+    } else // caso contrário, examina a linha para extrair
+    {      // labels ou campos das instruções
         for (i = 0; i < tamanhoLinha; i++)
         {
+            // Lê a linha caractere por caractere
             letra = linha[i];
 
+            // Se achou um label
             if(letra == ':')
             {
                 palavra = malloc(sizeof(char) * i);
                 palavra[i] = '\0';
                 strncpy(palavra, linha, i);
-                //printf("%s\n", palavra);
 
+                // Salva o label no endereço atual
                 LabelSalva(palavra, lineCount);
 
+                // Se o label estiver sozinho na linha
+                // não conte seu endereço
                 if(linha[i + 1] == '\n')
                 {
                     lineCount--;
                 }
+
+                // ######## detectar a instrução #######
             }
         }
     }
+    // Incrementa o endereço da instrução
     lineCount++;
 }
 
