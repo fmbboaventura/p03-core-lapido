@@ -3,7 +3,8 @@
         ; Testa flags
         ;
 	; r0 points to ARR1
-        LABEL: lcl	r0, LOWBYTE ARR1
+        LABEL:
+        lcl	r0, LOWBYTE ARR1
         lch	r0, HIGHBYTE ARR1
 	zeros	r1
 	deca	r2,r1
