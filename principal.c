@@ -48,13 +48,18 @@ int main()
 void AbrirArquivo (FILE **arq, char *caminho_arq, char *modo)
 {
     *arq = fopen (caminho_arq, modo);
+    int i;
     if (arq != NULL)
     {
         char buffer[TAM_BUFFER];
         while(fgets(buffer, TAM_BUFFER, *arq))
         {
-            //printf("%s", buffer);
-            ParseLine(buffer, &lineCount);
+            // Pega a linha a partir do primeiro caractere
+            // que não é um espaço
+            for(i = 0; isspace(buffer[i]); i++);
+            //printf("%s\n", &buffer[i]);
+            LerLinha(&buffer[i]);
+            //ParseLine(buffer, &lineCount);
         }
     }
     else
@@ -82,6 +87,53 @@ void CarregaVetorLabels ()
     tbLabels = malloc(sizeof(tipo_label) * MAX_TAB);
     for (i=0; i<MAX_TAB; i++)
         tbLabels[i].txtPalavra = malloc(sizeof(char) * TAM_PALAVRA);
+}
+
+void LerLinha (char *linha)
+{
+    char letra;
+    char *palavra;
+    int i = 0;
+    int tamanhoLinha = strlen(linha);
+
+    if(linha[0] == ';') return;
+
+    if(linha[0] == '.')
+    {
+        for (i = 0; !isspace(linha[i]); i++);
+        palavra = malloc(sizeof(char) * i);
+        palavra[i] = '\0';
+        strncpy(palavra, linha, i);
+        // palavra contém a diretiva
+        // guardar em algum lugar
+
+        if (strncmp(".word", palavra, i) != 0)
+        {
+            lineCount--;
+        }
+    } else
+    {
+        for (i = 0; i < tamanhoLinha; i++)
+        {
+            letra = linha[i];
+
+            if(letra == ':')
+            {
+                palavra = malloc(sizeof(char) * i);
+                palavra[i] = '\0';
+                strncpy(palavra, linha, i);
+                //printf("%s\n", palavra);
+
+                LabelSalva(palavra, lineCount);
+
+                if(linha[i + 1] == '\n')
+                {
+                    lineCount--;
+                }
+            }
+        }
+    }
+    lineCount++;
 }
 
 void ParseLine (char *line)
