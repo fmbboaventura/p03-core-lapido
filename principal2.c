@@ -5,12 +5,14 @@
 
 #define MAX_TAB 100
 #define TAM_PALAVRA 9
+#define TAM_LINHA 80
 
 void AbrirArquivo (FILE **nome_arq, char *caminho_arq, char *modo);
 void FecharArquivo (FILE **nome_arq);
 void CarregaVetorLabels ();
 void LabelSalva(char *txtPalavra, int endereco);
 void ParseLine();
+void Traducao();
 
 const int TAM_BUFFER = 255;
 
@@ -35,16 +37,20 @@ int main()
     char *nome_arquivo;
 
     CarregaVetorLabels();
-    AbrirArquivo(&codigo, "teste1.asm", "r");
+    AbrirArquivo(&codigo, "teste3.asm", "r");
     AbrirArquivo(&saida, "saida.txt", "w");
 
-    IndexarLabels(&codigo);
+    //IndexarLabels(&codigo);
     rewind(codigo); //coloca o ponteiro do arquivo no inicio do arquivo
+
+    Traducao(codigo, saida);
 
     for(i = 0; i < ind_tbLabels; i++)
     {
         printf("%s, %d\n", tbLabels[i].txtPalavra, tbLabels[i].endereco);
     }
+
+    
 
     FecharArquivo(&codigo);
     FecharArquivo(&saida);
@@ -82,7 +88,7 @@ void CarregaVetorLabels ()
         tbLabels[i].txtPalavra = malloc(sizeof(char) * TAM_PALAVRA);
 }
 
-void IndexarLabels(FILE **arq)
+/*void IndexarLabels(FILE **arq)
 {
     int i;
     if (arq != NULL)
@@ -100,7 +106,7 @@ void IndexarLabels(FILE **arq)
     }
 }
 
-void LerLinha (char *linha)
+/*void LerLinha (char *linha)
 {
     char letra;
     char *palavra;
@@ -155,6 +161,37 @@ void LerLinha (char *linha)
     }
     // Incrementa o endereço da instrução
     lineCount++;
+}*/
+
+void Palavra_Ler_Arquivo(FILE *entrada, char **palavra)
+{
+    char letra;
+    int index = 0;
+    
+    fscanf(entrada, "%c", &letra);
+    while (isspace(letra))
+    {   
+        if (feof(entrada))
+            return;
+        fscanf(entrada, "%c", &letra);
+    }
+    while ((!isspace(letra)) && (letra != ','))
+    {
+        if (feof(entrada))
+            return;
+        (*palavra)[index] = letra;
+        index ++;
+        fscanf(entrada, "%c", &letra);
+    }
+    (*palavra)[index] = '\0';
+}
+
+void Linha_Saltar (FILE *entrada)
+{
+    char letra;
+    fscanf(entrada, "%c", &letra);
+    while (letra != '\n')
+        fscanf(entrada, "%c", &letra);
 }
 
 //*txtPalavra = nome da LABEL
@@ -173,42 +210,54 @@ void Traducao(FILE *entrada, FILE *saida){
     short ra, rb, rc;
     unsigned short binario;
 
-    tam = strlen(txtPalavra);
-    while(!feof(entrada)){
+    palavra = malloc(sizeof(char) * TAM_LINHA);
+
+    Palavra_Ler_Arquivo(entrada, &palavra);
+    tam = strlen(palavra);
+    while(!feof(entrada))
+    {
         instrucao = 1;
 
         //VERIFICA COMENTARIO
-        for(i=0; i<tam, i++){
+        for(i=0; i<tam; i++)
+        {
             if (palavra[i] == ';')
             {
+                printf("Comentario\n");
+                Linha_Saltar(entrada);
                 /* salta a linha */
                 instrucao = 0;
             }
         }
 
         //VERIFICA SE É LABEL
-        for (i=1; i<tam, i++)
+        for (i=1; i<tam; i++)
         {
             if (palavra[i] == ':')
             {
+                printf("LABEL\n");
                 instrucao = 0;
-                LerLinha(); //chama a função
+                //LerLinha(); //chama a função
             }
             /* code */
         }
 
         //FIM DO CODIGO
-        if (strcmp(txtaPlavra, ".end") == 0)
+        if (strcmp(palavra, ".end") == 0)
+        {
+            printf("FIM DO CODIGO\n");
             instrucao = 0;
+        }    
 
         //AÍ VEM O SEGMENTO DE INSTRUÇÕES
-        if (instrucao)
+        if (instrucao==34)
         {
             printf("Eh instrucao\n");
             pc ++;
             binario = 0;
             if (strcmp(palavra, "add") == 0)
             {
+                printf("add");
 
                 /* code */
             }
@@ -218,6 +267,8 @@ void Traducao(FILE *entrada, FILE *saida){
             }
             /* code */
         }
+        Palavra_Ler_Arquivo(entrada, &palavra);
+        tam = strlen(palavra);
     }
 
 }
