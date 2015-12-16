@@ -38,11 +38,13 @@ int main()
     AbrirArquivo(&codigo, "teste1.asm", "r");
     AbrirArquivo(&saida, "saida.txt", "w");
 
+    IndexarLabels(&codigo);
+    rewind(codigo); //coloca o ponteiro do arquivo no inicio do arquivo
+
     for(i = 0; i < ind_tbLabels; i++)
     {
         printf("%s, %d\n", tbLabels[i].txtPalavra, tbLabels[i].endereco);
     }
-    rewind(codigo); //coloca o ponteiro do arquivo no inicio do arquivo
 
     FecharArquivo(&codigo);
     FecharArquivo(&saida);
@@ -53,26 +55,11 @@ int main()
  */
 void AbrirArquivo (FILE **arq, char *caminho_arq, char *modo)
 {
-    *arq = fopen (caminho_arq, modo);
-    int i;
-    if (arq != NULL)
-    {
-        char buffer[TAM_BUFFER];
-        while(fgets(buffer, TAM_BUFFER, *arq))
-        {
-            // Pega a linha a partir do primeiro caractere
-            // que não é um espaço
-            for(i = 0; isspace(buffer[i]); i++);
-            //printf("%s\n", &buffer[i]);
-            LerLinha(&buffer[i]);
-            //ParseLine(buffer, &lineCount);
-        }
-    }
-    else
-    {
-        printf ("O arquivo nao pode ser aberto.\n");
-    }
-    //FecharArquivo(arq);
+    if (!((*arq) = fopen (caminho_arq, modo)))
+   {
+      printf ("O arquivo nao pode ser aberto.\n");
+      exit (0);
+   }
 }
 
 /*
@@ -93,6 +80,24 @@ void CarregaVetorLabels ()
     tbLabels = malloc(sizeof(tipo_label) * MAX_TAB);
     for (i=0; i<MAX_TAB; i++)
         tbLabels[i].txtPalavra = malloc(sizeof(char) * TAM_PALAVRA);
+}
+
+void IndexarLabels(FILE **arq)
+{
+    int i;
+    if (arq != NULL)
+    {
+        char buffer[TAM_BUFFER];
+        while(fgets(buffer, TAM_BUFFER, *arq))
+        {
+            // Pega a linha a partir do primeiro caractere
+            // que não é um espaço
+            for(i = 0; isspace(buffer[i]); i++);
+            //printf("%s\n", &buffer[i]);
+            LerLinha(&buffer[i]);
+            //ParseLine(buffer, &lineCount);
+        }
+    }
 }
 
 void LerLinha (char *linha)
@@ -136,62 +141,6 @@ void LerLinha (char *linha)
                 {
                     lineCount--;
                 }
-            }
-        }
-    }
-    lineCount++;
-}
-
-//criar tabrla de labels
-void ParseLine (char *line)
-{
-    char letra;
-    int i = 1;
-    int line_lenght = strlen(line);
-
-    bool pseg = false;
-    bool dseg = false;
-    bool achou_diretiva = false;
-    bool achou_label = false;
-
-    for(i = 0; i < line_lenght; i++)
-    {
-        letra = line[i];
-        if(isspace(letra))
-        {
-
-            if(achou_diretiva)
-            {
-                char diretiva[i];
-                diretiva[i] = '\0';
-                strncpy(diretiva, line, i);
-
-                // Declaração de constante
-                if (strncmp(".word", diretiva, i) == 0)
-                {
-                    system("pause");
-                }
-                else {
-                    lineCount--;
-                }
-                achou_diretiva = false;
-            }
-        } else if(letra == ';')
-        {
-            return;
-        } else if(letra == '.')
-        {
-            achou_diretiva = true;
-        } else if(letra == ':')
-        {
-            char label[i];
-            label[i] = '\0';
-            strncpy(label, line, i);
-            LabelSalva(label, lineCount);
-
-            if(line[i + 1] == '\n')
-            {
-                lineCount--;
             }
         }
     }
