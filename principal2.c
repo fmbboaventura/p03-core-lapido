@@ -37,7 +37,7 @@ int main()
     char *nome_arquivo;
 
     CarregaVetorLabels();
-    AbrirArquivo(&codigo, "teste3.asm", "r");
+    AbrirArquivo(&codigo, "teste2.asm", "r");
     AbrirArquivo(&saida, "saida.txt", "w");
 
     //IndexarLabels(&codigo);
@@ -223,7 +223,7 @@ void Traducao(FILE *entrada, FILE *saida){
         {
             if (palavra[i] == ';')
             {
-                printf("Comentario\n");
+                //printf("Comentario\n");
                 Linha_Saltar(entrada);
                 /* salta a linha */
                 instrucao = 0;
@@ -235,7 +235,7 @@ void Traducao(FILE *entrada, FILE *saida){
         {
             if (palavra[i] == ':')
             {
-                printf("LABEL\n");
+                //printf("LABEL\n");
                 instrucao = 0;
                 //LerLinha(); //chama a função
             }
@@ -245,23 +245,23 @@ void Traducao(FILE *entrada, FILE *saida){
         //FIM DO CODIGO
         if (strcmp(palavra, ".end") == 0)
         {
-            printf("FIM DO CODIGO\n");
+            //printf("FIM DO CODIGO\n");
             instrucao = 0;
         }    
 
         //AÍ VEM O SEGMENTO DE INSTRUÇÕES
-        if (instrucao==34)
+        if (instrucao)
         {
-            printf("Eh instrucao\n");
+            //printf("INSTRUCAO\n");
             pc ++;
             binario = 0;
-            if (strcmp(palavra, "add") == 0)
+            if (strcmp(palavra, "sub") == 0)
             {
-                printf("add");
+                printf("sub\n");
 
                 /* code */
             }
-            if (strcmp(palavra, "addinc") == 0)
+            else if (strcmp(palavra, "addinc") == 0)
             {
                 /* code */
             }
