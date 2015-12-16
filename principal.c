@@ -161,12 +161,35 @@ void Traducao(FILE *entrada, FILE *saida){
     char instrucao, leia, ok;
     char *palavra;
 
+    tam = strlen(txtPalavra);
     while(!feof(entrada)){
         instrucao = 1;
 
+        //VERIFICA COMENTARIO
         for(i=0; i<tam, i++){
-
+            if (palavra[i] == ';')
+            {
+                /* salta a linha */
+                instrucao = 0;
+            }
         }
+
+        //VERIFICA SE É LABEL
+        for (i=1; i<tam, i++)
+        {
+            if (palavra[i] == ':')
+            {
+                instrucao = 0;
+                LerLinha(); //chama a função
+            }
+            /* code */
+        }
+
+        //FIM DO CODIGO
+        if (strcmp(txtPalavra, ".end") == 0)
+            instrucao = 0;
+
+        //AÍ VEM O SEGMENTO DE INSTRUÇÕES
     }
 
 }
