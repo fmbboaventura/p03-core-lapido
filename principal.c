@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define MAX_TAB 100
 #define TAM_PALAVRA 9
@@ -54,8 +55,6 @@ void AbrirArquivo (FILE **arq, char *caminho_arq, char *modo)
         {
             //printf("%s", buffer);
             ParseLine(buffer, &lineCount);
-            printf("retornou\n");
-            printf("Line count %d\n", lineCount);
         }
     }
     else
@@ -85,45 +84,58 @@ void CarregaVetorLabels ()
         tbLabels[i].txtPalavra = malloc(sizeof(char) * TAM_PALAVRA);
 }
 
+//criar tabrla de labels
 void ParseLine (char *line)
 {
-    printf("%s\n", line);
     char letra;
     int i = 1;
-    int line_lenght = strlen(line) - 1;
+    int line_lenght = strlen(line);
+
+    bool pseg = false;
+    bool dseg = false;
+    bool achou_diretiva = false;
+    bool achou_label = false;
 
     for(i = 0; i < line_lenght; i++)
     {
         letra = line[i];
-        printf("%c, %d\n", letra, i);
-        //system("pause");
         if(isspace(letra))
         {
-            printf("Espaco\n");
-            continue;
-        }
 
-        if(letra == ';')
+            if(achou_diretiva)
+            {
+                char diretiva[i];
+                diretiva[i] = '\0';
+                strncpy(diretiva, line, i);
+
+                // Declaração de constante
+                if (strncmp(".word", diretiva, i) == 0)
+                {
+                    system("pause");
+                }
+                else {
+                    lineCount--;
+                }
+                achou_diretiva = false;
+            }
+        } else if(letra == ';')
         {
             return;
-        }
-
-        if(letra == '.')
+        } else if(letra == '.')
         {
-            printf("Diretiva\n");
-            lineCount--;
-        }
-
-        if(letra == ':')
+            achou_diretiva = true;
+        } else if(letra == ':')
         {
-            printf("Label\n");
             char label[i];
             label[i] = '\0';
             strncpy(label, line, i);
-            printf("%s\n", label);
             LabelSalva(label, lineCount);
-        }
 
+            if(line[i + 1] == '\n')
+            {
+                lineCount--;
+            }
+        }
     }
     lineCount++;
 }

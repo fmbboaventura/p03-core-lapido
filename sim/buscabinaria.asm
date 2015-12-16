@@ -1,4 +1,4 @@
-.module
+.module buscabinaria
 .pseg
 
 		;Implementacao do algoritmo de busca binária aplicado a um array ordenado
