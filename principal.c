@@ -136,6 +136,7 @@ void LerLinha (char *linha)
     lineCount++;
 }
 
+//criar tabrla de labels
 void ParseLine (char *line)
 {
     char letra;
