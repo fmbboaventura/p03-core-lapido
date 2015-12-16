@@ -31,15 +31,21 @@ int main()
 {
     int i;
     FILE *codigo;
+    FILE *saida;
     char *nome_arquivo;
 
     CarregaVetorLabels();
     AbrirArquivo(&codigo, "teste1.asm", "r");
+    AbrirArquivo(&saida, "saida.txt", "w");
 
     for(i = 0; i < ind_tbLabels; i++)
     {
         printf("%s, %d\n", tbLabels[i].txtPalavra, tbLabels[i].endereco);
     }
+    rewind(codigo); //coloca o ponteiro do arquivo no inicio do arquivo
+
+    FecharArquivo(&codigo);
+    FecharArquivo(&saida);
 }
 
 /*
@@ -66,7 +72,7 @@ void AbrirArquivo (FILE **arq, char *caminho_arq, char *modo)
     {
         printf ("O arquivo nao pode ser aberto.\n");
     }
-    FecharArquivo(arq);
+    //FecharArquivo(arq);
 }
 
 /*
@@ -199,4 +205,9 @@ void LabelSalva(char *txtPalavra, int endereco)
     strcpy(tbLabels[ind_tbLabels].txtPalavra, txtPalavra);
     tbLabels[ind_tbLabels].endereco = endereco;
     ind_tbLabels ++;
+}
+
+void Traducao(FILE *entrada, FILE *saida){
+    int pc = 0;
+
 }
