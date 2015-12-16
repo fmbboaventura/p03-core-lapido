@@ -84,6 +84,7 @@ void CarregaVetorLabels ()
         tbLabels[i].txtPalavra = malloc(sizeof(char) * TAM_PALAVRA);
 }
 
+//criar tabrla de labels
 void ParseLine (char *line)
 {
     char letra;
