@@ -200,6 +200,21 @@ void Traducao(FILE *entrada, FILE *saida){
             instrucao = 0;
 
         //AÍ VEM O SEGMENTO DE INSTRUÇÕES
+        if (instrucao)
+        {
+            printf("Eh instrucao\n");
+            pc ++;
+            if (strcmp(palavra, "add") == 0)
+            {
+
+                /* code */
+            }
+            if (strcmp(palavra, "addinc") == 0)
+            {
+                /* code */
+            }
+            /* code */
+        }
     }
 
 }
