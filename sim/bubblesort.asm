@@ -36,16 +36,16 @@ for(i = 0; i<5; i++){
 								passa r11, r13 ; atribui valor do elemento auxiliar (antigo r10) ao registrador r11
 								
 				addi r2,r2,1 ; index do primeiro loop e incrementado
-				slti r6, r2,r3 ; verifica se r2 é menor que o número de elementos do array menos 1
-				beq r6, r7, LOOP2 ; se index for menor que o número de elementos continua LOOP2
+				slt r6, r2,r3 ; verifica se r2 é menor que o número de elementos do array menos 1
+				bne r6, r7, LOOP2 ; se index for menor que o número de elementos continua LOOP2
 				_____________________________________________________________________________________________________________
 				addi r1,r1,1 ; index do primeiro loop e incrementado
-				slti r6, r1,r5 ; verifica se r1 é menor que o número de elementos do array
-				beq r6, r7, LOOP1 ; se index for menor que o número de elementos continua LOOP1			
+				slt r6, r1,r5 ; verifica se r1 é menor que o número de elementos do array
+				bne r6, r7, LOOP1 ; se index for menor que o número de elementos continua LOOP1			
 				J HALT
 				.......................................................................................................................
 		
-		HALT: 
+HALT: 
 				j HALT
 				
 .dseg
