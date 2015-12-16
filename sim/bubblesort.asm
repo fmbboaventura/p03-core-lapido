@@ -21,6 +21,7 @@ for(i = 0; i<5; i++){
 		................................................................................................................................
 	   	LOOP1: 
 				zeros r2, 0 ; index do segundo loop e zero
+				deca r3, r5, 1; numero de elementos menos 1
 				_____________________________________________________________________________________________________________
 				LOOP2:
 						load r10, r0 ; contêm o elemento do index r2 // admite-se que recebe o valor refente ao index?
@@ -35,13 +36,27 @@ for(i = 0; i<5; i++){
 								passa r11, r13 ; atribui valor do elemento auxiliar (antigo r10) ao registrador r11
 								
 				addi r2,r2,1 ; index do primeiro loop e incrementado
-				slti r6, r2,r5 ; verifica se r1 é menor que o número de elementos do array
-				beq r6, r7, LOOP2; se index for menor que o número de elementos continua LOOP2
+				slti r6, r2,r3 ; verifica se r2 é menor que o número de elementos do array menos 1
+				beq r6, r7, LOOP2 ; se index for menor que o número de elementos continua LOOP2
 				_____________________________________________________________________________________________________________
 				addi r1,r1,1 ; index do primeiro loop e incrementado
 				slti r6, r1,r5 ; verifica se r1 é menor que o número de elementos do array
-				beq r6, r7, LOOP1; se index for menor que o número de elementos continua LOOP1			
+				beq r6, r7, LOOP1 ; se index for menor que o número de elementos continua LOOP1			
 				J HALT
 				.......................................................................................................................
 		
-		HALT: j HALT
+		HALT: 
+				j HALT
+				
+.dseg
+
+ARR1:
+        .word   5
+                .word   8
+                .word   9
+                .word   3
+                .word   5
+                .word   1
+                
+STACK:
+.end
