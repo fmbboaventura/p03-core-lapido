@@ -157,6 +157,16 @@ void LabelSalva(char *txtPalavra, int endereco)
 }
 
 void Traducao(FILE *entrada, FILE *saida){
-    int pc = 0;
+    int tam, i, pc = 0;
+    char instrucao, leia, ok;
+    char *palavra;
+
+    while(!feof(entrada)){
+        instrucao = 1;
+
+        for(i=0; i<tam, i++){
+
+        }
+    }
 
 }
