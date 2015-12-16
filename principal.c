@@ -170,6 +170,8 @@ void Traducao(FILE *entrada, FILE *saida){
     int tam, i, pc = 0;
     char instrucao, leia, ok;
     char *palavra;
+    short ra, rb, rc;
+    unsigned short binario;
 
     tam = strlen(txtPalavra);
     while(!feof(entrada)){
@@ -204,6 +206,7 @@ void Traducao(FILE *entrada, FILE *saida){
         {
             printf("Eh instrucao\n");
             pc ++;
+            binario = 0;
             if (strcmp(palavra, "add") == 0)
             {
 
