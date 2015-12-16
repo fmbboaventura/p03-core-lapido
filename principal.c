@@ -173,12 +173,13 @@ void Traducao(FILE *entrada, FILE *saida){
     short ra, rb, rc;
     unsigned short binario;
 
-    tam = strlen(txtPalavra);
+    tam = strlen(palavra);
     while(!feof(entrada)){
         instrucao = 1;
 
         //VERIFICA COMENTARIO
-        for(i=0; i<tam, i++){
+        for(i=0; i<tam; i++)
+        {
             if (palavra[i] == ';')
             {
                 /* salta a linha */
@@ -187,18 +188,18 @@ void Traducao(FILE *entrada, FILE *saida){
         }
 
         //VERIFICA SE É LABEL
-        for (i=1; i<tam, i++)
+        for (i=1; i<tam; i++)
         {
             if (palavra[i] == ':')
             {
                 instrucao = 0;
-                LerLinha(); //chama a função
+                //LerLinha(); //chama a função
             }
             /* code */
         }
 
         //FIM DO CODIGO
-        if (strcmp(txtPalavra, ".end") == 0)
+        if (strcmp(palavra, ".end") == 0)
             instrucao = 0;
 
         //AÍ VEM O SEGMENTO DE INSTRUÇÕES
