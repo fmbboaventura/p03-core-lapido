@@ -13,6 +13,7 @@ void CarregaVetorLabels ();
 void LabelSalva(char *txtPalavra, int endereco);
 void ParseLine();
 void Traducao();
+void CriaTabelas(FILE *entrada);
 
 const int TAM_BUFFER = 255;
 
@@ -40,15 +41,17 @@ int main()
     AbrirArquivo(&codigo, "teste2.asm", "r");
     AbrirArquivo(&saida, "saida.txt", "w");
 
-    //IndexarLabels(&codigo);
-    rewind(codigo); //coloca o ponteiro do arquivo no inicio do arquivo
-
-    Traducao(codigo, saida);
+    CriaTabelas(codigo);
 
     for(i = 0; i < ind_tbLabels; i++)
     {
         printf("%s, %d\n", tbLabels[i].txtPalavra, tbLabels[i].endereco);
     }
+
+    //IndexarLabels(&codigo);
+    rewind(codigo); //coloca o ponteiro do arquivo no inicio do arquivo
+
+    Traducao(codigo, saida);
 
     
 
@@ -255,9 +258,8 @@ void Traducao(FILE *entrada, FILE *saida){
             //printf("INSTRUCAO\n");
             pc ++;
             binario = 0;
-            if (strcmp(palavra, "sub") == 0)
+            if (strcmp(palavra, "add") == 0)
             {
-                printf("sub\n");
 
                 /* code */
             }
@@ -265,10 +267,76 @@ void Traducao(FILE *entrada, FILE *saida){
             {
                 /* code */
             }
-            /* code */
         }
         Palavra_Ler_Arquivo(entrada, &palavra);
         tam = strlen(palavra);
     }
 
 }
+
+void CriaTabelas(FILE *entrada){
+    char *palavra, *label, *diretiva;
+    int tam, i, num_instrucoes = 0;
+    char instrucao, leia;
+    int linhaCount = 1;
+
+    palavra = malloc(sizeof(char) * TAM_LINHA);
+    label = malloc(sizeof(char) * TAM_LINHA);
+
+    for (i=0; i<TAM_LINHA; i++)
+        palavra[i] = ' ';
+    palavra[TAM_LINHA] = '\0';
+    
+    Palavra_Ler_Arquivo (entrada, &palavra);
+    while(!feof(entrada))
+    {
+        leia = 1;
+        instrucao = 1;
+        tam = strlen(palavra);
+        
+        for (i=0; i<tam; i++)
+        {
+            if (palavra[i] == ';')
+            {
+                Linha_Saltar(entrada);
+                linhaCount++;
+                instrucao = 0;
+            }
+        }
+
+        for (i = 1; i < tam; ++i)
+        {
+            if (palavra[i] == ':')
+            {
+                linhaCount++;
+                palavra[i] = '\0';
+                strcpy(label, palavra);
+                LabelSalva(label, linhaCount);
+                instrucao = 0;
+                break;
+            }
+        }
+
+        if(palavra[0] == '.')
+        {
+            // palavra contém a diretiva
+            if (strcmp(".word", palavra) != 0)
+            {
+                // Diretivas, excerto .word,
+                // Não contam como linha de código
+                lineCount--;
+            }
+            //Linha_Saltar(entrada);
+            linhaCount++;
+            instrucao = 0;
+        }  
+
+        if (instrucao)
+         {
+            Linha_Saltar(entrada);
+            linhaCount++;
+         } 
+        Palavra_Ler_Arquivo (entrada, &palavra);
+    }
+}
+
