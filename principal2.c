@@ -14,6 +14,7 @@ void LabelSalva(char *txtPalavra, int endereco);
 void ParseLine();
 void Traducao();
 void CriaTabelas(FILE *entrada);
+void Add();
 
 const int TAM_BUFFER = 255;
 
@@ -210,10 +211,15 @@ void Traducao(FILE *entrada, FILE *saida){
     int tam, i, pc = 0;
     char instrucao, leia, ok;
     char *palavra;
+    char **p;
     short ra, rb, rc;
     unsigned short binario;
 
     palavra = malloc(sizeof(char) * TAM_LINHA);
+    p = malloc(sizeof(char) * 3);
+    p[0] = malloc(sizeof(char) * TAM_LINHA);
+    p[1] = malloc(sizeof(char) * TAM_LINHA);
+    p[2] = malloc(sizeof(char) * TAM_LINHA);
 
     Palavra_Ler_Arquivo(entrada, &palavra);
     tam = strlen(palavra);
@@ -245,6 +251,12 @@ void Traducao(FILE *entrada, FILE *saida){
             /* code */
         }
 
+        if (palavra[0] == '.')
+        {
+            //printf("%s\n", palavra);
+            instrucao = 0;
+        }
+
         //FIM DO CODIGO
         if (strcmp(palavra, ".end") == 0)
         {
@@ -255,13 +267,25 @@ void Traducao(FILE *entrada, FILE *saida){
         //AÍ VEM O SEGMENTO DE INSTRUÇÕES
         if (instrucao)
         {
+            //printf("%s\n", palavra);
             //printf("INSTRUCAO\n");
             pc ++;
             binario = 0;
             if (strcmp(palavra, "add") == 0)
             {
+                Palavra_Ler_Arquivo(entrada, &p[0]);
+                Palavra_Ler_Arquivo(entrada, &p[1]);
+                Palavra_Ler_Arquivo(entrada, &p[2]);
+                rc = strtol(&p[0][1], NULL, 10);
+                ra = strtol(&p[1][1], NULL, 10);
+                rb = strtol(&p[2][1], NULL, 10);
+
+                
+                //printf("%s\n", palavra);
 
                 /* code */
+                Add(ra, rb, rc, &binario);
+                fprintf(saida, "%032x\n", binario);
             }
             else if (strcmp(palavra, "addinc") == 0)
             {
@@ -272,6 +296,10 @@ void Traducao(FILE *entrada, FILE *saida){
         tam = strlen(palavra);
     }
 
+}
+
+void Add(int ra, int rb, int rc, unsigned short *bin){
+    *bin = 0x20;
 }
 
 void CriaTabelas(FILE *entrada){
