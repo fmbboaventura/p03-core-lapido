@@ -213,7 +213,7 @@ void Traducao(FILE *entrada, FILE *saida){
     char *palavra;
     char **p;
     short ra, rb, rc;
-    unsigned short binario;
+    int binario;
 
     palavra = malloc(sizeof(char) * TAM_LINHA);
     p = malloc(sizeof(char) * 3);
@@ -284,8 +284,9 @@ void Traducao(FILE *entrada, FILE *saida){
                 //printf("%s\n", palavra);
 
                 /* code */
-                Add(ra, rb, rc, &binario);
-                fprintf(saida, "%032x\n", binario);
+                //Add(ra, rb, rc, &binario);
+                binario = 0x22;
+                fprintf(saida, "%032d\n", binario);
             }
             else if (strcmp(palavra, "addinc") == 0)
             {
@@ -298,8 +299,8 @@ void Traducao(FILE *entrada, FILE *saida){
 
 }
 
-void Add(int ra, int rb, int rc, unsigned short *bin){
-    *bin = 0x20;
+void Add(int ra, int rb, int rc, int *bin){
+    *bin = 101101;
 }
 
 void CriaTabelas(FILE *entrada){
