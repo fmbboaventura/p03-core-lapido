@@ -212,6 +212,7 @@ void Traducao(FILE *entrada, FILE *saida){
     char instrucao, leia, ok;
     char *palavra;
     char **p;
+
     int ra, rb, rc;
     unsigned int binario;
 
@@ -277,9 +278,13 @@ void Traducao(FILE *entrada, FILE *saida){
                 Palavra_Ler_Arquivo(entrada, &p[0]);
                 Palavra_Ler_Arquivo(entrada, &p[1]);
                 Palavra_Ler_Arquivo(entrada, &p[2]);
-                rc = strtol(&p[0][1], NULL, 10);
-                ra = strtol(&p[1][1], NULL, 10);
-                rb = strtol(&p[2][1], NULL, 10);
+                rc = strtol(&p[0][1], NULL, 2);
+                ra = strtol(&p[1][1], NULL, 2);
+                rb = strtol(&p[2][1], NULL, 2);
+
+                printf("%d\n", rc);
+                printf("%d\n", ra);
+                printf("%d\n", rb);
 
                 // põe o opcode no inicio da instrução
                 binario = 0x00 << 26;
@@ -295,8 +300,9 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | 0x20;
 
                 /* code */
-                Add(ra, rb, rc, &binario);
-                fprintf(saida, "%032x\n", binario);
+                //Add(ra, rb, rc, &binario);
+                binario = 0x22;
+                fprintf(saida, "%032d\n", binario);
             }
             else if (strcmp(palavra, "addinc") == 0)
             {
@@ -309,8 +315,8 @@ void Traducao(FILE *entrada, FILE *saida){
 
 }
 
-void Add(int ra, int rb, int rc, unsigned short *bin){
-    *bin = 0x20;
+void Add(int ra, int rb, int rc, int *bin){
+    *bin = 101101;
 }
 
 void CriaTabelas(FILE *entrada){
