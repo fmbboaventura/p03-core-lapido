@@ -54,7 +54,7 @@ int main()
 
     Traducao(codigo, saida);
 
-    
+
 
     FecharArquivo(&codigo);
     FecharArquivo(&saida);
@@ -171,10 +171,10 @@ void Palavra_Ler_Arquivo(FILE *entrada, char **palavra)
 {
     char letra;
     int index = 0;
-    
+
     fscanf(entrada, "%c", &letra);
     while (isspace(letra))
-    {   
+    {
         if (feof(entrada))
             return;
         fscanf(entrada, "%c", &letra);
@@ -212,8 +212,8 @@ void Traducao(FILE *entrada, FILE *saida){
     char instrucao, leia, ok;
     char *palavra;
     char **p;
-    short ra, rb, rc;
-    unsigned short binario;
+    int ra, rb, rc;
+    unsigned int binario;
 
     palavra = malloc(sizeof(char) * TAM_LINHA);
     p = malloc(sizeof(char) * 3);
@@ -262,13 +262,14 @@ void Traducao(FILE *entrada, FILE *saida){
         {
             //printf("FIM DO CODIGO\n");
             instrucao = 0;
-        }    
+        }
 
         //AÍ VEM O SEGMENTO DE INSTRUÇÕES
         if (instrucao)
         {
             //printf("%s\n", palavra);
             //printf("INSTRUCAO\n");
+            printf("Traduzindo\n");
             pc ++;
             binario = 0;
             if (strcmp(palavra, "add") == 0)
@@ -280,8 +281,18 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                
-                //printf("%s\n", palavra);
+                // põe o opcode no inicio da instrução
+                binario = 0x00 << 26;
+
+                // concatena com o registrador restino
+                binario = binario | (rc << 21);
+
+                // concatena com os registradores fonte
+                binario = binario | (ra << 16);
+                binario = binario | (rb << 11);
+
+                // concatena com o function
+                binario = binario | 0x20;
 
                 /* code */
                 Add(ra, rb, rc, &binario);
@@ -314,14 +325,14 @@ void CriaTabelas(FILE *entrada){
     for (i=0; i<TAM_LINHA; i++)
         palavra[i] = ' ';
     palavra[TAM_LINHA] = '\0';
-    
+
     Palavra_Ler_Arquivo (entrada, &palavra);
     while(!feof(entrada))
     {
         leia = 1;
         instrucao = 1;
         tam = strlen(palavra);
-        
+
         for (i=0; i<tam; i++)
         {
             if (palavra[i] == ';')
@@ -357,13 +368,13 @@ void CriaTabelas(FILE *entrada){
             //Linha_Saltar(entrada);
             linhaCount++;
             instrucao = 0;
-        }  
+        }
 
         if (instrucao)
          {
             Linha_Saltar(entrada);
             linhaCount++;
-         } 
+         }
         Palavra_Ler_Arquivo (entrada, &palavra);
     }
 }
