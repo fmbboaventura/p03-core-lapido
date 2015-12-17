@@ -276,9 +276,13 @@ void Traducao(FILE *entrada, FILE *saida){
                 Palavra_Ler_Arquivo(entrada, &p[0]);
                 Palavra_Ler_Arquivo(entrada, &p[1]);
                 Palavra_Ler_Arquivo(entrada, &p[2]);
-                rc = strtol(&p[0][1], NULL, 10);
-                ra = strtol(&p[1][1], NULL, 10);
-                rb = strtol(&p[2][1], NULL, 10);
+                rc = strtol(&p[0][1], NULL, 2);
+                ra = strtol(&p[1][1], NULL, 2);
+                rb = strtol(&p[2][1], NULL, 2);
+
+                printf("%d\n", rc);
+                printf("%d\n", ra);
+                printf("%d\n", rb);
 
                 
                 //printf("%s\n", palavra);
