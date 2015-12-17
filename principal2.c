@@ -268,9 +268,8 @@ void Traducao(FILE *entrada, FILE *saida){
         //AÍ VEM O SEGMENTO DE INSTRUÇÕES
         if (instrucao)
         {
-            //printf("%s\n", palavra);
+            printf("%s\n", palavra);
             //printf("INSTRUCAO\n");
-            printf("Traduzindo\n");
             pc ++;
             binario = 0;
             if (strcmp(palavra, "add") == 0)
@@ -298,10 +297,8 @@ void Traducao(FILE *entrada, FILE *saida){
 
                 // concatena com o function
                 binario = binario | 0x20;
-
                 /* code */
                 //Add(ra, rb, rc, &binario);
-                binario = 0x22;
                 fprintf(saida, "%032d\n", binario);
             }
             else if (strcmp(palavra, "addinc") == 0)
