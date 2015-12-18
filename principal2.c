@@ -534,6 +534,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << 21);
                 binario = binario | (ra << 16);
                 binario = binario | 0x04;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "asr") == 0)
             {
@@ -546,6 +547,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << 21);
                 binario = binario | (ra << 16);
                 binario = binario | 0x03;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "lsl") == 0)
             {
@@ -558,6 +560,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << 21);
                 binario = binario | (ra << 16);
                 binario = binario | 0x00;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "lsr") == 0)
             {
@@ -570,6 +573,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << 21);
                 binario = binario | (ra << 16);
                 binario = binario | 0x02;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "passa") == 0)
             {
@@ -582,6 +586,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << 21);
                 binario = binario | (ra << 16);
                 binario = binario | 0x2B;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "passanota") == 0)
             {
@@ -594,6 +599,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << 21);
                 binario = binario | (ra << 16);
                 binario = binario | 0x2C;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "zeros") == 0)
             {
@@ -603,6 +609,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = 0x00 << 26;
                 binario = binario | (rc << 21);
                 binario = binario | 0x22;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "not") == 0)
             {
@@ -615,6 +622,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << 21);
                 binario = binario | (ra << 16);
                 binario = binario | 0x21;
+                EscreveBinario(binario, saida);
                 /* code */
             }
             else if (strcmp(palavra, "slt") == 0)
@@ -631,6 +639,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << 16);
                 binario = binario | (rb << 11);
                 binario = binario | 0x2A;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "div") == 0)
             {
@@ -646,6 +655,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << 16);
                 binario = binario | (rb << 11);
                 binario = binario | 0x1A;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jr"))
             {
@@ -655,9 +665,10 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = 0x00 << 26;
                 binario = binario | (rc << 21);
                 binario = binario | 0x22;
+                EscreveBinario(binario, saida);
             }
 
-        fprintf(saida, "%x\n", binario);
+        //fprintf(saida, "%x\n", binario);
         }
         LerPalavra(entrada, &palavra);
         tam = strlen(palavra);
