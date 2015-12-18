@@ -39,7 +39,7 @@ int main()
     char *nome_arquivo;
 
     CarregaVetorLabels();
-    AbrirArquivo(&codigo, "teste2.asm", "r");
+    AbrirArquivo(&codigo, "teste1.asm", "r");
     AbrirArquivo(&saida, "saida.txt", "w");
 
     CriaTabelas(codigo);
@@ -221,10 +221,6 @@ void Traducao(FILE *entrada, FILE *saida){
     int sftRs = 16;
     int sftRt = 11;
     int shamt = 6; // Não use o shamt por enquanto
-    
-    // use com '|' ou
-    int imm   = 0xffff;
-    int func  = 0x2f;
 
     palavra = malloc(sizeof(char) * TAM_LINHA);
     p = malloc(sizeof(char) * 3);
@@ -278,7 +274,7 @@ void Traducao(FILE *entrada, FILE *saida){
         //AÍ VEM O SEGMENTO DE INSTRUÇÕES
         if (instrucao)
         {
-            printf("%s\n", palavra);
+            //printf("%s\n", palavra);
             //printf("INSTRUCAO\n");
             pc ++;
             binario = 0;
@@ -305,7 +301,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rb << sftRt);
 
                 // concatena com o function
-                binario = binario | func;
+                binario = binario | 0x20;
                 /* code */
                 //Add(ra, rb, rc, &binario);
                 fprintf(saida, "%x\n", binario);
@@ -512,6 +508,141 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rb << 11);
                 binario = binario | 0x28;
             }
+            else if (strcmp(palavra, "asl") == 0)
+            {
+                LerPalavra (entrada, &p[0]);
+                LerPalavra (entrada, &p[1]);
+                rc = strtol(&p[0][1], NULL, 10);
+                ra = strtol(&p[1][1], NULL, 10);
+                
+                binario = 0x00 << 26;
+                binario = binario | (rc << 21);
+                binario = binario | (ra << 16);
+                binario = binario | 0x04;
+            }
+            else if (strcmp(palavra, "asr") == 0)
+            {
+                LerPalavra (entrada, &p[0]);
+                LerPalavra (entrada, &p[1]);
+                rc = strtol(&p[0][1], NULL, 10);
+                ra = strtol(&p[1][1], NULL, 10);
+                
+                binario = 0x00 << 26;
+                binario = binario | (rc << 21);
+                binario = binario | (ra << 16);
+                binario = binario | 0x03;
+            }
+            else if (strcmp(palavra, "lsl") == 0)
+            {
+                LerPalavra (entrada, &p[0]);
+                LerPalavra (entrada, &p[1]);
+                rc = strtol(&p[0][1], NULL, 10);
+                ra = strtol(&p[1][1], NULL, 10);
+                
+                binario = 0x00 << 26;
+                binario = binario | (rc << 21);
+                binario = binario | (ra << 16);
+                binario = binario | 0x00;
+            }
+            else if (strcmp(palavra, "lsr") == 0)
+            {
+                LerPalavra (entrada, &p[0]);
+                LerPalavra (entrada, &p[1]);
+                rc = strtol(&p[0][1], NULL, 10);
+                ra = strtol(&p[1][1], NULL, 10);
+                
+                binario = 0x00 << 26;
+                binario = binario | (rc << 21);
+                binario = binario | (ra << 16);
+                binario = binario | 0x02;
+            }
+            else if (strcmp(palavra, "passa") == 0)
+            {
+                LerPalavra (entrada, &p[0]);
+                LerPalavra (entrada, &p[1]);
+                rc = strtol(&p[0][1], NULL, 10);
+                ra = strtol(&p[1][1], NULL, 10);
+                
+                binario = 0x00 << 26;
+                binario = binario | (rc << 21);
+                binario = binario | (ra << 16);
+                binario = binario | 0x2B;
+            }
+            else if (strcmp(palavra, "passanota") == 0)
+            {
+                LerPalavra (entrada, &p[0]);
+                LerPalavra (entrada, &p[1]);
+                rc = strtol(&p[0][1], NULL, 10);
+                ra = strtol(&p[1][1], NULL, 10);
+                
+                binario = 0x00 << 26;
+                binario = binario | (rc << 21);
+                binario = binario | (ra << 16);
+                binario = binario | 0x2C;
+            }
+            else if (strcmp(palavra, "zeros") == 0)
+            {
+                LerPalavra (entrada, &p[0]);
+                rc = strtol(&p[0][1], NULL, 10);
+                
+                binario = 0x00 << 26;
+                binario = binario | (rc << 21);
+                binario = binario | 0x22;
+            }
+            else if (strcmp(palavra, "not") == 0)
+            {
+                LerPalavra (entrada, &p[0]);
+                LerPalavra (entrada, &p[1]);
+                rc = strtol(&p[0][1], NULL, 10);
+                ra = strtol(&p[1][1], NULL, 10);
+                
+                binario = 0x00 << 26;
+                binario = binario | (rc << 21);
+                binario = binario | (ra << 16);
+                binario = binario | 0x21;
+                /* code */
+            }
+            else if (strcmp(palavra, "slt") == 0)
+            {
+                LerPalavra (entrada, &p[0]);
+                LerPalavra (entrada, &p[1]);
+                LerPalavra (entrada, &p[2]);
+                rc = strtol(&p[0][1], NULL, 10);
+                ra = strtol(&p[1][1], NULL, 10);
+                rb = strtol(&p[2][1], NULL, 10);
+
+                binario = 0x00 << 26;
+                binario = binario | (rc << 21);
+                binario = binario | (ra << 16);
+                binario = binario | (rb << 11);
+                binario = binario | 0x2A;
+            }
+            else if (strcmp(palavra, "div") == 0)
+            {
+                LerPalavra (entrada, &p[0]);
+                LerPalavra (entrada, &p[1]);
+                LerPalavra (entrada, &p[2]);
+                rc = strtol(&p[0][1], NULL, 10);
+                ra = strtol(&p[1][1], NULL, 10);
+                rb = strtol(&p[2][1], NULL, 10);
+
+                binario = 0x00 << 26;
+                binario = binario | (rc << 21);
+                binario = binario | (ra << 16);
+                binario = binario | (rb << 11);
+                binario = binario | 0x1A;
+            }
+            else if (strcmp(palavra, "jr"))
+            {
+                LerPalavra (entrada, &p[0]);
+                rc = strtol(&p[0][1], NULL, 10);
+                
+                binario = 0x00 << 26;
+                binario = binario | (rc << 21);
+                binario = binario | 0x22;
+            }
+
+        fprintf(saida, "%x\n", binario);
         }
         LerPalavra(entrada, &palavra);
         tam = strlen(palavra);
