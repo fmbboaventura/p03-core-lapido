@@ -299,17 +299,45 @@ void Traducao(FILE *entrada, FILE *saida){
             }
             else if (strcmp(palavra, "addinc") == 0)
             {
+                Palavra_Ler_Arquivo(entrada, &p[0]);
+                Palavra_Ler_Arquivo(entrada, &p[1]);
+                Palavra_Ler_Arquivo(entrada, &p[2]);
+                rc = strtol(&p[0][1], NULL, 10);
+                ra = strtol(&p[1][1], NULL, 10);
+                rb = strtol(&p[2][1], NULL, 10);
+
+                // põe o opcode no inicio da instrução
+                binario = 0x00 << 26;
+                // concatena com o registrador restino
+                binario = binario | (rc << 21);
+                // concatena com os registradores fonte
+                binario = binario | (ra << 16);
+                binario = binario | (rb << 11);
+                // concatena com o function
+                binario = binario | 0x2F;
                 /* code */
+            }
+            else if (strcmp(palavra, "deca") == 0)
+            {
+                Palavra_Ler_Arquivo (entrada, &p[0]);
+                Palavra_Ler_Arquivo (entrada, &p[1]);
+                rc = strtol(&p[0][1], NULL, 10);
+                ra = strtol(&p[1][1], NULL, 10);
+
+                // põe o opcode no inicio da instrução
+                binario = 0x00 << 26;
+                // concatena com o registrador restino
+                binario = binario | (rc << 21);
+                // concatena com os registradores fonte
+                binario = binario | (ra << 16);
+                // concatena com o function
+                binario = binario | 0x2E;
             }
         }
         Palavra_Ler_Arquivo(entrada, &palavra);
         tam = strlen(palavra);
     }
 
-}
-
-void Add(int ra, int rb, int rc, int *bin){
-    *bin = 101101;
 }
 
 void CriaTabelas(FILE *entrada){
