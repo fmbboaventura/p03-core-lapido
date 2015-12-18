@@ -15,6 +15,7 @@ void ParseLine();
 void Traducao();
 void CriaTabelas(FILE *entrada);
 void Add();
+void EscreveBinario(unsigned int instrucao, FILE *saida);
 
 const int TAM_BUFFER = 255;
 
@@ -304,7 +305,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | 0x20;
                 /* code */
                 //Add(ra, rb, rc, &binario);
-                fprintf(saida, "%x\n", binario);
+                //fprintf(saida, "%x\n", binario);
+				EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "addinc") == 0)
             {
@@ -316,15 +318,16 @@ void Traducao(FILE *entrada, FILE *saida){
                 rb = strtol(&p[2][1], NULL, 10);
 
                 // põe o opcode no inicio da instrução
-                binario = 0x00 << 26;
+                binario = 0x00 << sftOpcode;
                 // concatena com o registrador restino
-                binario = binario | (rc << 21);
+                binario = binario | (rc << sftRd);
                 // concatena com os registradores fonte
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 // concatena com o function
                 binario = binario | 0x2F;
                 /* code */
+				EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "deca") == 0)
             {
@@ -334,13 +337,14 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
 
                 // põe o opcode no inicio da instrução
-                binario = 0x00 << 26;
+                binario = 0x00 << sftOpcode;
                 // concatena com o registrador restino
-                binario = binario | (rc << 21);
+                binario = binario | (rc << sftRd);
                 // concatena com os registradores fonte
-                binario = binario | (ra << 16);
+                binario = binario | (ra << sftRs);
                 // concatena com o function
                 binario = binario | 0x2E;
+				EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "inca") == 0)
             {
@@ -350,13 +354,14 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 
                 // põe o opcode no inicio da instrução
-                binario = 0x00 << 26;
+                binario = 0x00 << sftOpcode;
                 // concatena com o registrador restino
-                binario = binario | (rc << 21);
+                binario = binario | (rc << sftRd);
                 // concatena com os registradores fonte
-                binario = binario | (ra << 16);
+                binario = binario | (ra << sftRs);
                 // concatena com o function
                 binario = binario | 0x2D;
+				EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "sub") == 0)
             {
@@ -367,11 +372,12 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x22;
+				EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "subdec") == 0)
             {
@@ -382,11 +388,12 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x30;
+				EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "and") == 0)
             {
@@ -397,11 +404,12 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x24;
+				EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "andnota") == 0)
             {
@@ -412,11 +420,12 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x23;
+				EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "nand") == 0)
             {
@@ -427,11 +436,12 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x2A;
+				EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "nor") == 0)
             {
@@ -442,11 +452,12 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x27;
+				EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "or") == 0)
             {
@@ -457,11 +468,12 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x25;
+				EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "ornotb") == 0)
             {
@@ -472,11 +484,12 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x29;
+				EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "xor") == 0)
             {
@@ -487,11 +500,12 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x26;
+				EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "xnor") == 0)
             {
@@ -502,11 +516,12 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x28;
+				EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "asl") == 0)
             {
@@ -648,6 +663,24 @@ void Traducao(FILE *entrada, FILE *saida){
         tam = strlen(palavra);
     }
 
+}
+
+void EscreveBinario(unsigned int instrucao, FILE *saida)
+{
+	unsigned int max = 0x80000000;
+    int i;
+    int bit;
+    
+    for (i = 0; i < 32; i++)
+    {
+        if(instrucao >= max) bit = 1;
+        else bit = 0;
+        //printf("instrução %d, bit %d", instrucao, bit);
+        //getchar();
+        instrucao = instrucao << 1;
+        fprintf(saida, "%d", bit);
+    }
+    fprintf(saida, "\n");
 }
 
 void CriaTabelas(FILE *entrada){
