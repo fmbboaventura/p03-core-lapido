@@ -216,6 +216,16 @@ void Traducao(FILE *entrada, FILE *saida){
     int ra, rb, rc;
     unsigned int binario;
 
+    int sftOpcode = 26;
+    int sftRd = 21;
+    int sftRs = 16;
+    int sftRt = 11;
+    int shamt = 6; // Não use o shamt por enquanto
+    
+    // use com '|' ou
+    int imm   = 0xffff;
+    int func  = 0x2f;
+
     palavra = malloc(sizeof(char) * TAM_LINHA);
     p = malloc(sizeof(char) * 3);
     p[0] = malloc(sizeof(char) * TAM_LINHA);
@@ -281,21 +291,24 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
+				printf("%d, %d, %d", rc, ra, rb);
+				getchar();
+
                 // põe o opcode no inicio da instrução
-                binario = 0x00 << 26;
+                binario = 0x00 << sftOpcode;
 
                 // concatena com o registrador restino
-                binario = binario | (rc << 21);
+                binario = binario | (rc << sftRd);
 
                 // concatena com os registradores fonte
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
 
                 // concatena com o function
-                binario = binario | 0x20;
+                binario = binario | func;
                 /* code */
                 //Add(ra, rb, rc, &binario);
-                fprintf(saida, "%032d\n", binario);
+                fprintf(saida, "%x\n", binario);
             }
             else if (strcmp(palavra, "addinc") == 0)
             {
