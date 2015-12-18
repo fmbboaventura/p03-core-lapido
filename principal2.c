@@ -322,12 +322,12 @@ void Traducao(FILE *entrada, FILE *saida){
                 rb = strtol(&p[2][1], NULL, 10);
 
                 // põe o opcode no inicio da instrução
-                binario = 0x00 << 26;
+                binario = 0x00 << sftOpcode;
                 // concatena com o registrador restino
-                binario = binario | (rc << 21);
+                binario = binario | (rc << sftRd);
                 // concatena com os registradores fonte
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 // concatena com o function
                 binario = binario | 0x2F;
                 /* code */
@@ -341,11 +341,11 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
 
                 // põe o opcode no inicio da instrução
-                binario = 0x00 << 26;
+                binario = 0x00 << sftOpcode;
                 // concatena com o registrador restino
-                binario = binario | (rc << 21);
+                binario = binario | (rc << sftRd);
                 // concatena com os registradores fonte
-                binario = binario | (ra << 16);
+                binario = binario | (ra << sftRs);
                 // concatena com o function
                 binario = binario | 0x2E;
 				EscreveBinario(binario, saida);
@@ -358,11 +358,11 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 
                 // põe o opcode no inicio da instrução
-                binario = 0x00 << 26;
+                binario = 0x00 << sftOpcode;
                 // concatena com o registrador restino
-                binario = binario | (rc << 21);
+                binario = binario | (rc << sftRd);
                 // concatena com os registradores fonte
-                binario = binario | (ra << 16);
+                binario = binario | (ra << sftRs);
                 // concatena com o function
                 binario = binario | 0x2D;
 				EscreveBinario(binario, saida);
@@ -376,10 +376,10 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x22;
 				EscreveBinario(binario, saida);
             }
@@ -392,10 +392,10 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x30;
 				EscreveBinario(binario, saida);
             }
@@ -408,10 +408,10 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x24;
 				EscreveBinario(binario, saida);
             }
@@ -424,10 +424,10 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x23;
 				EscreveBinario(binario, saida);
             }
@@ -440,10 +440,10 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x2A;
 				EscreveBinario(binario, saida);
             }
@@ -456,10 +456,10 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x27;
 				EscreveBinario(binario, saida);
             }
@@ -472,10 +472,10 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x25;
 				EscreveBinario(binario, saida);
             }
@@ -488,10 +488,10 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x29;
 				EscreveBinario(binario, saida);
             }
@@ -504,10 +504,10 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x26;
 				EscreveBinario(binario, saida);
             }
@@ -520,10 +520,10 @@ void Traducao(FILE *entrada, FILE *saida){
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
 
-                binario = 0x00 << 26;
-                binario = binario | (rc << 21);
-                binario = binario | (ra << 16);
-                binario = binario | (rb << 11);
+                binario = 0x00 << sftOpcode;
+                binario = binario | (rc << sftRd);
+                binario = binario | (ra << sftRs);
+                binario = binario | (rb << sftRt);
                 binario = binario | 0x28;
 				EscreveBinario(binario, saida);
             }
