@@ -1303,6 +1303,7 @@ void CriaTabelas(FILE *entrada){
 
         for (i=0; i<tam; i++)
         {
+            //SE FOR COMENTARIO
             if (palavra[i] == ';')
             {
                 Linha_Saltar(entrada);
@@ -1313,6 +1314,7 @@ void CriaTabelas(FILE *entrada){
 
         for (i = 1; i < tam; ++i)
         {
+            //SE FOR LABEL
             if (palavra[i] == ':')
             {
                 //linhaCount++;
@@ -1328,6 +1330,7 @@ void CriaTabelas(FILE *entrada){
                 //     printf("Label sozinho na linha\n" );
                 // }
                 palavra[i] = '\0';
+                //PEGA A SAIDA DA FUNÇÃO LERPALAVRA QUANDO ACHA A LABEL, E SALVA 
                 strcpy(label, palavra);
                 LabelSalva(label, linhaCount);
                 instrucao = 0;
@@ -1350,13 +1353,14 @@ void CriaTabelas(FILE *entrada){
             }
             instrucao = 0;
         }
-
+        //SE FOR INSTRUÇÃO, DESCONSIDERA E PULA A LINHA, JA QUE AGENTE SÓ QUER LABELS
         if (instrucao)
          {
             if(strcmp("nop", palavra) != 0)
               Linha_Saltar(entrada);
             linhaCount++;
          }
+         //LÊ MAIS UMA PALAVRA
         LerPalavra (entrada, &palavra);
     }
 }
