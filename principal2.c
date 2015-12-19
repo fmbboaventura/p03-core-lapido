@@ -3,17 +3,22 @@
 #include <string.h>
 #include <stdbool.h>
 
+/*Maiximo de posições numa tabela*/
 #define MAX_TAB 100
+/*Tamanho maximo de uma palavra*/
 #define TAM_PALAVRA 9
+/*Tamanho maximo de uma linha*/
 #define TAM_LINHA 80
 
 void AbrirArquivo (FILE **nome_arq, char *caminho_arq, char *modo);
 void FecharArquivo (FILE **nome_arq);
 void CarregaVetorLabels ();
 void LabelSalva(char *txtPalavra, int endereco);
-void Traducao();
+void Traducao(FILE *entrada, FILE *saida);
 void CriaTabelas(FILE *entrada);
 void EscreveBinario(unsigned int instrucao, FILE *saida);
+void LerPalavra(FILE *entrada, char **palavra);
+void Linha_Saltar (FILE *entrada);
 
 const int TAM_BUFFER = 255;
 
@@ -24,8 +29,7 @@ typedef struct
     int endereco;
 } tipo_label;
 
-
-
+/*Variaveis globais a serem usadas ao longo da execução*/
 tipo_label *tbLabels;
 int lineCount = 1;
 int ind_tbLabels = 0;
@@ -33,14 +37,18 @@ int ind_tbLabels = 0;
 int main()
 {
     int i;
+    /*Ponteiro para o arquivo de entrada*/
     FILE *codigo;
+    /*Ponteiro para o arquivo de saida*/
     FILE *saida;
-    char *nome_arquivo;
+    //char *nome_arquivo;
 
     CarregaVetorLabels();
+    /*Abrindo o arquivo de entrada no modo de somente leitura*/
     AbrirArquivo(&codigo, "teste2.asm", "r");
+    /*Abrindo o arquivo de saida no modo de somente escrita*/
     AbrirArquivo(&saida, "saida.txt", "w");
-
+    /*Alocando tabelas*/
     CriaTabelas(codigo);
 
     for(i = 0; i < ind_tbLabels; i++)
@@ -50,9 +58,9 @@ int main()
 
     //IndexarLabels(&codigo);
     rewind(codigo); //coloca o ponteiro do arquivo no inicio do arquivo
-    Traducao(codigo, saida);
-    FecharArquivo(&codigo);
-    FecharArquivo(&saida);
+    Traducao(codigo, saida); //Realiza a tradução do arquivo de entrada
+    FecharArquivo(&codigo); //Fecha o arquivo de entrada
+    FecharArquivo(&saida); //Fecha o arquivo de saída
     exit(0);
 }
 
@@ -79,10 +87,12 @@ void FecharArquivo (FILE **arq)
     }
 }
 
+/*
+ * Aloca o vetor que irá guardar as labels
+ */
 void CarregaVetorLabels ()
 {
     int i;
-    // Alocacao da tabela de labels
     tbLabels = malloc(sizeof(tipo_label) * MAX_TAB);
     for (i=0; i<MAX_TAB; i++)
         tbLabels[i].txtPalavra = malloc(sizeof(char) * TAM_PALAVRA);
@@ -163,6 +173,10 @@ void CarregaVetorLabels ()
     lineCount++;
 }*/
 
+/*
+ *Lê uma palavra do arquivo, separada por ',' 
+ */
+
 void LerPalavra(FILE *entrada, char **palavra)
 {
     char letra;
@@ -186,6 +200,10 @@ void LerPalavra(FILE *entrada, char **palavra)
     (*palavra)[index] = '\0';
 }
 
+/*
+ * Salta uma linha no arquivo
+ */
+
 void Linha_Saltar (FILE *entrada)
 {
     //printf("saltou linha\n");
@@ -199,14 +217,22 @@ void Linha_Saltar (FILE *entrada)
     }
 }
 
-//*txtPalavra = nome da LABEL
-//endereço = endereço de memória da LABEL
+/*
+ * Salva uma label no vetor de labels
+ *
+ * *txtPalavra = nome da LABEL
+ * endereço = endereço de memória da LABEL
+ */
 void LabelSalva(char *txtPalavra, int endereco)
 {
     strcpy(tbLabels[ind_tbLabels].txtPalavra, txtPalavra);
     tbLabels[ind_tbLabels].endereco = endereco;
     ind_tbLabels ++;
 }
+
+/*
+ * Realiza a tradução completa do arquivo
+ */
 
 void Traducao(FILE *entrada, FILE *saida){
     int tam, i, pc = 0;
@@ -1259,7 +1285,9 @@ void Traducao(FILE *entrada, FILE *saida){
     }
 }
 
-
+/*
+ * Escreve em binário no arquivo
+ */
 void EscreveBinario(unsigned int instrucao, FILE *saida)
 {
 	unsigned int max = 0x80000000;
@@ -1277,6 +1305,10 @@ void EscreveBinario(unsigned int instrucao, FILE *saida)
     }
     fprintf(saida, "\n");
 }
+
+/*
+ * Cria a tabela de labels
+ */
 
 void CriaTabelas(FILE *entrada){
     char *palavra, *label, *diretiva;
