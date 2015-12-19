@@ -38,7 +38,7 @@ int main()
     char *nome_arquivo;
 
     CarregaVetorLabels();
-    AbrirArquivo(&codigo, "teste2.asm", "r");
+    AbrirArquivo(&codigo, "testesinst.asm", "r");
     AbrirArquivo(&saida, "saida.txt", "w");
 
     CriaTabelas(codigo);
@@ -51,6 +51,8 @@ int main()
     //IndexarLabels(&codigo);
     rewind(codigo); //coloca o ponteiro do arquivo no inicio do arquivo
     Traducao(codigo, saida);
+    printf("Traducao concluida\n");
+    getchar();
     FecharArquivo(&codigo);
     FecharArquivo(&saida);
     exit(0);
@@ -259,10 +261,18 @@ void Traducao(FILE *entrada, FILE *saida){
             /* code */
         }
 
+        // Se for diretiva e não for uma declaração de constante
         if (palavra[0] == '.')
         {
             //printf("%s\n", palavra);
             instrucao = 0;
+            if (strcmp(palavra, ".word") == 0) {
+              printf("constante\n");
+              LerPalavra (entrada, &p[0]);
+              c = strtol(&p[0][0], NULL, 10);
+              printf("%d\n", c);
+              EscreveBinario(c, saida);
+            }
         }
 
         //FIM DO CODIGO
@@ -1256,6 +1266,7 @@ void Traducao(FILE *entrada, FILE *saida){
         }
         LerPalavra(entrada, &palavra);
         tam = strlen(palavra);
+        //printf("%s\n", palavra);
     }
 }
 
@@ -1298,7 +1309,7 @@ void CriaTabelas(FILE *entrada){
         instrucao = 1;
         tam = strlen(palavra);
 
-        printf("%s %d\n", palavra, linhaCount);
+        //printf("%s %d\n", palavra, linhaCount);
         //getchar();
 
         for (i=0; i<tam; i++)
@@ -1330,7 +1341,7 @@ void CriaTabelas(FILE *entrada){
                 //     printf("Label sozinho na linha\n" );
                 // }
                 palavra[i] = '\0';
-                //PEGA A SAIDA DA FUNÇÃO LERPALAVRA QUANDO ACHA A LABEL, E SALVA 
+                //PEGA A SAIDA DA FUNÇÃO LERPALAVRA QUANDO ACHA A LABEL, E SALVA
                 strcpy(label, palavra);
                 LabelSalva(label, linhaCount);
                 instrucao = 0;
