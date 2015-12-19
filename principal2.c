@@ -11,10 +11,8 @@ void AbrirArquivo (FILE **nome_arq, char *caminho_arq, char *modo);
 void FecharArquivo (FILE **nome_arq);
 void CarregaVetorLabels ();
 void LabelSalva(char *txtPalavra, int endereco);
-void ParseLine();
 void Traducao();
 void CriaTabelas(FILE *entrada);
-void Add();
 void EscreveBinario(unsigned int instrucao, FILE *saida);
 
 const int TAM_BUFFER = 255;
@@ -53,6 +51,7 @@ int main()
     //IndexarLabels(&codigo);
     rewind(codigo); //coloca o ponteiro do arquivo no inicio do arquivo
     Traducao(codigo, saida);
+    printf("AQUI?");
     FecharArquivo(&codigo);
     FecharArquivo(&saida);
 }
@@ -229,6 +228,7 @@ void Traducao(FILE *entrada, FILE *saida){
     tam = strlen(palavra);
     while(!feof(entrada))
     {
+        printf("loop");
         instrucao = 1;
 
         //VERIFICA COMENTARIO
@@ -275,7 +275,7 @@ void Traducao(FILE *entrada, FILE *saida){
             //printf("INSTRUCAO\n");
             pc ++;
             binario = 0;
-            /*if (strcmp(palavra, "add") == 0)
+            if (strcmp(palavra, "add") == 0)
             {
                 LerPalavra(entrada, &p[0]);
                 LerPalavra(entrada, &p[1]);
@@ -283,9 +283,6 @@ void Traducao(FILE *entrada, FILE *saida){
                 rc = strtol(&p[0][1], NULL, 10);
                 ra = strtol(&p[1][1], NULL, 10);
                 rb = strtol(&p[2][1], NULL, 10);
-
-				printf("%d, %d, %d", rc, ra, rb);
-				getchar();
 
                 // põe o opcode no inicio da instrução
                 binario = 0x00 << sftOpcode;
@@ -663,7 +660,7 @@ void Traducao(FILE *entrada, FILE *saida){
             //TERMNA O TIPO R
 
             //COMEÇA O TIPO I
-            else if (strcmp(palavra, "addi") == 0)
+            if (strcmp(palavra, "addi") == 0)
             {
                 LerPalavra (entrada, &p[0]);
                 LerPalavra (entrada, &p[1]);
@@ -675,7 +672,21 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = 0x08 << 26;
                 binario = binario | (rc << 21);
                 binario = binario | (ra << 16);
-                binario = binario | (c << 11);
+
+                char label = 0;
+                int i;
+
+                for (i = 0; i < MAX_TAB; i++)
+                {
+                    if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                    {
+                        binario = binario | ((tbLabels[i].endereco) << 11);
+                        label = 1;
+                        break;
+                    } 
+                }                   
+                if (label)
+                    binario = binario | (c << 11);
                 EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "andi") == 0)
@@ -690,7 +701,20 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = 0x0C << 26;
                 binario = binario | (rc << 21);
                 binario = binario | (ra << 16);
-                binario = binario | (c << 11);
+                char label = 0;
+                int i;
+
+                for (i = 0; i < MAX_TAB; i++)
+                {
+                    if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                    {
+                        binario = binario | ((tbLabels[i].endereco) << 11);
+                        label = 1;
+                        break;
+                    } 
+                }                   
+                if (label)
+                    binario = binario | (c << 11);
                 EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "ori") == 0)
@@ -705,7 +729,20 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = 0x0D << 26;
                 binario = binario | (rc << 21);
                 binario = binario | (ra << 16);
-                binario = binario | (c << 11);
+                char label = 0;
+                int i;
+
+                for (i = 0; i < MAX_TAB; i++)
+                {
+                    if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                    {
+                        binario = binario | ((tbLabels[i].endereco) << 11);
+                        label = 1;
+                        break;
+                    } 
+                }                   
+                if (label)
+                    binario = binario | (c << 11);
                 EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "slti") == 0)
@@ -720,7 +757,20 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = 0x0A << 26;
                 binario = binario | (rc << 21);
                 binario = binario | (ra << 16);
-                binario = binario | (c << 11);
+                char label = 0;
+                int i;
+
+                for (i = 0; i < MAX_TAB; i++)
+                {
+                    if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                    {
+                        binario = binario | ((tbLabels[i].endereco) << 11);
+                        label = 1;
+                        break;
+                    } 
+                }                   
+                if (label)
+                    binario = binario | (c << 11);
                 EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "beq") == 0 )
@@ -735,7 +785,20 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = 0x04 << 26;
                 binario = binario | (rc << 21);
                 binario = binario | (ra << 16);
-                binario = binario | (c << 11);
+                char label = 0;
+                int i;
+
+                for (i = 0; i < MAX_TAB; i++)
+                {
+                    if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                    {
+                        binario = binario | ((tbLabels[i].endereco) << 11);
+                        label = 1;
+                        break;
+                    } 
+                }                   
+                if (label)
+                    binario = binario | (c << 11);
                 EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "bne") == 0 )
@@ -750,7 +813,20 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = 0x05 << 26;
                 binario = binario | (rc << 21);
                 binario = binario | (ra << 16);
-                binario = binario | (c << 11);
+                char label = 0;
+                int i;
+
+                for (i = 0; i < MAX_TAB; i++)
+                {
+                    if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                    {
+                        binario = binario | ((tbLabels[i].endereco) << 11);
+                        label = 1;
+                        break;
+                    } 
+                }                   
+                if (label)
+                    binario = binario | (c << 11);
                 EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "loadlit") == 0) //SEE
@@ -762,9 +838,22 @@ void Traducao(FILE *entrada, FILE *saida){
 
                 binario = 0x08 << 26;
                 binario = binario | (rc << 21);
-                binario = binario | (c << 11);
+                char label = 0;
+                int i;
+
+                for (i = 0; i < MAX_TAB; i++)
+                {
+                    if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                    {
+                        binario = binario | ((tbLabels[i].endereco) << 11);
+                        label = 1;
+                        break;
+                    } 
+                }                   
+                if (label)
+                    binario = binario | (c << 11);
                 EscreveBinario(binario, saida);
-            }*/
+            }
             if (strcmp(palavra, "lch") == 0)
             {
                 LerPalavra (entrada, &p[0]);
@@ -825,51 +914,291 @@ void Traducao(FILE *entrada, FILE *saida){
             }
             else if (strcmp(palavra, "jt.neg") == 0)
             {
-                binario = 0x09 << 26;
+                int i;
+                char label = 0;
+
+                binario = 0x09 << sftOpcode;
+                binario = binario | (0x04 << sftRd);
+                LerPalavra(entrada, &p[0]);
+                c = strtol(&p[0][1], NULL, 10);
+                if(c > 0xFFFF)
+                    exit -1;
+                for (i = 0; i < MAX_TAB; i++)
+                {
+                    if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                    {
+                        binario = binario | (tbLabels[i].endereco);
+                        label = 1;
+                        break;
+                    } 
+                }                   
+                if (label)
+                    binario = binario | c;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jt.zero") == 0)
             {
-                binario = 0x09 << 26;
+                int i;
+                char label = 0;
+
+                binario = 0x09 << sftOpcode;
+                binario = binario | (0x05 << sftRd);
+                LerPalavra(entrada, &p[0]);
+                c = strtol(&p[0][1], NULL, 10);
+                if(c > 0xFFFF)
+                    exit -1;
+                for (i = 0; i < MAX_TAB; i++)
+                    {
+                        if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                        {
+                            binario = binario | (tbLabels[i].endereco);
+                            label = 1;
+                            break;
+                        } 
+                    }                  
+                if(label)
+                    binario = binario | c;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jt.carry") == 0)
             {
-                binario = 0x09 << 26;
+                int i;
+                char label = 0;
+
+                binario = 0x09 << sftOpcode;
+                binario = binario | (0x06 << sftRd);
+                LerPalavra(entrada, &p[0]);
+                c = strtol(&p[0][1], NULL, 10);
+                if(c > 0xFFFF)
+                    exit -1;
+                for (i = 0; i < MAX_TAB; i++)
+                    {
+                        if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                        {
+                            binario = binario | (tbLabels[i].endereco);
+                            label = 1;
+                            break;
+                        } 
+                    }                   
+                if(label)
+                    binario = binario | c;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jt.negzero") == 0)
             {
-                binario = 0x09 << 26;
+                int i;
+                char label = 0;
+
+                binario = 0x09 << sftOpcode;
+                binario = binario | (0x07 << sftRd);
+                LerPalavra(entrada, &p[0]);
+                c = strtol(&p[0][1], NULL, 10);
+                if(c > 0xFFFF)
+                    exit -1;
+                for (i = 0; i < MAX_TAB; i++)
+                    {
+                        if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                        {
+                            binario = binario | (tbLabels[i].endereco);
+                            label = 1;
+                            break;
+                        } 
+                    }                   
+                if(label)
+                    binario = binario | c;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jt.true") == 0)
             {
-                binario = 0x09 << 26;
+                int i;
+                char label = 0;
+
+                binario = 0x09 << sftOpcode;
+                binario = binario | (0x00 << sftRd);
+                LerPalavra(entrada, &p[0]);
+                c = strtol(&p[0][1], NULL, 10);
+                if(c > 0xFFFF)
+                    exit -1;
+                for (i = 0; i < MAX_TAB; i++)
+                    {
+                        if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                        {
+                            binario = binario | (tbLabels[i].endereco);
+                            label = 1;
+                            break;
+                        } 
+                    }              
+                if(label)
+                    binario = binario | c;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jt.overflow") == 0)
             {
-                binario = 0x09 << 26;
+                int i;
+                char label = 0;
+
+                binario = 0x09 << sftOpcode;
+                binario = binario | (0x03 << sftRd);
+                LerPalavra(entrada, &p[0]);
+                c = strtol(&p[0][1], NULL, 10);
+                if(c > 0xFFFF)
+                    exit -1;
+                for (i = 0; i < MAX_TAB; i++)
+                    {
+                        if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                        {
+                            binario = binario | (tbLabels[i].endereco);
+                            label = 1;
+                            break;
+                        } 
+                    }                   
+                if (label)
+                    binario = binario | c;
+                EscreveBinario(binario, saida);
             }
-            else if (strcmp(palavra, "jt.neg") == 0)
+            else if (strcmp(palavra, "jf.neg") == 0)
             {
-                binario = 0x10 << 26;
+                int i;
+                char label = 0;
+
+                binario = 0x10 << sftOpcode;
+                binario = binario | (0x04 << sftRd);
+                LerPalavra(entrada, &p[0]);
+                c = strtol(&p[0][1], NULL, 10);
+                if(c > 0xFFFF)
+                    exit -1;
+                for (i = 0; i < MAX_TAB; i++)
+                    {
+                        if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                        {
+                            binario = binario | (tbLabels[i].endereco);
+                            label = 1;
+                            break;
+                        } 
+                    }                   
+                if(label)
+                    binario = binario | c;
+                EscreveBinario(binario, saida);
             }
-            else if (strcmp(palavra, "jt.zero") == 0)
+            else if (strcmp(palavra, "jf.zero") == 0)
             {
-                binario = 0x10 << 26;
+                int i;
+                char label = 0;
+
+                binario = 0x10 << sftOpcode;
+                binario = binario | (0x05 << sftRd);
+                LerPalavra(entrada, &p[0]);
+                c = strtol(&p[0][1], NULL, 10);
+                if(c > 0xFFFF)
+                    exit -1;
+                for (i = 0; i < MAX_TAB; i++)
+                    {
+                        if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                        {
+                            binario = binario | (tbLabels[i].endereco);
+                            label = 1;
+                            break;
+                        } 
+                    }                   
+                if(label)
+                    binario = binario | c;
+                EscreveBinario(binario, saida);;
             }
-            else if (strcmp(palavra, "jt.carry") == 0)
+            else if (strcmp(palavra, "jf.carry") == 0)
             {
-                binario = 0x10 << 26;
+                int i;
+                char label = 0;
+
+                binario = 0x10 << sftOpcode;
+                binario = binario | (0x06 << sftRd);
+                LerPalavra(entrada, &p[0]);
+                c = strtol(&p[0][1], NULL, 10);
+                if(c > 0xFFFF)
+                    exit -1;
+                for (i = 0; i < MAX_TAB; i++)
+                    {
+                        if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                        {
+                            binario = binario | (tbLabels[i].endereco);
+                            label = 1;
+                            break;
+                        } 
+                    }                   
+                if(label)
+                    binario = binario | c;
+                EscreveBinario(binario, saida);
             }
-            else if (strcmp(palavra, "jt.negzero") == 0)
+            else if (strcmp(palavra, "jf.negzero") == 0)
             {
-                binario = 0x10 << 26;
+                int i;
+                char label = 0;
+
+                binario = 0x10 << sftOpcode;
+                binario = binario | (0x07 << sftRd);
+                LerPalavra(entrada, &p[0]);
+                c = strtol(&p[0][1], NULL, 10);
+                if(c > 0xFFFF)
+                    exit -1;
+                for (i = 0; i < MAX_TAB; i++)
+                    {
+                        if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                        {
+                            binario = binario | (tbLabels[i].endereco);
+                            label = 1;
+                            break;
+                        } 
+                    }                
+                if(label)
+                    binario = binario | c;
+                EscreveBinario(binario, saida);
             }
-            else if (strcmp(palavra, "jt.true") == 0)
+            else if (strcmp(palavra, "jf.true") == 0)
             {
-                binario = 0x10 << 26;
+                int i;
+                char label = 0;
+
+                binario = 0x10 << sftOpcode;
+                binario = binario | (0x00 << sftRd);
+                LerPalavra(entrada, &p[0]);
+                c = strtol(&p[0][1], NULL, 10);
+                if(c > 0xFFFF)
+                    exit -1;
+                for (i = 0; i < MAX_TAB; i++)
+                    {
+                        if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                        {
+                            binario = binario | (tbLabels[i].endereco);
+                            label = 1;
+                            break;
+                        } 
+                    }             
+                if(label)
+                    binario = binario | c;
+                EscreveBinario(binario, saida);
             }
-            else if (strcmp(palavra, "jt.overflow") == 0)
+            else if (strcmp(palavra, "jf.overflow") == 0)
             {
-                binario = 0x10 << 26;
+                int i;
+                char label = 0;
+
+                binario = 0x10 << sftOpcode;
+                binario = binario | (0x03 << sftRd);
+                LerPalavra(entrada, &p[0]);
+                c = strtol(&p[0][1], NULL, 10);
+                if(c > 0xFFFF)
+                    exit -1;
+                for (i = 0; i < MAX_TAB; i++)
+                    {
+                        if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
+                        {
+                            binario = binario | (tbLabels[i].endereco);
+                            label = 1;
+                            break;
+                        } 
+                    }                  
+                if(label)
+                    binario = binario | c;
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "load") == 0)
             {
