@@ -9,7 +9,7 @@
 	or r0,r1,r2
 	not r0,r1
 	xor r0,r1,r2
-	addnota r0,r1,r2
+	andnota r0,r1,r2
 	nor r0,r1,r2
 	xnor r0,r1,r2
 	ornotb r0,r1,r2
@@ -34,8 +34,8 @@
 	beq r0,r1,168
 	bne r0,r1,168
 	loadlit r0,168
-	lch r0,168
-	lcl r0,168
+	lch r0, HIGHBYTE FIM
+	lcl r0, LOWBYTE FIM
 	load r0,r1
 	store r0,r1
 	jal r6

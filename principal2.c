@@ -270,7 +270,7 @@ void Traducao(FILE *entrada, FILE *saida){
               printf("constante\n");
               LerPalavra (entrada, &p[0]);
               c = strtol(&p[0][0], NULL, 10);
-              printf("%d\n", c);
+              printf("%Escrevendo constante\n");
               EscreveBinario(c, saida);
             }
         }
@@ -312,6 +312,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | 0x20;
                 //Add(ra, rb, rc, &binario);
                 //fprintf(saida, "%x\n", binario);
+                printf("Escrevendo %s\n", palavra);
 				        EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "addinc") == 0)
@@ -332,6 +333,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rb << sftRt);
                 // concatena com o function
                 binario = binario | 0x2F;
+                printf("Escrevendo %s\n", palavra);
 				        EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "deca") == 0)
@@ -349,6 +351,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << sftRs);
                 // concatena com o function
                 binario = binario | 0x2E;
+                printf("Escrevendo %s\n", palavra);
 				        EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "inca") == 0)
@@ -366,6 +369,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << sftRs);
                 // concatena com o function
                 binario = binario | 0x2D;
+                printf("Escrevendo %s\n", palavra);
 				        EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "sub") == 0)
@@ -382,6 +386,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << sftRs);
                 binario = binario | (rb << sftRt);
                 binario = binario | 0x22;
+                printf("Escrevendo %s\n", palavra);
 				        EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "subdec") == 0)
@@ -398,6 +403,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << sftRs);
                 binario = binario | (rb << sftRt);
                 binario = binario | 0x30;
+                printf("Escrevendo %s\n", palavra);
 				        EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "and") == 0)
@@ -414,6 +420,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << sftRs);
                 binario = binario | (rb << sftRt);
                 binario = binario | 0x24;
+                printf("Escrevendo %s\n", palavra);
 				        EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "andnota") == 0)
@@ -430,6 +437,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << sftRs);
                 binario = binario | (rb << sftRt);
                 binario = binario | 0x23;
+                printf("Escrevendo %s\n", palavra);
 				        EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "nand") == 0)
@@ -446,6 +454,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << sftRs);
                 binario = binario | (rb << sftRt);
                 binario = binario | 0x2A;
+                printf("Escrevendo %s\n", palavra);
 				        EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "nor") == 0)
@@ -462,6 +471,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << sftRs);
                 binario = binario | (rb << sftRt);
                 binario = binario | 0x27;
+                printf("Escrevendo %s\n", palavra);
 				        EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "or") == 0)
@@ -478,6 +488,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << sftRs);
                 binario = binario | (rb << sftRt);
                 binario = binario | 0x25;
+                printf("Escrevendo %s\n", palavra);
 				        EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "ornotb") == 0)
@@ -494,6 +505,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << sftRs);
                 binario = binario | (rb << sftRt);
                 binario = binario | 0x29;
+                printf("Escrevendo %s\n", palavra);
 				        EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "xor") == 0)
@@ -510,6 +522,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << sftRs);
                 binario = binario | (rb << sftRt);
                 binario = binario | 0x26;
+                printf("Escrevendo %s\n", palavra);
 				        EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "xnor") == 0)
@@ -526,6 +539,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << sftRs);
                 binario = binario | (rb << sftRt);
                 binario = binario | 0x28;
+                printf("Escrevendo %s\n", palavra);
 				        EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "asl") == 0)
@@ -539,7 +553,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
                 binario = binario | 0x04;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "asr") == 0)
             {
@@ -552,7 +567,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
                 binario = binario | 0x03;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "lsl") == 0)
             {
@@ -565,7 +581,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
                 binario = binario | 0x00;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "lsr") == 0)
             {
@@ -578,7 +595,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
                 binario = binario | 0x02;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "passa") == 0)
             {
@@ -591,9 +609,10 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
                 binario = binario | 0x2B;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
-            else if (strcmp(palavra, "passanota") == 0)
+            else if (strcmp(palavra, "passnota") == 0)
             {
                 LerPalavra (entrada, &p[0]);
                 LerPalavra (entrada, &p[1]);
@@ -604,7 +623,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
                 binario = binario | 0x2C;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "zeros") == 0)
             {
@@ -619,7 +639,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << sftRs);
                 binario = binario | (rc << sftRt);
                 binario = binario | 0x22;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "not") == 0)
             {
@@ -632,7 +653,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
                 binario = binario | 0x21;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "slt") == 0)
             {
@@ -647,8 +669,9 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
                 binario = binario | (rb << sftRt);
-                binario = binario | 0x2A;
-                EscreveBinario(binario, saida);
+                binario = binario | 0x1B;
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "div") == 0)
             {
@@ -664,17 +687,19 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (ra << sftRs);
                 binario = binario | (rb << sftRt);
                 binario = binario | 0x1A;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
-            else if (strcmp(palavra, "jr"))
+            else if (strcmp(palavra, "jr") == 0)
             {
                 LerPalavra (entrada, &p[0]);
                 rc = strtol(&p[0][1], NULL, 10);
 
                 binario = 0x00 << sftOpcode;
                 binario = binario | (rc << sftRd);
-                binario = binario | 0x22;
-                EscreveBinario(binario, saida);
+                binario = binario | 0x08;
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             //TERMNA O TIPO R
 
@@ -686,7 +711,10 @@ void Traducao(FILE *entrada, FILE *saida){
                 LerPalavra (entrada, &p[2]);
                 rc = strtol(&p[0][1], NULL, 10);
                 ra = strtol(&p[1][1], NULL, 10);
-                c = strtol(&p[2][1], NULL, 10);
+                c = strtol(&p[2][0], NULL, 10);
+
+                printf("%d\n", c);
+                //getchar();
 
                 binario = 0x08 << sftOpcode;
                 binario = binario | (rc << sftRd);
@@ -694,7 +722,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 if(c > 0xFFFF) exit(-1);
                 binario = binario | c;
 
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "andi") == 0)
             {
@@ -703,7 +732,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 LerPalavra (entrada, &p[2]);
                 rc = strtol(&p[0][1], NULL, 10);
                 ra = strtol(&p[1][1], NULL, 10);
-                c = strtol(&p[2][1], NULL, 10);
+                c = strtol(&p[2][0], NULL, 10);
 
                 binario = 0x0C << sftOpcode;
                 binario = binario | (rc << sftRd);
@@ -711,7 +740,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 if(c > 0xFFFF) exit(-1);
                 binario = binario | c;
 
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "ori") == 0)
             {
@@ -720,7 +750,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 LerPalavra (entrada, &p[2]);
                 rc = strtol(&p[0][1], NULL, 10);
                 ra = strtol(&p[1][1], NULL, 10);
-                c = strtol(&p[2][1], NULL, 10);
+                c = strtol(&p[2][0], NULL, 10);
 
                 binario = 0x0D << sftOpcode;
                 binario = binario | (rc << sftRd);
@@ -728,7 +758,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 if(c > 0xFFFF) exit(-1);
                 binario = binario | c;
 
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "slti") == 0)
             {
@@ -737,7 +768,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 LerPalavra (entrada, &p[2]);
                 rc = strtol(&p[0][1], NULL, 10);
                 ra = strtol(&p[1][1], NULL, 10);
-                c = strtol(&p[2][1], NULL, 10);
+                c = strtol(&p[2][0], NULL, 10);
 
                 binario = 0x0A << sftOpcode;
                 binario = binario | (rc << sftRd);
@@ -745,7 +776,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 if(c > 0xFFFF) exit(-1);
                 binario = binario | c;
 
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "beq") == 0 )
             {
@@ -754,7 +786,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 LerPalavra (entrada, &p[2]);
                 rc = strtol(&p[0][1], NULL, 10);
                 ra = strtol(&p[1][1], NULL, 10);
-                c = strtol(&p[2][1], NULL, 10);
+                c = strtol(&p[2][0], NULL, 10);
 
                 binario = 0x04 << sftOpcode;
                 binario = binario | (rc << sftRd);
@@ -773,7 +805,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 }
                 if (!label)
                     binario = binario | c;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "bne") == 0 )
             {
@@ -782,7 +815,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 LerPalavra (entrada, &p[2]);
                 rc = strtol(&p[0][1], NULL, 10);
                 ra = strtol(&p[1][1], NULL, 10);
-                c = strtol(&p[2][1], NULL, 10);
+                c = strtol(&p[2][0], NULL, 10);
 
                 binario = 0x05 << sftOpcode;
                 binario = binario | (rc << sftRd);
@@ -801,21 +834,23 @@ void Traducao(FILE *entrada, FILE *saida){
                 }
                 if (!label)
                     binario = binario | c;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "loadlit") == 0) //SEE
             {
                 LerPalavra (entrada, &p[0]);
                 LerPalavra (entrada, &p[1]);
                 rc = strtol(&p[0][1], NULL, 10);
-                c = strtol(&p[1][1], NULL, 10);
+                c = strtol(&p[1][0], NULL, 10);
 
-                binario = 0x08 << sftOpcode;
+                binario = 0x06 << sftOpcode;
                 binario = binario | (rc << sftRd);
                 if(c > 0xFFFF) exit(-1);
                 binario = binario | c;
 
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "lch") == 0)
             {
@@ -859,7 +894,8 @@ void Traducao(FILE *entrada, FILE *saida){
         					else
         						binario = binario | strtol(p[1], NULL, 10);
         				}
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "lcl") == 0)
             {
@@ -902,7 +938,8 @@ void Traducao(FILE *entrada, FILE *saida){
         					else
         						binario = binario | strtol(p[1], NULL, 10);
         				}
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jt.neg") == 0)
             {
@@ -926,7 +963,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 }
                 if (label)
                     binario = binario | c;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jt.zero") == 0)
             {
@@ -950,7 +988,8 @@ void Traducao(FILE *entrada, FILE *saida){
                     }
                 if(label)
                     binario = binario | c;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jt.carry") == 0)
             {
@@ -974,7 +1013,8 @@ void Traducao(FILE *entrada, FILE *saida){
                     }
                 if(label)
                     binario = binario | c;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jt.negzero") == 0)
             {
@@ -998,7 +1038,8 @@ void Traducao(FILE *entrada, FILE *saida){
                     }
                 if(label)
                     binario = binario | c;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jt.true") == 0)
             {
@@ -1022,7 +1063,8 @@ void Traducao(FILE *entrada, FILE *saida){
                     }
                 if(label)
                     binario = binario | c;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jt.overflow") == 0)
             {
@@ -1046,7 +1088,8 @@ void Traducao(FILE *entrada, FILE *saida){
                     }
                 if (label)
                     binario = binario | c;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jf.neg") == 0)
             {
@@ -1070,7 +1113,8 @@ void Traducao(FILE *entrada, FILE *saida){
                     }
                 if(label)
                     binario = binario | c;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jf.zero") == 0)
             {
@@ -1094,7 +1138,8 @@ void Traducao(FILE *entrada, FILE *saida){
                     }
                 if(label)
                     binario = binario | c;
-                EscreveBinario(binario, saida);;
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);;
             }
             else if (strcmp(palavra, "jf.carry") == 0)
             {
@@ -1118,7 +1163,8 @@ void Traducao(FILE *entrada, FILE *saida){
                     }
                 if(label)
                     binario = binario | c;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jf.negzero") == 0)
             {
@@ -1142,7 +1188,8 @@ void Traducao(FILE *entrada, FILE *saida){
                     }
                 if(label)
                     binario = binario | c;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jf.true") == 0)
             {
@@ -1166,7 +1213,8 @@ void Traducao(FILE *entrada, FILE *saida){
                     }
                 if(label)
                     binario = binario | c;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "jf.overflow") == 0)
             {
@@ -1190,7 +1238,8 @@ void Traducao(FILE *entrada, FILE *saida){
                     }
                 if(label)
                     binario = binario | c;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "load") == 0)
             {
@@ -1204,7 +1253,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = 0x23 << sftOpcode;
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "store") == 0)
             {
@@ -1218,7 +1268,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = 0x2B << sftOpcode;
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             //TIPO J
             //JUMP INCONDICIONAL
@@ -1234,9 +1285,10 @@ void Traducao(FILE *entrada, FILE *saida){
                 }
 
                 binario = 0x02 << sftOpcode;
-                binario = binario | ((tbLabels[i].endereco) << sftRd);
+                binario = binario | tbLabels[i].endereco;
 
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
                 //COMO TRATAR HALT AQUI?
             }
             else if (strcmp(palavra, "jal") == 0)
@@ -1246,7 +1298,8 @@ void Traducao(FILE *entrada, FILE *saida){
 
                 binario = 0x03 << sftOpcode;
                 binario = binario | (rc << sftRd);
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "nop") == 0)
             {
@@ -1259,7 +1312,8 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
                 binario = binario | c;
-                EscreveBinario(binario, saida);
+                printf("Escrevendo %s\n", palavra);
+EscreveBinario(binario, saida);
             }
 
         //fprintf(saida, "%x\n", binario);
