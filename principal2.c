@@ -34,7 +34,7 @@ tipo_label *tbLabels;
 int lineCount = 1;
 int ind_tbLabels = 0;
 
-int main()
+int main(int argc, char **argv)
 {
     int i;
     /*Ponteiro para o arquivo de entrada*/
@@ -45,9 +45,9 @@ int main()
 
     CarregaVetorLabels();
     /*Abrindo o arquivo de entrada no modo de somente leitura*/
-    AbrirArquivo(&codigo, "testesinst.asm", "r");
+    AbrirArquivo(&codigo, argv[1], "r");
     /*Abrindo o arquivo de saida no modo de somente escrita*/
-    AbrirArquivo(&saida, "saida.txt", "w");
+    AbrirArquivo(&saida, argv[2], "w");
     /*Alocando tabelas*/
     CriaTabelas(codigo);
 
@@ -176,7 +176,7 @@ void CarregaVetorLabels ()
 }*/
 
 /*
- *Lê uma palavra do arquivo, separada por ',' 
+ *Lê uma palavra do arquivo, separada por ','
  */
 
 void LerPalavra(FILE *entrada, char **palavra)
