@@ -214,9 +214,9 @@ char identify_type(int opcode)
     }
     else
     {
-        printf("------------------------\n");
+        printf("-----------------------------------\n");
         printf("ERRO!! OPCODE 0x%02x DESCONHECIDO!!\n", opcode);
-        printf("------------------------\n");
+        printf("-----------------------------------\n");
         result = 'e';
     }
 
@@ -327,28 +327,30 @@ void decode_r_type(unsigned int instruction)
     //lsr
     else if (func == 0x02)
     {
-        
+        unsigned int temp = registers[rs] >> 1;
+        registers[rd] = temp;
     }
     //asl
     else if (func == 0x04)
     {
-        
+        registers[rd] = registers[rs] << 1;
     }
     //asr
     else if (func == 0x03)
     {
-        
+        registers[rd] = registers[rs] >> 1;
     }
     //slt
     else if (func == 0x2A)
     {
-        if (registers[rs] == registers[rt])
+        if (registers[rs] < registers[rt])
             registers[rd] == 1;
     }
     //jr
     else if (func == 0x08)
     {
-        pc = registers[rs];
+        // - 1 por causa do incremento do for
+        pc = registers[rs] - 1;
     }
     //div
     else if (func == 0x1A)
