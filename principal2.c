@@ -935,7 +935,7 @@ EscreveBinario(binario, saida);
         					lowbyte = true;
         				}
 
-                binario = 0x08 << sftOpcode;
+                binario = 0x01 << sftOpcode;
                 binario = binario | (rc << sftRd);
 
                 //printf("%s\n", p[1]);
