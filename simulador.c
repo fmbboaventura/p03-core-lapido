@@ -59,6 +59,15 @@ int execute(unsigned int *mem, int count_mem);
 // Retorna o tipo da instrução
 char identify_type(int opcode);
 
+// Decodifica e executa instruções do tipo r
+void decode_r_type(unsigned int instruction);
+
+// Decodifica e executa instruções do tipo i
+void decode_i_type(unsigned int instruction, int opcode);
+
+// Decodifica e executa instruções do tipo j
+void decode_j_type(unsigned int instruction, int opcode);
+
 int main(int argc, char const *argv[]) {
     int exit_code = 0;
     FILE *arq_mem;
@@ -155,7 +164,22 @@ int execute(unsigned int *mem, int count_mem)
         // Identifica o tipo da instrução
         type = identify_type(opcode);
 
-
+        if (type == 'r')
+        {
+            decode_r_type(mem[pc]);
+        }
+        else if (type == 'i')
+        {
+            decode_i_type(mem[pc], opcode);
+        }
+        else if (type == 'j')
+        {
+            decode_j_type(mem[pc], opcode);
+        }
+        else
+        {
+            return -1;
+        }
     }
     return 0;
 }
@@ -197,4 +221,50 @@ char identify_type(int opcode)
     }
 
     return result;
+}
+
+void decode_r_type(unsigned int instruction)
+{
+    // Identifica os campos da instrução
+    int rd = instruction >> sftRd;
+    int rs = instruction >> sftRs;
+    int rt = instruction >> sftRt;
+    int func = instruction & 0x3F;
+
+    // ##### siga o padrão abaixo, incluindo os comentários ##
+
+    // add rd = rs + rt
+    if (func == 0x20)
+    {
+        registers[rd] = registers[rs] + registers[rt];
+        // TODO: checar as flags
+    }
+    else if (func == )
+}
+
+void decode_i_type(unsigned int instruction, int opcode)
+{
+    // Identifica os campos da instrução
+    int rd = instruction >> sftRd;
+    int rs = instruction >> sftRs;
+    int imm = instruction & 0xFFFF;
+}
+
+void decode_j_type(unsigned int instruction, int opcode)
+{
+    // Identifica os campos da instrução
+    int address = (instruction & 0x3FFFFFF);
+
+    // jump
+    if(opcode == 0x02)
+    {
+        // Se pc == address, é um halt
+        if (pc == address)
+        {
+            // TODO: Tratar halt
+        }
+        pc = address - 1; // decrementa por causa do incremento do for
+    }
+
+    // Parecece que o jal está sendo usado como uma instrução tipo r...
 }
