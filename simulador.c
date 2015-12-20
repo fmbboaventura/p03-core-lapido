@@ -17,7 +17,7 @@
 #define CARRY    2
 #define NEGZERO  3
 #define OVERFLOW 4
-#define TRUE     5
+#define _TRUE    5
 
 // Contador de programa
 int pc=0;
@@ -33,6 +33,9 @@ int sftOpcode = 26;
 int sftRd = 21;
 int sftRs = 16;
 int sftRt = 11;
+
+// Registrador específico para armazenar o pc em uma execução do jal
+int reg_jal = 0;
 
 // Função que zera os registradores e flags
 void clear_all();
@@ -63,7 +66,7 @@ char identify_type(int opcode);
 void decode_r_type(unsigned int instruction);
 
 // Decodifica e executa instruções do tipo i
-void decode_i_type(unsigned int instruction, int opcode);
+void decode_i_type(unsigned int instruction, int opcode, unsigned int *mem);
 
 // Decodifica e executa instruções do tipo j
 void decode_j_type(unsigned int instruction, int opcode);
@@ -170,7 +173,8 @@ int execute(unsigned int *mem, int count_mem)
         }
         else if (type == 'i')
         {
-            decode_i_type(mem[pc], opcode);
+            // apenas duas instruções do tipo i acessam a memoria
+            decode_i_type(mem[pc], opcode, mem);
         }
         else if (type == 'j')
         {
@@ -192,7 +196,8 @@ char identify_type(int opcode)
     {
         result == 'r';
     }
-    else if (opcode == 0x01 || // lch
+    else if (opcode == 0x01 || // lcl
+             opcode == 0x03 || // jal
              opcode == 0x04 || // beq
              opcode == 0x05 || // bne
              opcode == 0x06 || // loadlit
@@ -202,13 +207,13 @@ char identify_type(int opcode)
              opcode == 0x0a || // slti
              opcode == 0x0c || // andi
              opcode == 0x0d || // ori
+             opcode == 0x10 || // jf
              opcode == 0x23 || // load
              opcode == 0x2b)   // store
     {
         result = 'i';
     }
-    else if (opcode == 0x02 || // j
-             opcode == 0x03)   // jal
+    else if (opcode == 0x02) // jump
     {
         result = 'j';
     }
@@ -357,15 +362,112 @@ void decode_r_type(unsigned int instruction)
     {
         registers[rd] = registers[rs] / registers[rt];
     }
-    //else if (func == )
 }
 
-void decode_i_type(unsigned int instruction, int opcode)
+void decode_i_type(unsigned int instruction, int opcode, unsigned int *mem)
 {
     // Identifica os campos da instrução
     int rd = instruction >> sftRd;
     int rs = instruction >> sftRs;
     int imm = instruction & 0xFFFF;
+
+    // lch
+    if(opcode == 0x07)
+    {
+        registers[rd] = (imm << 16) | (registers[rd] & 0xffff);
+    }
+    // jal
+    else if(opcode == 0x03)
+    {
+        // Guarda o endereço da próxima instrução
+        reg_jal = pc + 1;
+
+        // Menos um por causa do incremento do for
+        pc = registers[rd] - 1;
+    }
+    // beq
+    else if (opcode == 0x04)
+    {
+        if (registers[rd] == registers[rs])
+            pc = pc + imm; // Não decrementa pois seria pc + imm + 1
+    }
+    // bne
+    else if (opcode == 0x05)
+    {
+        if (registers[rd] != registers[rs])
+            pc = pc + imm; // Não decrementa pois seria pc + imm + 1
+    }
+    // loadlit
+    else if (opcode == 0x06)
+    {
+        registers[rd] = imm;
+    }
+    // lcl
+    else if (opcode == 0x01)
+    {
+        registers[rd] = imm | (registers[rd] & 0xffff0000);
+    }
+    // addi
+    else if (opcode == 0x08)
+    {
+        registers[rd] = registers[rs] + imm;
+    }
+    // jt
+    else if (opcode == 0x09)
+    {
+        // rd contém o código da condição
+        if (rd == 0x04 && flags[NEG]      ||
+            rd == 0x05 && flags[ZERO]     ||
+            rd == 0x06 && flags[CARRY]    ||
+            rd == 0x07 && flags[NEGZERO]  ||
+            rd == 0x00 && flags[_TRUE]    ||
+            rd == 0x00 && flags[OVERFLOW])
+        {
+            // Decrementa pra compensar o incremento do for
+                pc = imm - 1;
+        }
+    }
+    // jf
+    else if (opcode == 0x10)
+    {
+        // rd contém o código da condição
+        if (rd == 0x04 && !flags[NEG]      ||
+            rd == 0x05 && !flags[ZERO]     ||
+            rd == 0x06 && !flags[CARRY]    ||
+            rd == 0x07 && !flags[NEGZERO]  ||
+            rd == 0x00 && !flags[_TRUE]    ||
+            rd == 0x00 && !flags[OVERFLOW])
+        {
+            // Decrementa pra compensar o incremento do for
+                pc = imm - 1;
+        }
+    }
+    // slti
+    else if (opcode == 0x0a)
+    {
+        if (registers[rs] == imm)
+            registers[rd] = 1;
+    }
+    // andi
+    else if (opcode == 0x0c)
+    {
+        registers[rd] = registers[rs] & imm;
+    }
+    // ori
+    else if (opcode == 0x0d)
+    {
+        registers[rd] = registers[rs] | imm;
+    }
+    // load
+    else if (opcode == 0x23)
+    {
+        registers[rd] = mem[registers[rs]];
+    }
+    // store
+    else if (opcode == 0x2b)
+    {
+        mem[registers[rs]] = registers[rd];
+    }
 }
 
 void decode_j_type(unsigned int instruction, int opcode)
@@ -383,6 +485,4 @@ void decode_j_type(unsigned int instruction, int opcode)
         }
         pc = address - 1; // decrementa por causa do incremento do for
     }
-
-    // Parecece que o jal está sendo usado como uma instrução tipo r...
 }
