@@ -28,11 +28,18 @@ int registers[MAX_REGISTER];
 // Vetor contendo as flags
 bool flags[MAX_FLAGS];
 
+// Variaveis para auxiliar na descoberta dos campos das instruções
+int sftOpcode = 26;
+int sftRd = 21;
+int sftRs = 16;
+int sftRt = 11;
+
 // Função que zera os registradores e flags
 void clear_all();
 
 // Lê o arquivo e armazena as instruções em um vetor
-void read_instructions(FILE **arq, unsigned int *instructions);
+// Retorna o numero de instruções lidas
+int read_instructions(FILE **arq, unsigned int *instruction);
 
 // Converte uma string com uma sequencia de bits em um numero decimal
 unsigned int convert_to_int(char *bit_string);
@@ -40,10 +47,23 @@ unsigned int convert_to_int(char *bit_string);
 // Calcula potências de numeros inteiros sem sinal
 unsigned int pow_unsig(unsigned int base, unsigned int exp);
 
+// Executa as instruções no array
+// *instruction: array com as instruções
+// count_instruction: numero de instruções no array
+// Retorna 0 caso não haja problemas. -1, caso contrário.
+int execute(unsigned int *instruction, int count_instruction);
+
+// Retorna o tipo da instrução
+char identify_type(int opcode);
+
 int main(int argc, char const *argv[]) {
+    int exit_code = 0;
     FILE *arq_instructions;
     // Vetor contendo as instruções
     unsigned int *instruction;
+
+    // numero de instruções
+    int count_instruction;
 
     arq_instructions = fopen(argv[1], "rt");
 
@@ -54,15 +74,13 @@ int main(int argc, char const *argv[]) {
     }
 
     instruction = malloc(sizeof(int) * MAX_INSTRUCTION);
-    read_instructions(&arq_instructions, instruction);
+    count_instruction = read_instructions(&arq_instructions, instruction);
+    fclose(arq_instructions);
 
-    // int i;
-    // for (i = 0; i < 52; i++)
-    // {
-    //     printf("%u\n", instruction[i]);
-    // }
+    exit_code = execute(instruction, count_instruction);
 
-    return 0;
+    free(instruction);
+    return exit_code;
 }
 
 void clear_all()
@@ -80,7 +98,7 @@ void clear_all()
     }
 }
 
-void read_instructions(FILE **arq, unsigned int *instructions)
+int read_instructions(FILE **arq, unsigned int *instruction)
 {
     int i;
     char str_instruction[33];
@@ -89,11 +107,12 @@ void read_instructions(FILE **arq, unsigned int *instructions)
     {
         fscanf(*arq, "%s", str_instruction);
         //printf("%s\n", str_instruction);
-        instructions[i] = convert_to_int(str_instruction);
+        instruction[i] = convert_to_int(str_instruction);
         //getchar();
     }
     //printf("%d\n", i);
     //getchar();
+    return i;
 }
 
 unsigned int convert_to_int(char *bit_string)
@@ -121,4 +140,56 @@ unsigned int pow_unsig(unsigned int base, unsigned int exp)
     }
 
     return res;
+}
+
+int execute(unsigned int *instruction, int count_instruction)
+{
+    int opcode;
+    char type;
+
+    for (pc = 0; pc < count_instruction; pc++)
+    {
+        // Desloca os bits da instrução para achar o opcode
+        opcode = instruction[pc] >> sftOpcode;
+
+        printf("0x%02x\n", opcode);
+    }
+    return 0;
+}
+
+char identify_type(int opcode)
+{
+    char result;
+
+    if (opcode == 0x00)
+    {
+        result == 'r';
+    }
+    else if (opcode == 0x01 || // lch
+             opcode == 0x04 || // beq
+             opcode == 0x05 || // bne
+             opcode == 0x06 || // loadlit
+             opcode == 0x07 || // lch
+             opcode == 0x08 || // addi
+             opcode == 0x09 || // jt
+             opcode == 0x0a || // slti
+             opcode == 0x0c || // andi
+             opcode == 0x0d || // ori
+             opcode == 0x23 || // load
+             opcode == 0x2b)   // store
+    {
+        result = 'i';
+    }
+    else if (opcode == 0x02 || // j
+             opcode == 0x03)   // jal
+    {
+        result = 'j';
+    }
+    else
+    {
+        printf("------------------------\n");
+        printf("ERRO!! OPCODE 0x%02x DESCONHECIDO!!\n", opcode);
+        printf("------------------------\n");
+        result = 'e';
+    }
 }
