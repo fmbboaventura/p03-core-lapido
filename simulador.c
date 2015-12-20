@@ -11,6 +11,9 @@
 // Tamanho máximo da memória
 #define MAX_MEM 1000
 
+// Rerotno do decode_j_type caso encontre um halt;
+#define HALT 1
+
 // Definindo a posição das flags no vetor
 #define ZERO     0
 #define NEG      1
@@ -63,22 +66,25 @@ int execute(unsigned int *mem, int count_mem);
 char identify_type(int opcode);
 
 // Decodifica e executa instruções do tipo r
-void decode_r_type(unsigned int instruction);
+int decode_r_type(unsigned int instruction);
 
 // Decodifica e executa instruções do tipo i
-void decode_i_type(unsigned int instruction, int opcode, unsigned int *mem);
+int decode_i_type(unsigned int instruction, int opcode, unsigned int *mem);
 
 // Decodifica e executa instruções do tipo j
-void decode_j_type(unsigned int instruction, int opcode);
+int decode_j_type(unsigned int instruction, int opcode);
+
+void write_results(char const *file_name, int exit_code, unsigned int *mem);
 
 int main(int argc, char const *argv[]) {
     int exit_code = 0;
     FILE *arq_mem;
     // Vetor representando a memória
     unsigned int *mem;
-
     // numero de espaços válidos
     int count_mem;
+
+    char const default_output_file[8] = "res.txt";
 
     arq_mem = fopen(argv[1], "rt");
 
@@ -93,6 +99,11 @@ int main(int argc, char const *argv[]) {
     fclose(arq_mem);
 
     exit_code = execute(mem, count_mem);
+
+    if(argc == 3)
+        write_results(argv[argc-1], exit_code, mem);
+    else
+        write_results(default_output_file, exit_code, mem);
 
     free(mem);
     return exit_code;
@@ -158,6 +169,7 @@ unsigned int pow_unsig(unsigned int base, unsigned int exp)
 int execute(unsigned int *mem, int count_mem)
 {
     int opcode;
+    int exit_code = 0;
     char type;
 
     for (pc = 0; pc < count_mem; pc++)
@@ -169,16 +181,22 @@ int execute(unsigned int *mem, int count_mem)
 
         if (type == 'r')
         {
-            decode_r_type(mem[pc]);
+            if(decode_r_type(mem[pc]) == -1)
+                return -1;
         }
         else if (type == 'i')
         {
             // apenas duas instruções do tipo i acessam a memoria
-            decode_i_type(mem[pc], opcode, mem);
+            if(exit_code = decode_i_type(mem[pc], opcode, mem) == -1)
+                return -1;
         }
         else if (type == 'j')
         {
-            decode_j_type(mem[pc], opcode);
+            exit_code = decode_j_type(mem[pc], opcode);
+            if(exit_code == HALT)
+                return 0;
+            else if (exit_code == -1)
+                return -1;
         }
         else
         {
@@ -228,7 +246,7 @@ char identify_type(int opcode)
     return result;
 }
 
-void decode_r_type(unsigned int instruction)
+int decode_r_type(unsigned int instruction)
 {
     // Identifica os campos da instrução
     int rd = instruction >> sftRd;
@@ -236,7 +254,15 @@ void decode_r_type(unsigned int instruction)
     int rt = instruction >> sftRt;
     int func = instruction & 0x3F;
 
-    // ##### siga o padrão abaixo, incluindo os comentários ##
+    if (rd >= MAX_REGISTER ||
+        rs >= MAX_REGISTER ||
+        rt >= MAX_REGISTER)
+    {
+        printf("----------------------------------\n");
+        printf("ERRO!! INDICE DO REGISTRADOR >= %d\n", MAX_REGISTER);
+        printf("----------------------------------\n");
+        return -1;
+    }
 
     // add rd = rs + rt
     if (func == 0x20)
@@ -362,14 +388,30 @@ void decode_r_type(unsigned int instruction)
     {
         registers[rd] = registers[rs] / registers[rt];
     }
+    else {
+        printf("-------------------------------------\n");
+        printf("ERRO!! FUNCTION 0x%02x DESCONHECIDO!!\n", func);
+        printf("-------------------------------------\n");
+        return -1;
+    }
+    return 0;
 }
 
-void decode_i_type(unsigned int instruction, int opcode, unsigned int *mem)
+int decode_i_type(unsigned int instruction, int opcode, unsigned int *mem)
 {
     // Identifica os campos da instrução
     int rd = instruction >> sftRd;
     int rs = instruction >> sftRs;
     int imm = instruction & 0xFFFF;
+
+    if (rd >= MAX_REGISTER ||
+        rs >= MAX_REGISTER)
+    {
+        printf("----------------------------------\n");
+        printf("ERRO!! INDICE DO REGISTRADOR >= %d\n", MAX_REGISTER);
+        printf("----------------------------------\n");
+        return -1;
+    }
 
     // lch
     if(opcode == 0x07)
@@ -468,9 +510,10 @@ void decode_i_type(unsigned int instruction, int opcode, unsigned int *mem)
     {
         mem[registers[rs]] = registers[rd];
     }
+    return 0;
 }
 
-void decode_j_type(unsigned int instruction, int opcode)
+int decode_j_type(unsigned int instruction, int opcode)
 {
     // Identifica os campos da instrução
     int address = (instruction & 0x3FFFFFF);
@@ -481,8 +524,35 @@ void decode_j_type(unsigned int instruction, int opcode)
         // Se pc == address, é um halt
         if (pc == address)
         {
-            // TODO: Tratar halt
+            return HALT;
         }
         pc = address - 1; // decrementa por causa do incremento do for
+        return 0;
     }
+    // se algo saiu errado...
+    return -1;
+}
+
+void write_results(char const *file_name, int exit_code, unsigned int *mem)
+{
+    int i;
+    FILE *arq_out = fopen(file_name, "w");
+
+    fprintf(arq_out, "Simulador LAPI DOpaCA LAMBA ver. 1.0\n\n");
+    fprintf(arq_out, "exit_code: %d\n", exit_code);
+    fprintf(arq_out, "Registradores:\n");
+
+    for (i = 0; i < MAX_REGISTER; i++)
+    {
+        fprintf(arq_out, "r%d: %d\n", i, registers[i]);
+    }
+
+    fprintf(arq_out, "Memória:\n");
+
+    for (i = 0; i < MAX_MEM; i++)
+    {
+        fprintf(arq_out, "mem[%d]: %x\n", i, mem[i]);
+    }
+
+    fclose(arq_out);
 }
