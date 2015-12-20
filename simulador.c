@@ -192,4 +192,6 @@ char identify_type(int opcode)
         printf("------------------------\n");
         result = 'e';
     }
+
+    return result;
 }
