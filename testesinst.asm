@@ -8,7 +8,7 @@
 	and r0,r1,r2
 	or r0,r1,r2
 	not r0,r1
-	xor r0,r1,r2
+L1:	xor r0,r1,r2
 	andnota r0,r1,r2
 	nor r0,r1,r2
 	xnor r0,r1,r2
@@ -24,7 +24,7 @@
 	lsr r0,r1
 	asl r0,r1
 	asr r0,r1
-	slt r0,r1,r2
+L2:	slt r0,r1,r2
 	jr r0
 	div r0,r1,r2
 	addi r0,r1,168

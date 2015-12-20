@@ -31,7 +31,6 @@ typedef struct
 
 /*Variaveis globais a serem usadas ao longo da execução*/
 tipo_label *tbLabels;
-int lineCount = 1;
 int ind_tbLabels = 0;
 
 int main(int argc, char **argv)
@@ -1442,7 +1441,7 @@ void CriaTabelas(FILE *entrada){
             {
                 // Diretivas, excerto .word,
                 // Não contam como linha de código
-                lineCount++;
+                linhaCount++;
             }
             else if (strcmp(".module", palavra) == 0)
             {
