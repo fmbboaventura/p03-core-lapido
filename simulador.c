@@ -8,8 +8,8 @@
 // Numero de flags
 #define MAX_FLAGS 6
 
-// Numero maximo de instruções
-#define MAX_INSTRUCTION 1000
+// Tamanho máximo da memória
+#define MAX_MEM 1000
 
 // Definindo a posição das flags no vetor
 #define ZERO     0
@@ -37,9 +37,9 @@ int sftRt = 11;
 // Função que zera os registradores e flags
 void clear_all();
 
-// Lê o arquivo e armazena as instruções em um vetor
-// Retorna o numero de instruções lidas
-int read_instructions(FILE **arq, unsigned int *instruction);
+// Lê o arquivo e armazena as palavras em um vetor
+// Retorna o numero de palavras lidas
+int read_words(FILE **arq, unsigned int *mem);
 
 // Converte uma string com uma sequencia de bits em um numero decimal
 unsigned int convert_to_int(char *bit_string);
@@ -48,38 +48,41 @@ unsigned int convert_to_int(char *bit_string);
 unsigned int pow_unsig(unsigned int base, unsigned int exp);
 
 // Executa as instruções no array
-// *instruction: array com as instruções
-// count_instruction: numero de instruções no array
+// ATENÇÂO: não faz distinção entre dados e
+// intruções. O código deve conter um halt para
+// terminar a execução.
+// *mem: array representando a memória
+// count_mem: numero de posições válidas no array
 // Retorna 0 caso não haja problemas. -1, caso contrário.
-int execute(unsigned int *instruction, int count_instruction);
+int execute(unsigned int *mem, int count_mem);
 
 // Retorna o tipo da instrução
 char identify_type(int opcode);
 
 int main(int argc, char const *argv[]) {
     int exit_code = 0;
-    FILE *arq_instructions;
-    // Vetor contendo as instruções
-    unsigned int *instruction;
+    FILE *arq_mem;
+    // Vetor representando a memória
+    unsigned int *mem;
 
-    // numero de instruções
-    int count_instruction;
+    // numero de espaços válidos
+    int count_mem;
 
-    arq_instructions = fopen(argv[1], "rt");
+    arq_mem = fopen(argv[1], "rt");
 
-    if (arq_instructions == NULL)
+    if (arq_mem == NULL)
     {
         printf("Arquivo de instruções não foi aberto!\n");
         return -1;
     }
 
-    instruction = malloc(sizeof(int) * MAX_INSTRUCTION);
-    count_instruction = read_instructions(&arq_instructions, instruction);
-    fclose(arq_instructions);
+    mem = malloc(sizeof(int) * MAX_MEM);
+    count_mem = read_words(&arq_mem, mem);
+    fclose(arq_mem);
 
-    exit_code = execute(instruction, count_instruction);
+    exit_code = execute(mem, count_mem);
 
-    free(instruction);
+    free(mem);
     return exit_code;
 }
 
@@ -98,17 +101,15 @@ void clear_all()
     }
 }
 
-int read_instructions(FILE **arq, unsigned int *instruction)
+int read_words(FILE **arq, unsigned int *mem)
 {
     int i;
-    char str_instruction[33];
+    char word[33];
 
     for (i = 0; (!feof(*arq)); i++)
     {
-        fscanf(*arq, "%s", str_instruction);
-        //printf("%s\n", str_instruction);
-        instruction[i] = convert_to_int(str_instruction);
-        //getchar();
+        fscanf(*arq, "%s", word);
+        mem[i] = convert_to_int(word);
     }
     //printf("%d\n", i);
     //getchar();
@@ -118,15 +119,15 @@ int read_instructions(FILE **arq, unsigned int *instruction)
 unsigned int convert_to_int(char *bit_string)
 {
     int i;
-    unsigned int instruction = 0;
+    unsigned int word = 0;
 
     for (i = 0; i < 32; i++)
     {
         if (bit_string[i] == '1')
-            instruction += pow_unsig(2, 31 - i);
+            word += pow_unsig(2, 31 - i);
     }
 
-    return instruction;
+    return word;
 }
 
 unsigned int pow_unsig(unsigned int base, unsigned int exp)
@@ -142,17 +143,19 @@ unsigned int pow_unsig(unsigned int base, unsigned int exp)
     return res;
 }
 
-int execute(unsigned int *instruction, int count_instruction)
+int execute(unsigned int *mem, int count_mem)
 {
     int opcode;
     char type;
 
-    for (pc = 0; pc < count_instruction; pc++)
+    for (pc = 0; pc < count_mem; pc++)
     {
         // Desloca os bits da instrução para achar o opcode
-        opcode = instruction[pc] >> sftOpcode;
+        opcode = mem[pc] >> sftOpcode;
+        // Identifica o tipo da instrução
+        type = identify_type(opcode);
 
-        printf("0x%02x\n", opcode);
+
     }
     return 0;
 }
