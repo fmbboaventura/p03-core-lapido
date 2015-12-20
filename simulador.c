@@ -239,6 +239,122 @@ void decode_r_type(unsigned int instruction)
         registers[rd] = registers[rs] + registers[rt];
         // TODO: checar as flags
     }
+    //sub e zeros
+    else if (func == 0x22)
+    {
+        registers[rd] = registers[rs] - registers[rt];
+    }
+    //and
+    else if (func == 0x24)
+    {
+        registers[rd] = registers[rs] & registers[rt];
+    }
+    //or
+    else if (func == 0x25)
+    {
+        registers[rd] = registers[rs] | registers[rt];
+    }
+    //not
+    else if (func == 0x21)
+    {
+        registers[rd] = !registers[rs];
+    }
+    //xor
+    else if (func == 0x26)
+    {
+        registers[rd] = registers[rs] ^ registers[rt];
+    }
+    //addnota
+    else if (func == 0x23)
+    {
+        registers[rd] = (!registers[rs]) & registers[rt];
+    }
+    //nor
+    else if (func == 0x27)
+    {
+        registers[rd] = !(registers[rs] | registers[rt]);
+    }
+    //xnor
+    else if (func == 0x28)
+    {
+        registers[rd] = !(registers[rs] ^ registers[rt]);
+    }
+    //ornotb
+    else if (func == 0x29)
+    {
+        registers[rd] = registers[rs] | (!registers[rt]);
+    }
+    //nand
+    else if (func == 0x1B)
+    {
+        registers[rd] = !(registers[rs] & registers[rt]);
+    }
+    //passa
+    else if (func == 0x2B)
+    {
+        registers[rd] = registers[rs];
+    }
+    //passnota
+    else if (func == 0x2C)
+    {
+        registers[rd] = !registers[rs];
+    }
+    //inca
+    else if (func == 0x2D)
+    {
+        registers[rd] = registers[rs] + 1;
+    }
+    //deca
+    else if (func == 0x2E)
+    {
+        registers[rd] = registers[rs] - 1;
+    }
+    //addinc
+    else if (func == 0x2F)
+    {
+        registers[rd] = registers[rs] + registers[rt] + 1;
+    }
+    //subdec
+    else if (func == 0x30)
+    {
+        registers[rd] = registers[rs] - registers[rt] - 1;
+    }
+    //lsl
+    else if (func == 0x00)
+    {
+        registers[rd] = registers[rs] << 1;
+    }
+    //lsr
+    else if (func == 0x02)
+    {
+        
+    }
+    //asl
+    else if (func == 0x04)
+    {
+        
+    }
+    //asr
+    else if (func == 0x03)
+    {
+        
+    }
+    //slt
+    else if (func == 0x2A)
+    {
+        if (registers[rs] == registers[rt])
+            registers[rd] == 1;
+    }
+    //jr
+    else if (func == 0x08)
+    {
+        pc = registers[rs];
+    }
+    //div
+    else if (func == 0x1A)
+    {
+        registers[rd] = registers[rs] / registers[rt];
+    }
     //else if (func == )
 }
 
