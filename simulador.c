@@ -239,7 +239,7 @@ void decode_r_type(unsigned int instruction)
         registers[rd] = registers[rs] + registers[rt];
         // TODO: checar as flags
     }
-    else if (func == )
+    //else if (func == )
 }
 
 void decode_i_type(unsigned int instruction, int opcode)
