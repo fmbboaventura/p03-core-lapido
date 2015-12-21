@@ -421,13 +421,13 @@ int decode_i_type(unsigned int instruction, int opcode)
     {
 
         if (registers[rd] == registers[rs])
-            pc = pc + imm; // Não decrementa pois seria pc + imm + 1
+            pc = imm - 1; // Não decrementa pois seria pc + imm + 1
     }
     // bne
     else if (opcode == 0x05)
     {
         if (registers[rd] != registers[rs])
-            pc = pc + imm; // Não decrementa pois seria pc + imm + 1
+            pc = imm - 1; // Não decrementa pois seria pc + imm + 1
     }
     // loadlit
     else if (opcode == 0x06)
