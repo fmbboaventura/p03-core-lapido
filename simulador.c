@@ -411,7 +411,7 @@ int decode_i_type(unsigned int instruction, int opcode)
     else if(opcode == 0x03)
     {
         // Guarda o endereço da próxima instrução
-        reg_jal = pc + 1;
+        registers[7] = pc + 1;
 
         // Menos um por causa do incremento do for
         pc = registers[rd] - 1;
