@@ -40,12 +40,17 @@ int sftRt = 11;
 // Registrador específico para armazenar o pc em uma execução do jal
 int reg_jal = 0;
 
+// Vetor representando a memória
+unsigned int *mem;
+// numero de espaços válidos
+int count_mem;
+
 // Função que zera os registradores e flags
 void clear_all();
 
 // Lê o arquivo e armazena as palavras em um vetor
 // Retorna o numero de palavras lidas
-int read_words(FILE **arq, unsigned int *mem);
+int read_words(FILE **arq);
 
 // Converte uma string com uma sequencia de bits em um numero decimal
 unsigned int convert_to_int(char *bit_string);
@@ -57,10 +62,8 @@ unsigned int pow_unsig(unsigned int base, unsigned int exp);
 // ATENÇÂO: não faz distinção entre dados e
 // intruções. O código deve conter um halt para
 // terminar a execução.
-// *mem: array representando a memória
-// count_mem: numero de posições válidas no array
 // Retorna 0 caso não haja problemas. -1, caso contrário.
-int execute(unsigned int *mem, int count_mem);
+int execute();
 
 // Retorna o tipo da instrução
 char identify_type(int opcode);
@@ -69,20 +72,16 @@ char identify_type(int opcode);
 int decode_r_type(unsigned int instruction);
 
 // Decodifica e executa instruções do tipo i
-int decode_i_type(unsigned int instruction, int opcode, unsigned int *mem);
+int decode_i_type(unsigned int instruction, int opcode);
 
 // Decodifica e executa instruções do tipo j
 int decode_j_type(unsigned int instruction, int opcode);
 
-void write_results(char const *file_name, int exit_code, unsigned int *mem);
+void write_results(char const *file_name, int exit_code);
 
 int main(int argc, char const *argv[]) {
     int exit_code = 0;
     FILE *arq_mem;
-    // Vetor representando a memória
-    unsigned int *mem;
-    // numero de espaços válidos
-    int count_mem;
 
     char const default_output_file[8] = "res.txt";
 
@@ -95,15 +94,15 @@ int main(int argc, char const *argv[]) {
     }
 
     mem = malloc(sizeof(int) * MAX_MEM);
-    count_mem = read_words(&arq_mem, mem);
+    count_mem = read_words(&arq_mem);
     fclose(arq_mem);
 
-    exit_code = execute(mem, count_mem); //DA ERRO AQUI
+    exit_code = execute(); //DA ERRO AQUI
 
     if(argc == 3)
-        write_results(argv[argc-1], exit_code, mem);
+        write_results(argv[argc-1], exit_code);
     else
-        write_results(default_output_file, exit_code, mem);
+        write_results(default_output_file, exit_code);
 
     free(mem);
     return exit_code;
@@ -124,7 +123,7 @@ void clear_all()
     }
 }
 
-int read_words(FILE **arq, unsigned int *mem)
+int read_words(FILE **arq)
 {
     int i;
     char word[33];
@@ -166,7 +165,7 @@ unsigned int pow_unsig(unsigned int base, unsigned int exp)
     return res;
 }
 
-int execute(unsigned int *mem, int count_mem)
+int execute()
 {
     int opcode;
     int exit_code = 0;
@@ -174,6 +173,7 @@ int execute(unsigned int *mem, int count_mem)
 
     for (pc = 0; pc < count_mem; pc++)
     {
+        printf("%d\n", pc);
         // Desloca os bits da instrução para achar o opcode
         opcode = mem[pc] >> sftOpcode;
         // Identifica o tipo da instrução
@@ -186,8 +186,7 @@ int execute(unsigned int *mem, int count_mem)
         }
         else if (type == 'i')
         {
-            // apenas duas instruções do tipo i acessam a memoria
-            if(exit_code = decode_i_type(mem[pc], opcode, mem) == -1)
+            if(exit_code = decode_i_type(mem[pc], opcode) == -1)
                 return -1;
         }
         else if (type == 'j')
@@ -249,10 +248,12 @@ char identify_type(int opcode)
 int decode_r_type(unsigned int instruction)
 {
     // Identifica os campos da instrução
-    int rd = instruction >> sftRd;
-    int rs = instruction >> sftRs;
-    int rt = instruction >> sftRt;
+    int rd = (instruction >> sftRd) & 0x1f;
+    int rs = (instruction >> sftRs) & 0x1f;
+    int rt = (instruction >> sftRt) & 0x1f;
     int func = instruction & 0x3F;
+
+    printf("rd %d rs %d rt %d func %d\n", rd, rs, rt, func);
 
     // add rd = rs + rt
     if (func == 0x20)
@@ -376,7 +377,7 @@ int decode_r_type(unsigned int instruction)
     //div
     else if (func == 0x1A)
     {
-        
+
         registers[rd] = registers[rs] / registers[rt];
     }
     else {
@@ -388,12 +389,14 @@ int decode_r_type(unsigned int instruction)
     return 0;
 }
 
-int decode_i_type(unsigned int instruction, int opcode, unsigned int *mem)
+int decode_i_type(unsigned int instruction, int opcode)
 {
     // Identifica os campos da instrução
-    int rd = instruction >> sftRd;
-    int rs = instruction >> sftRs;
+    int rd = (instruction >> sftRd) && 0x1f;
+    int rs = (instruction >> sftRs) && 0x1f;
     int imm = instruction & 0xFFFF;
+
+    printf("rd %d rs %d imm %d\n", rd, rs, imm);
 
     // lch
     if(opcode == 0x07)
@@ -412,6 +415,7 @@ int decode_i_type(unsigned int instruction, int opcode, unsigned int *mem)
     // beq
     else if (opcode == 0x04)
     {
+
         if (registers[rd] == registers[rs])
             pc = pc + imm; // Não decrementa pois seria pc + imm + 1
     }
@@ -500,6 +504,8 @@ int decode_j_type(unsigned int instruction, int opcode)
     // Identifica os campos da instrução
     int address = (instruction & 0x3FFFFFF);
 
+    printf("address %d\n", address);
+
     // jump
     if(opcode == 0x02)
     {
@@ -515,7 +521,7 @@ int decode_j_type(unsigned int instruction, int opcode)
     return -1;
 }
 
-void write_results(char const *file_name, int exit_code, unsigned int *mem)
+void write_results(char const *file_name, int exit_code)
 {
     int i;
     FILE *arq_out = fopen(file_name, "w");
