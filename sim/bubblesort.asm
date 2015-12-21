@@ -1,13 +1,3 @@
-for(i = 0; i<5; i++){
-		for(int j = 0; j<4; j++){
-			if(vet[j] > vet[j + 1]){
-				aux = vet[j];
-				vet[j] = vet[j+1];
-				vet[j+1] = aux;
-			}
-		}
-	}
-	 			
 				;r1 index do primeiro loop
 				;r2 index do segundo loop
 .module
@@ -58,5 +48,5 @@ ARR1:
                 .word   5
                 .word   1
                 
-STACK:
+
 .end
