@@ -268,126 +268,287 @@ int decode_r_type(unsigned int instruction)
     if (func == 0x20)
     {
         registers[rd] = registers[rs] + registers[rt];
-        // TODO: checar as flags
+
+        flags[OVERFLOW] = sum_check_overflow(registers[rs], registers[rt], registers[rd]);
+        flags[CARRY] = check_carry(registers[rs], registers[rt]);
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //sub e zeros
     else if (func == 0x22)
     {
         registers[rd] = registers[rs] - registers[rt];
+
+        flags[OVERFLOW] = sub_check_overflow(registers[rs], registers[rt], registers[rd]);
+        flags[CARRY] = check_carry(registers[rs], registers[rt]);
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //and
     else if (func == 0x24)
     {
         registers[rd] = registers[rs] & registers[rt];
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //or
     else if (func == 0x25)
     {
         registers[rd] = registers[rs] | registers[rt];
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //not
     else if (func == 0x21)
     {
         registers[rd] = !registers[rs];
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //xor
     else if (func == 0x26)
     {
         registers[rd] = registers[rs] ^ registers[rt];
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
-    //addnota
+    //andnota
     else if (func == 0x23)
     {
         registers[rd] = (!registers[rs]) & registers[rt];
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //nor
     else if (func == 0x27)
     {
         registers[rd] = !(registers[rs] | registers[rt]);
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //xnor
     else if (func == 0x28)
     {
         registers[rd] = !(registers[rs] ^ registers[rt]);
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //ornotb
     else if (func == 0x29)
     {
         registers[rd] = registers[rs] | (!registers[rt]);
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //nand
     else if (func == 0x1B)
     {
         registers[rd] = !(registers[rs] & registers[rt]);
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //passa
     else if (func == 0x2B)
     {
         registers[rd] = registers[rs];
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //passnota
     else if (func == 0x2C)
     {
         registers[rd] = !registers[rs];
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //inca
     else if (func == 0x2D)
     {
         registers[rd] = registers[rs] + 1;
+
+        flags[OVERFLOW] = sum_check_overflow(registers[rs], 1, registers[rd]);
+        flags[CARRY] = check_carry(registers[rs], 1);
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //deca
     else if (func == 0x2E)
     {
         registers[rd] = registers[rs] - 1;
+
+        flags[OVERFLOW] = sub_check_overflow(registers[rs], 1, registers[rd]);
+        flags[CARRY] = check_carry(registers[rs], -1);
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //addinc
     else if (func == 0x2F)
     {
         registers[rd] = registers[rs] + registers[rt] + 1;
+
+        flags[OVERFLOW] = sum_check_overflow(registers[rs] + registers[rt], 1, registers[rd]);
+        flags[CARRY] = check_carry(registers[rs] + registers[rt], 1);
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //subdec
     else if (func == 0x30)
     {
         registers[rd] = registers[rs] - registers[rt] - 1;
+
+        flags[OVERFLOW] = sub_check_overflow(registers[rs] - registers[rt], 1, registers[rd]);
+        flags[CARRY] = check_carry(registers[rs] - registers[rt], -1);
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //lsl
     else if (func == 0x00)
     {
         registers[rd] = registers[rs] << 1;
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //lsr
     else if (func == 0x02)
     {
         unsigned int temp = registers[rs] >> 1;
         registers[rd] = temp;
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //asl
     else if (func == 0x04)
     {
         registers[rd] = registers[rs] << 1;
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //asr
     else if (func == 0x03)
     {
         registers[rd] = registers[rs] >> 1;
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] =false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     //slt
     else if (func == 0x2A)
     {
         if (registers[rs] < registers[rt])
             registers[rd] == 1;
+
+            flags[OVERFLOW] = false;
+            flags[CARRY] = false;
+            flags[ZERO] = (registers[rd] == 0);
+            flags[_TRUE] = (registers[rd] != 0);
+            flags[NEGZERO] = (registers[rd] <= 0);
+            flags[NEG] = (registers[rd] <= 0);
     }
     //jr
     else if (func == 0x08)
     {
         // - 1 por causa do incremento do for
         pc = registers[rs] - 1;
+
+        // Altera flag aqui?
     }
     //div
     else if (func == 0x1A)
     {
 
         registers[rd] = registers[rs] / registers[rt];
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     else {
         printf("-------------------------------------\n");
@@ -413,6 +574,13 @@ int decode_i_type(unsigned int instruction, int opcode)
     if(opcode == 0x07)
     {
         registers[rd] = (imm << 16) | (registers[rd] & 0xffff);
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     // jal
     else if(opcode == 0x03)
@@ -422,6 +590,8 @@ int decode_i_type(unsigned int instruction, int opcode)
 
         // Menos um por causa do incremento do for
         pc = registers[rd] - 1;
+
+        // Altera flag aqui?
     }
     // beq
     else if (opcode == 0x04)
@@ -429,12 +599,16 @@ int decode_i_type(unsigned int instruction, int opcode)
 
         if (registers[rd] == registers[rs])
             pc = imm - 1; // Não decrementa pois seria pc + imm + 1
+
+        // muda flag aqui?
     }
     // bne
     else if (opcode == 0x05)
     {
         if (registers[rd] != registers[rs])
             pc = imm - 1; // Não decrementa pois seria pc + imm + 1
+
+        // muda flag aqui?
     }
     // loadlit
     else if (opcode == 0x06)
@@ -450,6 +624,13 @@ int decode_i_type(unsigned int instruction, int opcode)
     else if (opcode == 0x08)
     {
         registers[rd] = registers[rs] + imm;
+
+        flags[OVERFLOW] = sum_check_overflow(registers[rs], imm, registers[rd]);
+        flags[CARRY] = check_carry(registers[rs], imm);
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     // jt
     else if (opcode == 0x09)
@@ -491,11 +672,25 @@ int decode_i_type(unsigned int instruction, int opcode)
     else if (opcode == 0x0c)
     {
         registers[rd] = registers[rs] & imm;
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     // ori
     else if (opcode == 0x0d)
     {
         registers[rd] = registers[rs] | imm;
+
+        flags[OVERFLOW] = false;
+        flags[CARRY] = false;
+        flags[ZERO] = (registers[rd] == 0);
+        flags[_TRUE] = (registers[rd] != 0);
+        flags[NEGZERO] = (registers[rd] <= 0);
+        flags[NEG] = (registers[rd] <= 0);
     }
     // load
     else if (opcode == 0x23)
