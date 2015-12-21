@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <limits.h>
 
 // Numero de registradores de propósito geral
 #define MAX_REGISTER 16
@@ -78,6 +79,12 @@ int decode_i_type(unsigned int instruction, int opcode);
 int decode_j_type(unsigned int instruction, int opcode);
 
 void write_results(char const *file_name, int exit_code);
+
+bool sum_check_overflow(int op1, int op2, int res);
+
+bool sub_check_overflow(int op1, int op2, int res);
+
+bool check_carry(unsigned int op1, unsigned int op2);
 
 int main(int argc, char const *argv[]) {
     int exit_code = 0;
@@ -549,4 +556,47 @@ void write_results(char const *file_name, int exit_code)
     }
 
     fclose(arq_out);
+}
+
+bool sum_check_overflow(int op1, int op2, int res)
+{
+    unsigned int sign_op1;
+    unsigned int sign_op2;
+    unsigned int sign_res;
+
+    if (op1 < 0) sign_op1 = 1;
+    else sign_op1 = 0;
+
+    if (op1 < 0) sign_op2 = 1;
+    else sign_op2 = 0;
+
+    if (op1 < 0) sign_res = 1;
+    else sign_res = 0;
+
+    return ((sign_op1 == sign_op2) == sign_res);
+}
+
+bool sub_check_overflow(int op1, int op2, int res)
+{
+    unsigned int sign_op1;
+    unsigned int sign_op2;
+    unsigned int sign_res;
+
+    if (op1 < 0) sign_op1 = 1;
+    else sign_op1 = 0;
+
+    // inverte por causa da subtração
+    if (op1 < 0) sign_op2 = 0;
+    else sign_op2 = 1;
+
+    if (op1 < 0) sign_res = 1;
+    else sign_res = 0;
+
+    return ((sign_op1 == sign_op2) == sign_res);
+}
+
+bool check_carry(unsigned int op1, unsigned int op2)
+{
+    return ((op2 > 0 && op1 > UINT_MAX - op2) ||
+            (op1 > 0) && op2 > UINT_MAX - op1);
 }
