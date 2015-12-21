@@ -253,7 +253,9 @@ int decode_r_type(unsigned int instruction)
     int rt = (instruction >> sftRt) & 0x1f;
     int func = instruction & 0x3F;
 
-    printf("rd %d rs %d rt %d func %d\n", rd, rs, rt, func);
+    printf("%x\n", instruction);
+    printf("rd %d rs %d rt %d func %x\n", rd, rs, rt, func);
+    //getchar();
 
     // add rd = rs + rt
     if (func == 0x20)
@@ -392,11 +394,13 @@ int decode_r_type(unsigned int instruction)
 int decode_i_type(unsigned int instruction, int opcode)
 {
     // Identifica os campos da instrução
-    int rd = (instruction >> sftRd) && 0x1f;
-    int rs = (instruction >> sftRs) && 0x1f;
+    int rd = (instruction >> sftRd) & 0x1f;
+    int rs = (instruction >> sftRs) & 0x1f;
     int imm = instruction & 0xFFFF;
 
+    printf("%x\n", instruction);
     printf("rd %d rs %d imm %d\n", rd, rs, imm);
+    //getchar();
 
     // lch
     if(opcode == 0x07)
@@ -504,7 +508,9 @@ int decode_j_type(unsigned int instruction, int opcode)
     // Identifica os campos da instrução
     int address = (instruction & 0x3FFFFFF);
 
+    printf("%x\n", instruction);
     printf("address %d\n", address);
+    //getchar();
 
     // jump
     if(opcode == 0x02)
