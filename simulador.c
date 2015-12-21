@@ -98,7 +98,7 @@ int main(int argc, char const *argv[]) {
     count_mem = read_words(&arq_mem, mem);
     fclose(arq_mem);
 
-    exit_code = execute(mem, count_mem);
+    exit_code = execute(mem, count_mem); //DA ERRO AQUI
 
     if(argc == 3)
         write_results(argv[argc-1], exit_code, mem);
@@ -179,7 +179,7 @@ int execute(unsigned int *mem, int count_mem)
         // Identifica o tipo da instrução
         type = identify_type(opcode);
 
-        if (type == 'r')
+        if (type == 'r') //ERRO AQUI
         {
             if(decode_r_type(mem[pc]) == -1)
                 return -1;
@@ -376,6 +376,7 @@ int decode_r_type(unsigned int instruction)
     //div
     else if (func == 0x1A)
     {
+        
         registers[rd] = registers[rs] / registers[rt];
     }
     else {
