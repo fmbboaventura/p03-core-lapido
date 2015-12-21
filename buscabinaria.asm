@@ -18,7 +18,7 @@ MAIOR:
 		inca r2,r4,1    ; valor de inicio é incrementado em mais um
 		j LOOP
 MENOR: 
-		deca r3, r4,1
+		deca r3,r4,1
 		j LOOP
 EXIT:  		j EXIT
 
