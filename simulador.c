@@ -212,7 +212,7 @@ char identify_type(int opcode)
 
     if (opcode == 0x00)
     {
-        result == 'r';
+        result = 'r';
     }
     else if (opcode == 0x01 || // lcl
              opcode == 0x03 || // jal
@@ -253,16 +253,6 @@ int decode_r_type(unsigned int instruction)
     int rs = instruction >> sftRs;
     int rt = instruction >> sftRt;
     int func = instruction & 0x3F;
-
-    if (rd >= MAX_REGISTER ||
-        rs >= MAX_REGISTER ||
-        rt >= MAX_REGISTER)
-    {
-        printf("----------------------------------\n");
-        printf("ERRO!! INDICE DO REGISTRADOR >= %d\n", MAX_REGISTER);
-        printf("----------------------------------\n");
-        return -1;
-    }
 
     // add rd = rs + rt
     if (func == 0x20)
@@ -403,15 +393,6 @@ int decode_i_type(unsigned int instruction, int opcode, unsigned int *mem)
     int rd = instruction >> sftRd;
     int rs = instruction >> sftRs;
     int imm = instruction & 0xFFFF;
-
-    if (rd >= MAX_REGISTER ||
-        rs >= MAX_REGISTER)
-    {
-        printf("----------------------------------\n");
-        printf("ERRO!! INDICE DO REGISTRADOR >= %d\n", MAX_REGISTER);
-        printf("----------------------------------\n");
-        return -1;
-    }
 
     // lch
     if(opcode == 0x07)
