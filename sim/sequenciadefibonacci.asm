@@ -22,13 +22,9 @@ LOOP:
 			slt r6, r0,r1 ; verifica se r0 é menor que o número de elementos desejado na sequência
 			bne r6, r7, LOOP ; se index for diferente do número de elementos continua LOOP1			
 			
-HALT: j HALT 		 ;r6 é igual a r7 e o número delementos foi atingido, chegando ao fim					
+HALT: j HALT 		 ;r6 é igual a r7 e o número de elementos foi atingido, chegando ao fim					
 
 .dseg
-ARR1:	;admite-se a quantidade de r1
-	.word 0
-	.word 0
-	.word 0
-	.word 0
-	.word 0
+ARR1:	
+
 .end
