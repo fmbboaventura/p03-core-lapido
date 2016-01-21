@@ -1,8 +1,9 @@
 .module flags
 .pseg
         ; Testa flags
-        ;       
+        ;
 	; r0 points to ARR1
+        LABEL:
         lcl	r0, LOWBYTE ARR1
         lch	r0, HIGHBYTE ARR1
 	zeros	r1
@@ -31,14 +32,14 @@
 	deca	r0,r0
 	passa	r3,r1
 	jt.zero L1
-	nop
+	nop ;VERIFICAR O QUE É
 	store	r0,r1
 L1:	inca	r0,r0
 	passb	r3,r1
 	jf.zero L2
 	nop
 	store	r0,r1
-L2:	inca	r0,r0		
+L2:	inca	r0,r0
 	zeros	r3
 	deca	r3,r3
 	inca	r3,r3
@@ -48,7 +49,7 @@ L2:	inca	r0,r0
 L31:	jf.overflow L3
 	nop
 	inca	r0,r0
-	store	r0,r1	
+	store	r0,r1
 	deca	r0,r0
 L3:	inca	r0,r0
 	inca	r0,r0
@@ -77,10 +78,10 @@ L6:	inca	r0,r0
 	jt.zero HLT
 	nop
 	store	r0,r1
-HALT:   j HALT
+HALT:   j HALT ;VER ESSE AQUI AINDA
         nop
-	;; 
-.dseg
+	;;
+.dseg ;INICIA O SEGMENTO DE DADOS
 ARR1:
         .word  0               ; errou flag ZERO 	passa 		(FFFF->0)
         .word  0               ; errou flag ZERO 	passb 		(FFFF->0)

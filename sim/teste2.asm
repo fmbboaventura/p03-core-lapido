@@ -15,7 +15,7 @@ L2:  passa r1,r4
      jal r6
      nop
      and r1,r1,r1
-     jt.zero SKIP
+     jt.zero SKIP ;VER
      nop
      inca r2,r2
      sub r1,r4,r2
@@ -30,8 +30,8 @@ SKIP:
      jf.zero L1
      nop   
      passa r5,r0
-     lcl r3, LOWBYTE STACK
-     lch r3, HIGHBYTE STACK
+     lcl r3, LOWBYTE STACK ;VER
+     lch r3, HIGHBYTE STACK ;VER
 L3:  load r1,r3
      passb r2,r1
      jal r6
@@ -42,16 +42,16 @@ L3:  load r1,r3
      sub   r7,r3,r5
      jf.zero L3
      nop
-HLT: j HLT
+HLT: j HLT ;VER
      nop
      ; Computes the remainder of R1 divided by R2, both positive
      ; by doing successive subtractions.
 DIV: sub r1,r1,r2
      jt.neg ADD
      nop
-     jt.zero RET
+     jt.zero RET ;VER
      nop
-     j DIV
+     j DIV ;VER
      nop
 ADD: add r1,r1,r2
 RET: jr r7
