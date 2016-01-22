@@ -216,11 +216,17 @@ void Traducao(FILE *entrada, FILE *saida){
         {
             //printf("%s\n", palavra);
             instrucao = 0;
-            if (strcmp(palavra, ".word") == 0) {
-              printf("constante\n");
+            if(strcmp(palavra, ".dseg") == 0)
+            {
+                printf("Segmento de dados\n");
+                fprintf(saida, "\n");
+            }
+            if (strcmp(palavra, ".word") == 0)
+            {
+              //printf("constante\n");
               LerPalavra (entrada, &p[0]);
               c = strtol(&p[0][0], NULL, 10);
-              printf("%Escrevendo constante\n");
+              printf("Escrevendo constante %d\n", c);
               EscreveBinario(c, saida);
             }
         }
@@ -1359,13 +1365,21 @@ void CriaTabelas(FILE *entrada){
             }
         }
 
+        // palavra contém a diretiva
         if(palavra[0] == '.')
         {
-            // palavra contém a diretiva
-            if (strcmp(".word", palavra) == 0)
+            if(strcmp(".dseg", palavra) == 0)
+            {
+                printf("Segmento de dados encontrado\nlinhaCount = 0\n");
+                linhaCount = 0;
+            }
+            else if (strcmp(".word", palavra) == 0)
             {
                 // Diretivas, excerto .word,
                 // Não contam como linha de código
+                //printf(".word linhaCount = %d\n", linhaCount);
+                Linha_Saltar(entrada);
+                //getchar();
                 linhaCount++;
             }
             else if (strcmp(".module", palavra) == 0)
@@ -1377,6 +1391,7 @@ void CriaTabelas(FILE *entrada){
         //SE FOR INSTRUÇÃO, DESCONSIDERA E PULA A LINHA, JA QUE AGENTE SÓ QUER LABELS
         if (instrucao)
          {
+            //printf("Instrução %s\n", palavra);
             if(strcmp("nop", palavra) != 0)
               Linha_Saltar(entrada);
             linhaCount++;

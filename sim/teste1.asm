@@ -80,7 +80,7 @@ L6:	inca	r0,r0
 	store	r0,r1
 HALT:   j HALT ;VER ESSE AQUI AINDA
         nop
-	;;
+
 .dseg ;INICIA O SEGMENTO DE DADOS
 ARR1:
         .word  0               ; errou flag ZERO 	passa 		(FFFF->0)
