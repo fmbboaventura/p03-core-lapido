@@ -42,7 +42,7 @@ int sftRt = 11;
 int reg_jal = 0;
 
 // Vetor representando a memória de instrução
-unsigned int *instr_mem;
+unsigned int *inst_mem;
 
 // Vetor representando a memória de dados
 unsigned int *data_mem;
@@ -106,7 +106,7 @@ int main(int argc, char const *argv[]) {
         return -1;
     }
 
-    instr_mem = malloc(sizeof(int) * MAX_MEM);
+    inst_mem = malloc(sizeof(int) * MAX_MEM);
     data_mem  = malloc(sizeof(int) * MAX_MEM);
 
     read_words(&arq_mem);
@@ -119,7 +119,8 @@ int main(int argc, char const *argv[]) {
     else
         write_results(default_output_file, exit_code);
 
-    free(instr_mem);
+    free(inst_mem);
+    free(data_mem);
     return exit_code;
 }
 
@@ -149,7 +150,7 @@ void read_words(FILE **arq)
         printf("%s\n", word);
         if (strcmp("*", word) == 0) break;
         //getchar();
-        instr_mem[instr_count] = convert_to_int(word);
+        inst_mem[instr_count] = convert_to_int(word);
     }
 
     printf("Segmento de dados\n");
@@ -160,7 +161,7 @@ void read_words(FILE **arq)
         getchar();
         data_mem[data_count] = convert_to_int(word);
     }
-    
+
 }
 
 unsigned int convert_to_int(char *bit_string)
@@ -200,23 +201,23 @@ int execute()
     {
         printf("%d\n", pc);
         // Desloca os bits da instrução para achar o opcode
-        opcode = instr_mem[pc] >> sftOpcode;
+        opcode = inst_mem[pc] >> sftOpcode;
         // Identifica o tipo da instrução
         type = identify_type(opcode);
 
         if (type == 'r') //ERRO AQUI
         {
-            if(decode_r_type(instr_mem[pc]) == -1)
+            if(decode_r_type(inst_mem[pc]) == -1)
                 return -1;
         }
         else if (type == 'i')
         {
-            if(exit_code = decode_i_type(instr_mem[pc], opcode) == -1)
+            if(exit_code = decode_i_type(inst_mem[pc], opcode) == -1)
                 return -1;
         }
         else if (type == 'j')
         {
-            exit_code = decode_j_type(instr_mem[pc], opcode);
+            exit_code = decode_j_type(inst_mem[pc], opcode);
             if(exit_code == HALT)
                 return 0;
             else if (exit_code == -1)
