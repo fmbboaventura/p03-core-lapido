@@ -219,7 +219,7 @@ void Traducao(FILE *entrada, FILE *saida){
             if(strcmp(palavra, ".dseg") == 0)
             {
                 printf("Segmento de dados\n");
-                fprintf(saida, "\n");
+                fprintf(saida, "*\n");
             }
             if (strcmp(palavra, ".word") == 0)
             {

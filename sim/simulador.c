@@ -41,17 +41,23 @@ int sftRt = 11;
 // Registrador específico para armazenar o pc em uma execução do jal
 int reg_jal = 0;
 
-// Vetor representando a memória
-unsigned int *mem;
-// numero de espaços válidos
-int count_mem;
+// Vetor representando a memória de instrução
+unsigned int *instr_mem;
+
+// Vetor representando a memória de dados
+unsigned int *data_mem;
+
+// numero de instruçõs na memória
+int instr_count;
+
+// numero de de dados na memória
+int data_count;
 
 // Função que zera os registradores e flags
 void clear_all();
 
-// Lê o arquivo e armazena as palavras em um vetor
-// Retorna o numero de palavras lidas
-int read_words(FILE **arq);
+// Lê o arquivo e inicializa as memórias
+void read_words(FILE **arq);
 
 // Converte uma string com uma sequencia de bits em um numero decimal
 unsigned int convert_to_int(char *bit_string);
@@ -96,12 +102,14 @@ int main(int argc, char const *argv[]) {
 
     if (arq_mem == NULL)
     {
-        printf("Arquivo de instruções não foi aberto!\n");
+        printf("Arquivo de entrada não foi aberto!\n");
         return -1;
     }
 
-    mem = malloc(sizeof(int) * MAX_MEM);
-    count_mem = read_words(&arq_mem);
+    instr_mem = malloc(sizeof(int) * MAX_MEM);
+    data_mem  = malloc(sizeof(int) * MAX_MEM);
+
+    read_words(&arq_mem);
     fclose(arq_mem);
 
     exit_code = execute(); //DA ERRO AQUI
@@ -111,7 +119,7 @@ int main(int argc, char const *argv[]) {
     else
         write_results(default_output_file, exit_code);
 
-    free(mem);
+    free(instr_mem);
     return exit_code;
 }
 
@@ -130,19 +138,29 @@ void clear_all()
     }
 }
 
-int read_words(FILE **arq)
+void read_words(FILE **arq)
 {
     int i;
     char word[33];
 
-    for (i = 0; (!feof(*arq)); i++)
+    for (instr_count = 0; (!feof(*arq)); instr_count++)
     {
         fscanf(*arq, "%s", word);
-        mem[i] = convert_to_int(word);
+        printf("%s\n", word);
+        if (strcmp("*", word) == 0) break;
+        //getchar();
+        instr_mem[instr_count] = convert_to_int(word);
     }
-    //printf("%d\n", i);
-    //getchar();
-    return i;
+
+    printf("Segmento de dados\n");
+    for(data_count = 0; (!feof(*arq)); data_count++)
+    {
+        fscanf(*arq, "%s", word);
+        printf("%s\n", word);
+        getchar();
+        data_mem[data_count] = convert_to_int(word);
+    }
+    
 }
 
 unsigned int convert_to_int(char *bit_string)
@@ -178,27 +196,27 @@ int execute()
     int exit_code = 0;
     char type;
 
-    for (pc = 0; pc < count_mem; pc++)
+    for (pc = 0; pc < instr_count; pc++)
     {
         printf("%d\n", pc);
         // Desloca os bits da instrução para achar o opcode
-        opcode = mem[pc] >> sftOpcode;
+        opcode = instr_mem[pc] >> sftOpcode;
         // Identifica o tipo da instrução
         type = identify_type(opcode);
 
         if (type == 'r') //ERRO AQUI
         {
-            if(decode_r_type(mem[pc]) == -1)
+            if(decode_r_type(instr_mem[pc]) == -1)
                 return -1;
         }
         else if (type == 'i')
         {
-            if(exit_code = decode_i_type(mem[pc], opcode) == -1)
+            if(exit_code = decode_i_type(instr_mem[pc], opcode) == -1)
                 return -1;
         }
         else if (type == 'j')
         {
-            exit_code = decode_j_type(mem[pc], opcode);
+            exit_code = decode_j_type(instr_mem[pc], opcode);
             if(exit_code == HALT)
                 return 0;
             else if (exit_code == -1)
@@ -695,12 +713,12 @@ int decode_i_type(unsigned int instruction, int opcode)
     // load
     else if (opcode == 0x23)
     {
-        registers[rd] = mem[registers[rs]];
+        registers[rd] = data_mem[registers[rs]];
     }
     // store
     else if (opcode == 0x2b)
     {
-        mem[registers[rs]] = registers[rd];
+        data_mem[registers[rs]] = registers[rd];
     }
     return 0;
 }
@@ -747,7 +765,7 @@ void write_results(char const *file_name, int exit_code)
 
     for (i = 0; i < MAX_MEM; i++)
     {
-        fprintf(arq_out, "mem[%d]: %x\n", i, mem[i]);
+        fprintf(arq_out, "mem[%d]: %x\n", i, data_mem[i]);
     }
 
     fclose(arq_out);
