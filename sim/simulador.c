@@ -65,8 +65,7 @@ unsigned int convert_to_int(char *bit_string);
 unsigned int pow_unsig(unsigned int base, unsigned int exp);
 
 // Executa as instruções no array
-// ATENÇÂO: não faz distinção entre dados e
-// intruções. O código deve conter um halt para
+// O código deve conter um halt para
 // terminar a execução.
 void execute();
 
@@ -101,7 +100,7 @@ int main(int argc, char const *argv[]) {
     if (arq_mem == NULL)
     {
         printf("Arquivo de entrada não foi aberto!\n");
-        return -1;
+        return EXIT_FAILURE;
     }
 
     inst_mem = malloc(sizeof(int) * MAX_MEM);
@@ -146,17 +145,17 @@ void read_words(FILE **arq)
     for (instr_count = 0; (!feof(*arq)); instr_count++)
     {
         fscanf(*arq, "%s", word);
-        printf("%s\n", word);
+        //printf("%s\n", word);
         if (strcmp("*", word) == 0) break;
         //getchar();
         inst_mem[instr_count] = convert_to_int(word);
     }
 
-    printf("Segmento de dados\n");
+    //printf("Segmento de dados\n");
     for(data_count = 0; (!feof(*arq)); data_count++)
     {
         fscanf(*arq, "%s", word);
-        printf("%s\n", word);
+        //printf("%s\n", word);
         //getchar();
         data_mem[data_count] = convert_to_int(word);
     }
@@ -198,7 +197,7 @@ void execute()
 
     for (pc = 0; pc < instr_count; pc++)
     {
-        printf("%d\n", pc);
+        printf("PC = %d\n", pc);
         // Desloca os bits da instrução para achar o opcode
         opcode = inst_mem[pc] >> sftOpcode;
         // Identifica o tipo da instrução
@@ -219,6 +218,8 @@ void execute()
                 break;
         }
         else abort();
+
+        getchar();
     }
 }
 
@@ -644,6 +645,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     // jt
     else if (opcode == 0x09)
     {
+        printf("JT\n");
         // rd contém o código da condição
         if (rd == 0x04 && flags[F_NEG]      ||
             rd == 0x05 && flags[F_ZERO]     ||
@@ -653,12 +655,14 @@ void decode_i_type(unsigned int instruction, int opcode)
             rd == 0x00 && flags[F_OVERFLOW])
         {
             // Decrementa pra compensar o incremento do for
+            printf("Pulou\n");
                 pc = imm - 1;
         }
     }
     // jf
     else if (opcode == 0x10)
     {
+        printf("JF\n");
         // rd contém o código da condição
         if (rd == 0x04 && !flags[F_NEG]      ||
             rd == 0x05 && !flags[F_ZERO]     ||
@@ -668,6 +672,7 @@ void decode_i_type(unsigned int instruction, int opcode)
             rd == 0x00 && !flags[F_OVERFLOW])
         {
             // Decrementa pra compensar o incremento do for
+            printf("Pulou\n");
                 pc = imm - 1;
         }
     }
@@ -725,6 +730,7 @@ int decode_j_type(unsigned int instruction, int opcode)
     // jump
     if(opcode == 0x02)
     {
+        printf("JUMP\n");
         // Se pc == address, é um halt
         if (pc == address)
         {

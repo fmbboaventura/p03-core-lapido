@@ -75,7 +75,7 @@ L5:	inca	r0,r0
 	store	r0,r1
 L6:	inca	r0,r0
         passnota r2,r2
-	jt.zero HLT
+	jt.zero HALT
 	nop
 	store	r0,r1
 HALT:   j HALT ;VER ESSE AQUI AINDA

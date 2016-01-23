@@ -906,19 +906,24 @@ EscreveBinario(binario, saida);
                 binario = binario | (0x04 << sftRd);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
+                printf("%d\n", c);
                 if(c > 0xFFFF)
                     exit -1;
                 for (i = 0; i < MAX_TAB; i++)
                 {
                     if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
                     {
+                        printf("%s %d\n", p[0], tbLabels[i].endereco);
+                        printf("%x\n", binario);
                         binario = binario | (tbLabels[i].endereco);
+                        printf("%x\n", binario);
+                        //getchar();
                         label = 1;
                         break;
                     }
                 }
-                if (label)
-                    binario = binario | c;
+                // if (label)
+                //     binario = binario | c;
                 printf("Escrevendo %s\n", palavra);
 EscreveBinario(binario, saida);
             }
@@ -931,19 +936,24 @@ EscreveBinario(binario, saida);
                 binario = binario | (0x05 << sftRd);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
+                printf("%d\n", c);
                 if(c > 0xFFFF)
                     exit -1;
                 for (i = 0; i < MAX_TAB; i++)
                     {
                         if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
                         {
+                            printf("%s %d\n", p[0], tbLabels[i].endereco);
+                            printf("%x\n", binario);
                             binario = binario | (tbLabels[i].endereco);
+                            printf("%x\n", binario);
+                            //getchar();
                             label = 1;
                             break;
                         }
                     }
-                if(label)
-                    binario = binario | c;
+                // if(label)
+                //     binario = binario | c;
                 printf("Escrevendo %s\n", palavra);
 EscreveBinario(binario, saida);
             }
@@ -956,19 +966,24 @@ EscreveBinario(binario, saida);
                 binario = binario | (0x06 << sftRd);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
+                printf("%d\n", c);
                 if(c > 0xFFFF)
                     exit -1;
                 for (i = 0; i < MAX_TAB; i++)
                     {
                         if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
                         {
+                            printf("%s %d\n", p[0], tbLabels[i].endereco);
+                            printf("%x\n", binario);
                             binario = binario | (tbLabels[i].endereco);
+                            printf("%x\n", binario);
+                            //getchar();
                             label = 1;
                             break;
                         }
                     }
-                if(label)
-                    binario = binario | c;
+                // if(label)
+                //     binario = binario | c;
                 printf("Escrevendo %s\n", palavra);
 EscreveBinario(binario, saida);
             }
@@ -981,19 +996,24 @@ EscreveBinario(binario, saida);
                 binario = binario | (0x07 << sftRd);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
+                printf("%d\n", c);
                 if(c > 0xFFFF)
                     exit -1;
                 for (i = 0; i < MAX_TAB; i++)
                     {
                         if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
                         {
+                            printf("%s %d\n", p[0], tbLabels[i].endereco);
+                            printf("%x\n", binario);
                             binario = binario | (tbLabels[i].endereco);
+                            printf("%x\n", binario);
+                            //getchar();
                             label = 1;
                             break;
                         }
                     }
-                if(label)
-                    binario = binario | c;
+                // if(label)
+                //     binario = binario | c;
                 printf("Escrevendo %s\n", palavra);
 EscreveBinario(binario, saida);
             }
@@ -1006,19 +1026,24 @@ EscreveBinario(binario, saida);
                 binario = binario | (0x00 << sftRd);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
+                printf("%d\n", c);
                 if(c > 0xFFFF)
                     exit -1;
                 for (i = 0; i < MAX_TAB; i++)
                     {
                         if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
                         {
+                            printf("%s %d\n", p[0], tbLabels[i].endereco);
+                            printf("%x\n", binario);
                             binario = binario | (tbLabels[i].endereco);
+                            printf("%x\n", binario);
+                            //getchar();
                             label = 1;
                             break;
                         }
                     }
-                if(label)
-                    binario = binario | c;
+                // if(label)
+                //     binario = binario | c;
                 printf("Escrevendo %s\n", palavra);
 EscreveBinario(binario, saida);
             }
@@ -1031,19 +1056,24 @@ EscreveBinario(binario, saida);
                 binario = binario | (0x03 << sftRd);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
+                printf("%d\n", c);
                 if(c > 0xFFFF)
                     exit -1;
                 for (i = 0; i < MAX_TAB; i++)
                     {
                         if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
                         {
+                            printf("%s %d\n", p[0], tbLabels[i].endereco);
+                            printf("%x\n", binario);
                             binario = binario | (tbLabels[i].endereco);
+                            printf("%x\n", binario);
+                            //getchar();
                             label = 1;
                             break;
                         }
                     }
-                if (label)
-                    binario = binario | c;
+                // if (label)
+                //     binario = binario | c;
                 printf("Escrevendo %s\n", palavra);
 EscreveBinario(binario, saida);
             }
@@ -1056,19 +1086,24 @@ EscreveBinario(binario, saida);
                 binario = binario | (0x04 << sftRd);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
+                printf("%d\n", c);
                 if(c > 0xFFFF)
                     exit -1;
                 for (i = 0; i < MAX_TAB; i++)
                     {
                         if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
                         {
+                            printf("%s %d\n", p[0], tbLabels[i].endereco);
+                            printf("%x\n", binario);
                             binario = binario | (tbLabels[i].endereco);
+                            printf("%x\n", binario);
+                            //getchar();
                             label = 1;
                             break;
                         }
                     }
-                if(label)
-                    binario = binario | c;
+                // if(label)
+                //     binario = binario | c;
                 printf("Escrevendo %s\n", palavra);
 EscreveBinario(binario, saida);
             }
@@ -1081,19 +1116,24 @@ EscreveBinario(binario, saida);
                 binario = binario | (0x05 << sftRd);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
+                printf("%d\n", c);
                 if(c > 0xFFFF)
                     exit -1;
                 for (i = 0; i < MAX_TAB; i++)
                     {
                         if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
                         {
+                            printf("%s %d\n", p[0], tbLabels[i].endereco);
+                            printf("%x\n", binario);
                             binario = binario | (tbLabels[i].endereco);
+                            printf("%x\n", binario);
+                            //getchar();
                             label = 1;
                             break;
                         }
                     }
-                if(label)
-                    binario = binario | c;
+                // if(label)
+                //     binario = binario | c;
                 printf("Escrevendo %s\n", palavra);
 EscreveBinario(binario, saida);;
             }
@@ -1106,19 +1146,24 @@ EscreveBinario(binario, saida);;
                 binario = binario | (0x06 << sftRd);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
+                printf("%d\n", c);
                 if(c > 0xFFFF)
                     exit -1;
                 for (i = 0; i < MAX_TAB; i++)
                     {
                         if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
                         {
+                            printf("%s %d\n", p[0], tbLabels[i].endereco);
+                            printf("%x\n", binario);
                             binario = binario | (tbLabels[i].endereco);
+                            printf("%x\n", binario);
+                            //getchar();
                             label = 1;
                             break;
                         }
                     }
-                if(label)
-                    binario = binario | c;
+                // if(label)
+                //     binario = binario | c;
                 printf("Escrevendo %s\n", palavra);
 EscreveBinario(binario, saida);
             }
@@ -1131,19 +1176,24 @@ EscreveBinario(binario, saida);
                 binario = binario | (0x07 << sftRd);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
+                printf("%d\n", c);
                 if(c > 0xFFFF)
                     exit -1;
                 for (i = 0; i < MAX_TAB; i++)
                     {
                         if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
                         {
+                            printf("%s %d\n", p[0], tbLabels[i].endereco);
+                            printf("%x\n", binario);
                             binario = binario | (tbLabels[i].endereco);
+                            printf("%x\n", binario);
+                            //getchar();
                             label = 1;
                             break;
                         }
                     }
-                if(label)
-                    binario = binario | c;
+                // if(label)
+                //     binario = binario | c;
                 printf("Escrevendo %s\n", palavra);
 EscreveBinario(binario, saida);
             }
@@ -1156,19 +1206,24 @@ EscreveBinario(binario, saida);
                 binario = binario | (0x00 << sftRd);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
+                printf("%d\n", c);
                 if(c > 0xFFFF)
                     exit -1;
                 for (i = 0; i < MAX_TAB; i++)
                     {
                         if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
                         {
+                            printf("%s %d\n", p[0], tbLabels[i].endereco);
+                            printf("%x\n", binario);
                             binario = binario | (tbLabels[i].endereco);
+                            printf("%x\n", binario);
+                            //getchar();
                             label = 1;
                             break;
                         }
                     }
-                if(label)
-                    binario = binario | c;
+                // if(label)
+                //     binario = binario | c;
                 printf("Escrevendo %s\n", palavra);
 EscreveBinario(binario, saida);
             }
@@ -1181,19 +1236,24 @@ EscreveBinario(binario, saida);
                 binario = binario | (0x03 << sftRd);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
+                printf("%d\n", c);
                 if(c > 0xFFFF)
                     exit -1;
                 for (i = 0; i < MAX_TAB; i++)
                     {
                         if (strcmp(p[0], tbLabels[i].txtPalavra) == 0)
                         {
+                            printf("%s %d\n", p[0], tbLabels[i].endereco);
+                            printf("%x\n", binario);
                             binario = binario | (tbLabels[i].endereco);
+                            printf("%x\n", binario);
+                            //getchar();
                             label = 1;
                             break;
                         }
                     }
-                if(label)
-                    binario = binario | c;
+                // if(label)
+                //     binario = binario | c;
                 printf("Escrevendo %s\n", palavra);
 EscreveBinario(binario, saida);
             }
