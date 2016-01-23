@@ -16,12 +16,12 @@
 #define HALT 1
 
 // Definindo a posição das flags no vetor
-#define ZERO     0
-#define NEG      1
-#define CARRY    2
-#define NEGZERO  3
-#define OVERFLOW 4
-#define _TRUE    5
+#define F_ZERO     0
+#define F_NEG      1
+#define F_CARRY    2
+#define F_NEGZERO  3
+#define F_OVERFLOW 4
+#define F_TRUE     5
 
 // Contador de programa
 int pc=0;
@@ -38,9 +38,6 @@ int sftRd = 21;
 int sftRs = 16;
 int sftRt = 11;
 
-// Registrador específico para armazenar o pc em uma execução do jal
-int reg_jal = 0;
-
 // Vetor representando a memória de instrução
 unsigned int *inst_mem;
 
@@ -52,6 +49,8 @@ int instr_count;
 
 // numero de de dados na memória
 int data_count;
+
+char const default_output_file[8] = "res.txt";
 
 // Função que zera os registradores e flags
 void clear_all();
@@ -69,22 +68,23 @@ unsigned int pow_unsig(unsigned int base, unsigned int exp);
 // ATENÇÂO: não faz distinção entre dados e
 // intruções. O código deve conter um halt para
 // terminar a execução.
-// Retorna 0 caso não haja problemas. -1, caso contrário.
-int execute();
+void execute();
 
 // Retorna o tipo da instrução
 char identify_type(int opcode);
 
 // Decodifica e executa instruções do tipo r
-int decode_r_type(unsigned int instruction);
+void decode_r_type(unsigned int instruction);
 
 // Decodifica e executa instruções do tipo i
-int decode_i_type(unsigned int instruction, int opcode);
+void decode_i_type(unsigned int instruction, int opcode);
 
 // Decodifica e executa instruções do tipo j
 int decode_j_type(unsigned int instruction, int opcode);
 
 void write_results(char const *file_name, int exit_code);
+
+void abort();
 
 bool sum_check_overflow(int op1, int op2, int res);
 
@@ -95,8 +95,6 @@ bool check_carry(unsigned int op1, unsigned int op2);
 int main(int argc, char const *argv[]) {
     int exit_code = 0;
     FILE *arq_mem;
-
-    char const default_output_file[8] = "res.txt";
 
     arq_mem = fopen(argv[1], "rt");
 
@@ -112,12 +110,13 @@ int main(int argc, char const *argv[]) {
     read_words(&arq_mem);
     fclose(arq_mem);
 
-    exit_code = execute(); //DA ERRO AQUI
+    execute();
 
+    // Se algo der errado, o programa aborta antes de chegar aqui
     if(argc == 3)
-        write_results(argv[argc-1], exit_code);
+        write_results(argv[argc-1], EXIT_SUCCESS);
     else
-        write_results(default_output_file, exit_code);
+        write_results(default_output_file, EXIT_SUCCESS);
 
     free(inst_mem);
     free(data_mem);
@@ -158,7 +157,7 @@ void read_words(FILE **arq)
     {
         fscanf(*arq, "%s", word);
         printf("%s\n", word);
-        getchar();
+        //getchar();
         data_mem[data_count] = convert_to_int(word);
     }
 
@@ -191,7 +190,7 @@ unsigned int pow_unsig(unsigned int base, unsigned int exp)
     return res;
 }
 
-int execute()
+void execute()
 {
     int opcode;
     int exit_code = 0;
@@ -207,28 +206,20 @@ int execute()
 
         if (type == 'r') //ERRO AQUI
         {
-            if(decode_r_type(inst_mem[pc]) == -1)
-                return -1;
+            decode_r_type(inst_mem[pc]);
         }
         else if (type == 'i')
         {
-            if(exit_code = decode_i_type(inst_mem[pc], opcode) == -1)
-                return -1;
+            decode_i_type(inst_mem[pc], opcode);
         }
         else if (type == 'j')
         {
             exit_code = decode_j_type(inst_mem[pc], opcode);
             if(exit_code == HALT)
-                return 0;
-            else if (exit_code == -1)
-                return -1;
+                break;
         }
-        else
-        {
-            return -1;
-        }
+        else abort();
     }
-    return 0;
 }
 
 char identify_type(int opcode)
@@ -271,7 +262,7 @@ char identify_type(int opcode)
     return result;
 }
 
-int decode_r_type(unsigned int instruction)
+void decode_r_type(unsigned int instruction)
 {
     // Identifica os campos da instrução
     int rd = (instruction >> sftRd) & 0x1f;
@@ -288,215 +279,215 @@ int decode_r_type(unsigned int instruction)
     {
         registers[rd] = registers[rs] + registers[rt];
 
-        flags[OVERFLOW] = sum_check_overflow(registers[rs], registers[rt], registers[rd]);
-        flags[CARRY] = check_carry(registers[rs], registers[rt]);
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = sum_check_overflow(registers[rs], registers[rt], registers[rd]);
+        flags[F_CARRY] = check_carry(registers[rs], registers[rt]);
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //sub e zeros
     else if (func == 0x22)
     {
         registers[rd] = registers[rs] - registers[rt];
 
-        flags[OVERFLOW] = sub_check_overflow(registers[rs], registers[rt], registers[rd]);
-        flags[CARRY] = check_carry(registers[rs], registers[rt]);
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = sub_check_overflow(registers[rs], registers[rt], registers[rd]);
+        flags[F_CARRY] = check_carry(registers[rs], registers[rt]);
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //and
     else if (func == 0x24)
     {
         registers[rd] = registers[rs] & registers[rt];
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //or
     else if (func == 0x25)
     {
         registers[rd] = registers[rs] | registers[rt];
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //not
     else if (func == 0x21)
     {
         registers[rd] = !registers[rs];
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //xor
     else if (func == 0x26)
     {
         registers[rd] = registers[rs] ^ registers[rt];
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //andnota
     else if (func == 0x23)
     {
         registers[rd] = (!registers[rs]) & registers[rt];
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //nor
     else if (func == 0x27)
     {
         registers[rd] = !(registers[rs] | registers[rt]);
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //xnor
     else if (func == 0x28)
     {
         registers[rd] = !(registers[rs] ^ registers[rt]);
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //ornotb
     else if (func == 0x29)
     {
         registers[rd] = registers[rs] | (!registers[rt]);
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //nand
     else if (func == 0x1B)
     {
         registers[rd] = !(registers[rs] & registers[rt]);
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //passa
     else if (func == 0x2B)
     {
         registers[rd] = registers[rs];
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //passnota
     else if (func == 0x2C)
     {
         registers[rd] = !registers[rs];
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //inca
     else if (func == 0x2D)
     {
         registers[rd] = registers[rs] + 1;
 
-        flags[OVERFLOW] = sum_check_overflow(registers[rs], 1, registers[rd]);
-        flags[CARRY] = check_carry(registers[rs], 1);
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = sum_check_overflow(registers[rs], 1, registers[rd]);
+        flags[F_CARRY] = check_carry(registers[rs], 1);
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //deca
     else if (func == 0x2E)
     {
         registers[rd] = registers[rs] - 1;
 
-        flags[OVERFLOW] = sub_check_overflow(registers[rs], 1, registers[rd]);
-        flags[CARRY] = check_carry(registers[rs], -1);
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = sub_check_overflow(registers[rs], 1, registers[rd]);
+        flags[F_CARRY] = check_carry(registers[rs], -1);
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //addinc
     else if (func == 0x2F)
     {
         registers[rd] = registers[rs] + registers[rt] + 1;
 
-        flags[OVERFLOW] = sum_check_overflow(registers[rs] + registers[rt], 1, registers[rd]);
-        flags[CARRY] = check_carry(registers[rs] + registers[rt], 1);
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = sum_check_overflow(registers[rs] + registers[rt], 1, registers[rd]);
+        flags[F_CARRY] = check_carry(registers[rs] + registers[rt], 1);
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //subdec
     else if (func == 0x30)
     {
         registers[rd] = registers[rs] - registers[rt] - 1;
 
-        flags[OVERFLOW] = sub_check_overflow(registers[rs] - registers[rt], 1, registers[rd]);
-        flags[CARRY] = check_carry(registers[rs] - registers[rt], -1);
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = sub_check_overflow(registers[rs] - registers[rt], 1, registers[rd]);
+        flags[F_CARRY] = check_carry(registers[rs] - registers[rt], -1);
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //lsl
     else if (func == 0x00)
     {
         registers[rd] = registers[rs] << 1;
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //lsr
     else if (func == 0x02)
@@ -504,36 +495,36 @@ int decode_r_type(unsigned int instruction)
         unsigned int temp = registers[rs] >> 1;
         registers[rd] = temp;
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //asl
     else if (func == 0x04)
     {
         registers[rd] = registers[rs] << 1;
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //asr
     else if (func == 0x03)
     {
         registers[rd] = registers[rs] >> 1;
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] =false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] =false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     //slt
     else if (func == 0x2A)
@@ -541,12 +532,12 @@ int decode_r_type(unsigned int instruction)
         if (registers[rs] < registers[rt])
             registers[rd] == 1;
 
-            flags[OVERFLOW] = false;
-            flags[CARRY] = false;
-            flags[ZERO] = (registers[rd] == 0);
-            flags[_TRUE] = (registers[rd] != 0);
-            flags[NEGZERO] = (registers[rd] <= 0);
-            flags[NEG] = (registers[rd] <= 0);
+            flags[F_OVERFLOW] = false;
+            flags[F_CARRY] = false;
+            flags[F_ZERO] = (registers[rd] == 0);
+            flags[F_TRUE] = (registers[rd] != 0);
+            flags[F_NEGZERO] = (registers[rd] <= 0);
+            flags[F_NEG] = (registers[rd] <= 0);
     }
     //jr
     else if (func == 0x08)
@@ -562,23 +553,22 @@ int decode_r_type(unsigned int instruction)
 
         registers[rd] = registers[rs] / registers[rt];
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     else {
         printf("-------------------------------------\n");
         printf("ERRO!! FUNCTION 0x%02x DESCONHECIDO!!\n", func);
         printf("-------------------------------------\n");
-        return -1;
+        abort();
     }
-    return 0;
 }
 
-int decode_i_type(unsigned int instruction, int opcode)
+void decode_i_type(unsigned int instruction, int opcode)
 {
     // Identifica os campos da instrução
     int rd = (instruction >> sftRd) & 0x1f;
@@ -594,12 +584,12 @@ int decode_i_type(unsigned int instruction, int opcode)
     {
         registers[rd] = (imm << 16) | (registers[rd] & 0xffff);
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     // jal
     else if(opcode == 0x03)
@@ -644,23 +634,23 @@ int decode_i_type(unsigned int instruction, int opcode)
     {
         registers[rd] = registers[rs] + imm;
 
-        flags[OVERFLOW] = sum_check_overflow(registers[rs], imm, registers[rd]);
-        flags[CARRY] = check_carry(registers[rs], imm);
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = sum_check_overflow(registers[rs], imm, registers[rd]);
+        flags[F_CARRY] = check_carry(registers[rs], imm);
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     // jt
     else if (opcode == 0x09)
     {
         // rd contém o código da condição
-        if (rd == 0x04 && flags[NEG]      ||
-            rd == 0x05 && flags[ZERO]     ||
-            rd == 0x06 && flags[CARRY]    ||
-            rd == 0x07 && flags[NEGZERO]  ||
-            rd == 0x00 && flags[_TRUE]    ||
-            rd == 0x00 && flags[OVERFLOW])
+        if (rd == 0x04 && flags[F_NEG]      ||
+            rd == 0x05 && flags[F_ZERO]     ||
+            rd == 0x06 && flags[F_CARRY]    ||
+            rd == 0x07 && flags[F_NEGZERO]  ||
+            rd == 0x00 && flags[F_TRUE]    ||
+            rd == 0x00 && flags[F_OVERFLOW])
         {
             // Decrementa pra compensar o incremento do for
                 pc = imm - 1;
@@ -670,12 +660,12 @@ int decode_i_type(unsigned int instruction, int opcode)
     else if (opcode == 0x10)
     {
         // rd contém o código da condição
-        if (rd == 0x04 && !flags[NEG]      ||
-            rd == 0x05 && !flags[ZERO]     ||
-            rd == 0x06 && !flags[CARRY]    ||
-            rd == 0x07 && !flags[NEGZERO]  ||
-            rd == 0x00 && !flags[_TRUE]    ||
-            rd == 0x00 && !flags[OVERFLOW])
+        if (rd == 0x04 && !flags[F_NEG]      ||
+            rd == 0x05 && !flags[F_ZERO]     ||
+            rd == 0x06 && !flags[F_CARRY]    ||
+            rd == 0x07 && !flags[F_NEGZERO]  ||
+            rd == 0x00 && !flags[F_TRUE]    ||
+            rd == 0x00 && !flags[F_OVERFLOW])
         {
             // Decrementa pra compensar o incremento do for
                 pc = imm - 1;
@@ -692,24 +682,24 @@ int decode_i_type(unsigned int instruction, int opcode)
     {
         registers[rd] = registers[rs] & imm;
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     // ori
     else if (opcode == 0x0d)
     {
         registers[rd] = registers[rs] | imm;
 
-        flags[OVERFLOW] = false;
-        flags[CARRY] = false;
-        flags[ZERO] = (registers[rd] == 0);
-        flags[_TRUE] = (registers[rd] != 0);
-        flags[NEGZERO] = (registers[rd] <= 0);
-        flags[NEG] = (registers[rd] <= 0);
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] <= 0);
     }
     // load
     else if (opcode == 0x23)
@@ -721,7 +711,6 @@ int decode_i_type(unsigned int instruction, int opcode)
     {
         data_mem[registers[rs]] = registers[rd];
     }
-    return 0;
 }
 
 int decode_j_type(unsigned int instruction, int opcode)
@@ -770,6 +759,12 @@ void write_results(char const *file_name, int exit_code)
     }
 
     fclose(arq_out);
+}
+
+void abort()
+{
+    write_results(default_output_file, EXIT_FAILURE);
+    exit(EXIT_FAILURE);
 }
 
 bool sum_check_overflow(int op1, int op2, int res)
