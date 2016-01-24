@@ -219,7 +219,7 @@ void execute()
         }
         else abort();
 
-        getchar();
+        //getchar();
     }
 }
 
@@ -608,7 +608,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     {
 
         if (registers[rd] == registers[rs])
-            pc = imm - 1; // Não decrementa pois seria pc + imm + 1
+            pc = pc +imm; // Não decrementa pois seria pc + imm + 1
 
         // muda flag aqui?
     }
@@ -616,7 +616,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     else if (opcode == 0x05)
     {
         if (registers[rd] != registers[rs])
-            pc = imm - 1; // Não decrementa pois seria pc + imm + 1
+            pc = pc + imm; // Não decrementa pois seria pc + imm + 1
 
         // muda flag aqui?
     }
@@ -654,9 +654,9 @@ void decode_i_type(unsigned int instruction, int opcode)
             rd == 0x00 && flags[F_TRUE]    ||
             rd == 0x00 && flags[F_OVERFLOW])
         {
-            // Decrementa pra compensar o incremento do for
+            // No urisc, o jt e o jf são pc relative
             printf("Pulou\n");
-                pc = imm - 1;
+                pc = pc + imm;
         }
     }
     // jf
@@ -673,7 +673,7 @@ void decode_i_type(unsigned int instruction, int opcode)
         {
             // Decrementa pra compensar o incremento do for
             printf("Pulou\n");
-                pc = imm - 1;
+                pc = pc + imm;
         }
     }
     // slti

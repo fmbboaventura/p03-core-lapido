@@ -2,25 +2,25 @@ Simulador LAPI DOpaCA LAMBA ver. 1.0
 
 exit_code: 0
 Registradores:
-r0: 5
+r0: 1
 r1: 0
 r2: 0
-r3: 8388607
+r3: 0
 r4: 0
 r5: 0
-r6: 0
+r6: 1
 r7: 0
 r8: 0
 r9: 0
-r10: 0
+r10: 3
 r11: 0
 r12: 0
 r13: 0
 r14: 0
 r15: 0
 Memória:
-mem[0]: 4
-mem[1]: 0
+mem[0]: 3
+mem[1]: ae2348
 mem[2]: 0
 mem[3]: 0
 mem[4]: 0
@@ -44,12 +44,12 @@ mem[21]: 0
 mem[22]: 0
 mem[23]: 0
 mem[24]: 4
-mem[25]: 74a0
-mem[26]: 39008c
-mem[27]: 39008c
-mem[28]: 390038
-mem[29]: 390038
-mem[30]: 394000
+mem[25]: 67c9
+mem[26]: ae008c
+mem[27]: ae008c
+mem[28]: ae0038
+mem[29]: ae0038
+mem[30]: ae4000
 mem[31]: b000
 mem[32]: 0
 mem[33]: 0
