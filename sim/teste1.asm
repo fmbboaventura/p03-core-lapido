@@ -30,7 +30,7 @@
 	deca	r0,r0
 	deca	r0,r0
 	deca	r0,r0
-	passa	r3,r1
+	passa	r3,r1 ; se r1 for zero, a flag zero = true
 	jt.zero L1
 	nop ;VERIFICAR O QUE É
 	store	r0,r1
@@ -55,7 +55,7 @@ L3:	inca	r0,r0
 	inca	r0,r0
 	lcl	r3,255
 	lch	r3,127
-	inca	r3,r3
+	inca	r3,r3 ; eu acho que daria overflow no urisc
 	jt.overflow L4
 	nop
 	store	r0,r1

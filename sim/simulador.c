@@ -42,7 +42,7 @@ int sftRt = 11;
 unsigned int *inst_mem;
 
 // Vetor representando a memória de dados
-unsigned int *data_mem;
+int *data_mem;
 
 // numero de instruçõs na memória
 int instr_count;
@@ -255,7 +255,7 @@ char identify_type(int opcode)
     else
     {
         printf("-----------------------------------\n");
-        printf("ERRO!! OPCODE 0x%02x DESCONHECIDO!!\n", opcode);
+        printf("ERRO!! OPCODE 0x%02X DESCONHECIDO!!\n", opcode);
         printf("-----------------------------------\n");
         result = 'e';
     }
@@ -271,13 +271,14 @@ void decode_r_type(unsigned int instruction)
     int rt = (instruction >> sftRt) & 0x1f;
     int func = instruction & 0x3F;
 
-    printf("%x\n", instruction);
-    printf("rd %d rs %d rt %d func %x\n", rd, rs, rt, func);
+    printf("%X\n", instruction);
+    printf("rd %d rs %d rt %d func %X\n", rd, rs, rt, func);
     //getchar();
 
     // add rd = rs + rt
     if (func == 0x20)
     {
+        printf("add\n");
         registers[rd] = registers[rs] + registers[rt];
 
         flags[F_OVERFLOW] = sum_check_overflow(registers[rs], registers[rt], registers[rd]);
@@ -290,6 +291,7 @@ void decode_r_type(unsigned int instruction)
     //sub e zeros
     else if (func == 0x22)
     {
+        printf("sub/zeros\n");
         registers[rd] = registers[rs] - registers[rt];
 
         flags[F_OVERFLOW] = sub_check_overflow(registers[rs], registers[rt], registers[rd]);
@@ -302,6 +304,7 @@ void decode_r_type(unsigned int instruction)
     //and
     else if (func == 0x24)
     {
+        printf("and\n");
         registers[rd] = registers[rs] & registers[rt];
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -313,6 +316,7 @@ void decode_r_type(unsigned int instruction)
     //or
     else if (func == 0x25)
     {
+        printf("or\n");
         registers[rd] = registers[rs] | registers[rt];
 
         flags[F_OVERFLOW] = false;
@@ -325,6 +329,7 @@ void decode_r_type(unsigned int instruction)
     //not
     else if (func == 0x21)
     {
+        printf("not\n");
         registers[rd] = !registers[rs];
 
         flags[F_OVERFLOW] = false;
@@ -337,6 +342,7 @@ void decode_r_type(unsigned int instruction)
     //xor
     else if (func == 0x26)
     {
+        printf("xor\n");
         registers[rd] = registers[rs] ^ registers[rt];
 
         flags[F_OVERFLOW] = false;
@@ -349,6 +355,7 @@ void decode_r_type(unsigned int instruction)
     //andnota
     else if (func == 0x23)
     {
+        printf("andnota\n");
         registers[rd] = (!registers[rs]) & registers[rt];
 
         flags[F_OVERFLOW] = false;
@@ -361,6 +368,7 @@ void decode_r_type(unsigned int instruction)
     //nor
     else if (func == 0x27)
     {
+        printf("nor\n");
         registers[rd] = !(registers[rs] | registers[rt]);
 
         flags[F_OVERFLOW] = false;
@@ -373,6 +381,7 @@ void decode_r_type(unsigned int instruction)
     //xnor
     else if (func == 0x28)
     {
+        printf("xnor\n");
         registers[rd] = !(registers[rs] ^ registers[rt]);
 
         flags[F_OVERFLOW] = false;
@@ -385,6 +394,7 @@ void decode_r_type(unsigned int instruction)
     //ornotb
     else if (func == 0x29)
     {
+        printf("ornotb\n");
         registers[rd] = registers[rs] | (!registers[rt]);
 
         flags[F_OVERFLOW] = false;
@@ -397,6 +407,7 @@ void decode_r_type(unsigned int instruction)
     //nand
     else if (func == 0x1B)
     {
+        printf("nand\n");
         registers[rd] = !(registers[rs] & registers[rt]);
 
         flags[F_OVERFLOW] = false;
@@ -409,6 +420,7 @@ void decode_r_type(unsigned int instruction)
     //passa
     else if (func == 0x2B)
     {
+        printf("passa/passb\n");
         registers[rd] = registers[rs];
 
         flags[F_OVERFLOW] = false;
@@ -421,6 +433,7 @@ void decode_r_type(unsigned int instruction)
     //passnota
     else if (func == 0x2C)
     {
+        printf("passnota\n");
         registers[rd] = !registers[rs];
 
         flags[F_OVERFLOW] = false;
@@ -433,6 +446,7 @@ void decode_r_type(unsigned int instruction)
     //inca
     else if (func == 0x2D)
     {
+        printf("inca\n");
         registers[rd] = registers[rs] + 1;
 
         flags[F_OVERFLOW] = sum_check_overflow(registers[rs], 1, registers[rd]);
@@ -445,6 +459,7 @@ void decode_r_type(unsigned int instruction)
     //deca
     else if (func == 0x2E)
     {
+        printf("deca\n");
         registers[rd] = registers[rs] - 1;
 
         flags[F_OVERFLOW] = sub_check_overflow(registers[rs], 1, registers[rd]);
@@ -457,6 +472,7 @@ void decode_r_type(unsigned int instruction)
     //addinc
     else if (func == 0x2F)
     {
+        printf("addinc\n");
         registers[rd] = registers[rs] + registers[rt] + 1;
 
         flags[F_OVERFLOW] = sum_check_overflow(registers[rs] + registers[rt], 1, registers[rd]);
@@ -469,6 +485,7 @@ void decode_r_type(unsigned int instruction)
     //subdec
     else if (func == 0x30)
     {
+        printf("subdec\n");
         registers[rd] = registers[rs] - registers[rt] - 1;
 
         flags[F_OVERFLOW] = sub_check_overflow(registers[rs] - registers[rt], 1, registers[rd]);
@@ -481,6 +498,7 @@ void decode_r_type(unsigned int instruction)
     //lsl
     else if (func == 0x00)
     {
+        printf("lsl\n");
         registers[rd] = registers[rs] << 1;
 
         flags[F_OVERFLOW] = false;
@@ -493,6 +511,7 @@ void decode_r_type(unsigned int instruction)
     //lsr
     else if (func == 0x02)
     {
+        printf("lsr\n");
         unsigned int temp = registers[rs] >> 1;
         registers[rd] = temp;
 
@@ -506,6 +525,7 @@ void decode_r_type(unsigned int instruction)
     //asl
     else if (func == 0x04)
     {
+        printf("asl\n");
         registers[rd] = registers[rs] << 1;
 
         flags[F_OVERFLOW] = false;
@@ -518,6 +538,7 @@ void decode_r_type(unsigned int instruction)
     //asr
     else if (func == 0x03)
     {
+        printf("asr\n");
         registers[rd] = registers[rs] >> 1;
 
         flags[F_OVERFLOW] = false;
@@ -530,6 +551,7 @@ void decode_r_type(unsigned int instruction)
     //slt
     else if (func == 0x2A)
     {
+        printf("slt\n");
         if (registers[rs] < registers[rt])
             registers[rd] == 1;
 
@@ -543,6 +565,7 @@ void decode_r_type(unsigned int instruction)
     //jr
     else if (func == 0x08)
     {
+        printf("jr\n");
         // - 1 por causa do incremento do for
         pc = registers[rs] - 1;
 
@@ -551,7 +574,7 @@ void decode_r_type(unsigned int instruction)
     //div
     else if (func == 0x1A)
     {
-
+        printf("div\n");
         registers[rd] = registers[rs] / registers[rt];
 
         flags[F_OVERFLOW] = false;
@@ -563,7 +586,7 @@ void decode_r_type(unsigned int instruction)
     }
     else {
         printf("-------------------------------------\n");
-        printf("ERRO!! FUNCTION 0x%02x DESCONHECIDO!!\n", func);
+        printf("ERRO!! FUNCTION 0x%02X DESCONHECIDO!!\n", func);
         printf("-------------------------------------\n");
         abort();
     }
@@ -576,13 +599,14 @@ void decode_i_type(unsigned int instruction, int opcode)
     int rs = (instruction >> sftRs) & 0x1f;
     int imm = instruction & 0xFFFF;
 
-    printf("%x\n", instruction);
+    printf("%X\n", instruction);
     printf("rd %d rs %d imm %d\n", rd, rs, imm);
     //getchar();
 
     // lch
     if(opcode == 0x07)
     {
+        printf("lch\n");
         registers[rd] = (imm << 16) | (registers[rd] & 0xffff);
 
         flags[F_OVERFLOW] = false;
@@ -595,6 +619,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     // jal
     else if(opcode == 0x03)
     {
+        printf("jal\n");
         // Guarda o endereço da próxima instrução
         registers[7] = pc + 1;
 
@@ -607,6 +632,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     else if (opcode == 0x04)
     {
 
+        printf("beq\n");
         if (registers[rd] == registers[rs])
             pc = pc +imm; // Não decrementa pois seria pc + imm + 1
 
@@ -615,6 +641,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     // bne
     else if (opcode == 0x05)
     {
+        printf("bne\n");
         if (registers[rd] != registers[rs])
             pc = pc + imm; // Não decrementa pois seria pc + imm + 1
 
@@ -623,16 +650,19 @@ void decode_i_type(unsigned int instruction, int opcode)
     // loadlit
     else if (opcode == 0x06)
     {
+        printf("loadlit\n");
         registers[rd] = imm;
     }
     // lcl
     else if (opcode == 0x01)
     {
+        printf("lcl\n");
         registers[rd] = imm | (registers[rd] & 0xffff0000);
     }
     // addi
     else if (opcode == 0x08)
     {
+        printf("addi\n");
         registers[rd] = registers[rs] + imm;
 
         flags[F_OVERFLOW] = sum_check_overflow(registers[rs], imm, registers[rd]);
@@ -679,12 +709,14 @@ void decode_i_type(unsigned int instruction, int opcode)
     // slti
     else if (opcode == 0x0a)
     {
+        printf("slti\n");
         if (registers[rs] == imm)
             registers[rd] = 1;
     }
     // andi
     else if (opcode == 0x0c)
     {
+        printf("andi\n");
         registers[rd] = registers[rs] & imm;
 
         flags[F_OVERFLOW] = false;
@@ -697,6 +729,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     // ori
     else if (opcode == 0x0d)
     {
+        printf("ori\n");
         registers[rd] = registers[rs] | imm;
 
         flags[F_OVERFLOW] = false;
@@ -709,12 +742,16 @@ void decode_i_type(unsigned int instruction, int opcode)
     // load
     else if (opcode == 0x23)
     {
+        printf("load\n");
         registers[rd] = data_mem[registers[rs]];
     }
     // store
     else if (opcode == 0x2b)
     {
-        data_mem[registers[rs]] = registers[rd];
+        printf("store\n");
+        data_mem[registers[rd]] = registers[rs];
+        //printf("%d %d\n", data_mem[registers[rd]], registers[rd]);
+        //getchar();
     }
 }
 
@@ -723,7 +760,7 @@ int decode_j_type(unsigned int instruction, int opcode)
     // Identifica os campos da instrução
     int address = (instruction & 0x3FFFFFF);
 
-    printf("%x\n", instruction);
+    printf("%X\n", instruction);
     printf("address %d\n", address);
     //getchar();
 
@@ -761,7 +798,7 @@ void write_results(char const *file_name, int exit_code)
 
     for (i = 0; i < MAX_MEM; i++)
     {
-        fprintf(arq_out, "mem[%d]: %x\n", i, data_mem[i]);
+        fprintf(arq_out, "mem[%d]: %d\n", i, data_mem[i]);
     }
 
     fclose(arq_out);
