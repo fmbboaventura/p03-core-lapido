@@ -408,7 +408,7 @@ void Traducao(FILE *entrada, FILE *saida){
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
                 binario = binario | (rb << sftRt);
-                binario = binario | 0x2A;
+                binario = binario | 0x1B;//0x2A;
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
 				        EscreveBinario(binario, saida);
             }
@@ -625,7 +625,7 @@ EscreveBinario(binario, saida);
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
                 binario = binario | (rb << sftRt);
-                binario = binario | 0x1B;
+                binario = binario | 0x2A;//0x1B;
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
 EscreveBinario(binario, saida);
             }
