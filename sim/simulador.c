@@ -273,6 +273,7 @@ void decode_r_type(unsigned int instruction)
 
     printf("%X\n", instruction);
     printf("rd %d rs %d rt %d func %X\n", rd, rs, rt, func);
+    printf("%d %d\n", registers[rs], registers[rt]);
     //getchar();
 
     // add rd = rs + rt
@@ -553,7 +554,8 @@ void decode_r_type(unsigned int instruction)
     {
         printf("slt\n");
         if (registers[rs] < registers[rt])
-            registers[rd] == 1;
+            registers[rd] = 1;
+        else registers[rd] = 0;
 
             flags[F_OVERFLOW] = false;
             flags[F_CARRY] = false;
@@ -590,6 +592,7 @@ void decode_r_type(unsigned int instruction)
         printf("-------------------------------------\n");
         abort();
     }
+    printf("rd: %d\n", registers[rd]);
 }
 
 void decode_i_type(unsigned int instruction, int opcode)
@@ -597,7 +600,8 @@ void decode_i_type(unsigned int instruction, int opcode)
     // Identifica os campos da instrução
     int rd = (instruction >> sftRd) & 0x1f;
     int rs = (instruction >> sftRs) & 0x1f;
-    int imm = instruction & 0xFFFF;
+    // sign extend o imediato
+    int imm = (instruction & 0xFFFF) | ((instruction & 0x8000) ? 0xFFFF0000 : 0);
 
     printf("%X\n", instruction);
     printf("rd %d rs %d imm %d\n", rd, rs, imm);
@@ -635,7 +639,7 @@ void decode_i_type(unsigned int instruction, int opcode)
         printf("beq\n");
         if (registers[rd] == registers[rs])
             pc = pc +imm; // Não decrementa pois seria pc + imm + 1
-
+            printf("Pulou\n");
         // muda flag aqui?
     }
     // bne
@@ -644,7 +648,7 @@ void decode_i_type(unsigned int instruction, int opcode)
         printf("bne\n");
         if (registers[rd] != registers[rs])
             pc = pc + imm; // Não decrementa pois seria pc + imm + 1
-
+            printf("Pulou\n");
         // muda flag aqui?
     }
     // loadlit
@@ -712,6 +716,7 @@ void decode_i_type(unsigned int instruction, int opcode)
         printf("slti\n");
         if (registers[rs] == imm)
             registers[rd] = 1;
+        else registers[rd] = 0;
     }
     // andi
     else if (opcode == 0x0c)
@@ -753,6 +758,7 @@ void decode_i_type(unsigned int instruction, int opcode)
         //printf("%d %d\n", data_mem[registers[rd]], registers[rd]);
         //getchar();
     }
+    printf("rd: %d\n", registers[rd]);
 }
 
 int decode_j_type(unsigned int instruction, int opcode)
@@ -776,6 +782,7 @@ int decode_j_type(unsigned int instruction, int opcode)
         pc = address - 1; // decrementa por causa do incremento do for
         return 0;
     }
+
     // se algo saiu errado...
     return -1;
 }
