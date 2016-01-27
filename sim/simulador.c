@@ -152,9 +152,10 @@ void read_words(FILE **arq)
     }
 
     //printf("Segmento de dados\n");
-    for(data_count = 0; (!feof(*arq)); data_count++)
+    for(data_count = 0; 1 == 1; data_count++)
     {
         fscanf(*arq, "%s", word);
+        if(feof(*arq)) break;
         //printf("%s\n", word);
         //getchar();
         data_mem[data_count] = convert_to_int(word);
@@ -638,8 +639,11 @@ void decode_i_type(unsigned int instruction, int opcode)
 
         printf("beq\n");
         if (registers[rd] == registers[rs])
+        {
             pc = pc +imm; // Não decrementa pois seria pc + imm + 1
+            printf("%d %d\n", registers[rd], registers[rs]);
             printf("Pulou\n");
+        }
         // muda flag aqui?
     }
     // bne
@@ -647,8 +651,11 @@ void decode_i_type(unsigned int instruction, int opcode)
     {
         printf("bne\n");
         if (registers[rd] != registers[rs])
+        {
             pc = pc + imm; // Não decrementa pois seria pc + imm + 1
+            printf("%d %d\n", registers[rd], registers[rs]);
             printf("Pulou\n");
+        }
         // muda flag aqui?
     }
     // loadlit
