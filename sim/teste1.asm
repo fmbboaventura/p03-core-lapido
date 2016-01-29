@@ -51,11 +51,11 @@ L31:	jf.overflow L3
 	inca	r0,r0
 	store	r0,r1
 	deca	r0,r0
-L3:	inca	r0,r0
+L3:	inca	r0,r0 ; teste do overflow
 	inca	r0,r0
-	lcl	r3,255
-	lch	r3,127
-	inca	r3,r3 ; eu acho que daria overflow no urisc
+	lcl	r3,65535
+	lch	r3,32767
+	inca	r3,r3
 	jt.overflow L4
 	nop
 	store	r0,r1
@@ -68,8 +68,8 @@ L4:	inca	r0,r0
 L5:	inca	r0,r0
         deca    r2,r2
 	lcl	r3,0
-	lch	r3,128
-        subdec  r3,r3,r1
+	lch	r3,32768
+    subdec  r3,r3,r1
 	jt.overflow L6
 	nop
 	store	r0,r1
