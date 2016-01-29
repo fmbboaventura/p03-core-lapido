@@ -271,20 +271,22 @@ void decode_r_type(unsigned int instruction)
     int rs = (instruction >> sftRs) & 0x1f;
     int rt = (instruction >> sftRt) & 0x1f;
     int func = instruction & 0x3F;
+    int temp_rs = registers[rs];
+    int temp_rt = registers[rt];
 
     printf("%X\n", instruction);
     printf("rd %d rs %d rt %d func %X\n", rd, rs, rt, func);
-    printf("%d %d\n", registers[rs], registers[rt]);
+    printf("%d %d\n", temp_rs, temp_rt);
     //getchar();
 
     // add rd = rs + rt
     if (func == 0x20)
     {
         printf("add\n");
-        registers[rd] = registers[rs] + registers[rt];
+        registers[rd] = temp_rs + temp_rt;
 
-        flags[F_OVERFLOW] = sum_check_overflow(registers[rs], registers[rt], registers[rd]);
-        flags[F_CARRY] = check_carry(registers[rs], registers[rt]);
+        flags[F_OVERFLOW] = sum_check_overflow(temp_rs, temp_rt, registers[rd]);
+        flags[F_CARRY] = check_carry(temp_rs, temp_rt);
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
@@ -294,10 +296,10 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x22)
     {
         printf("sub/zeros\n");
-        registers[rd] = registers[rs] - registers[rt];
+        registers[rd] = temp_rs - temp_rt;
 
-        flags[F_OVERFLOW] = sub_check_overflow(registers[rs], registers[rt], registers[rd]);
-        flags[F_CARRY] = check_carry(registers[rs], registers[rt]);
+        flags[F_OVERFLOW] = sub_check_overflow(temp_rs, temp_rt, registers[rd]);
+        flags[F_CARRY] = check_carry(temp_rs, temp_rt);
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
@@ -307,7 +309,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x24)
     {
         printf("and\n");
-        registers[rd] = registers[rs] & registers[rt];
+        registers[rd] = temp_rs & temp_rt;
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
         flags[F_ZERO] = (registers[rd] == 0);
@@ -319,7 +321,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x25)
     {
         printf("or\n");
-        registers[rd] = registers[rs] | registers[rt];
+        registers[rd] = temp_rs | temp_rt;
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -332,7 +334,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x21)
     {
         printf("not\n");
-        registers[rd] = !registers[rs];
+        registers[rd] = !temp_rs;
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -345,7 +347,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x26)
     {
         printf("xor\n");
-        registers[rd] = registers[rs] ^ registers[rt];
+        registers[rd] = temp_rs ^ temp_rt;
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -358,7 +360,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x23)
     {
         printf("andnota\n");
-        registers[rd] = (!registers[rs]) & registers[rt];
+        registers[rd] = (!temp_rs) & temp_rt;
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -371,7 +373,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x27)
     {
         printf("nor\n");
-        registers[rd] = !(registers[rs] | registers[rt]);
+        registers[rd] = !(temp_rs | temp_rt);
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -384,7 +386,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x28)
     {
         printf("xnor\n");
-        registers[rd] = !(registers[rs] ^ registers[rt]);
+        registers[rd] = !(temp_rs ^ temp_rt);
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -397,7 +399,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x29)
     {
         printf("ornotb\n");
-        registers[rd] = registers[rs] | (!registers[rt]);
+        registers[rd] = temp_rs | (!temp_rt);
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -410,7 +412,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x1B)
     {
         printf("nand\n");
-        registers[rd] = !(registers[rs] & registers[rt]);
+        registers[rd] = !(temp_rs & temp_rt);
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -423,7 +425,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x2B)
     {
         printf("passa/passb\n");
-        registers[rd] = registers[rs];
+        registers[rd] = temp_rs;
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -436,7 +438,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x2C)
     {
         printf("passnota\n");
-        registers[rd] = !registers[rs];
+        registers[rd] = !temp_rs;
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -449,10 +451,10 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x2D)
     {
         printf("inca\n");
-        registers[rd] = registers[rs] + 1;
+        registers[rd] = temp_rs + 1;
 
-        flags[F_OVERFLOW] = sum_check_overflow(registers[rs], 1, registers[rd]);
-        flags[F_CARRY] = check_carry(registers[rs], 1);
+        flags[F_OVERFLOW] = sum_check_overflow(temp_rs, 1, registers[rd]);
+        flags[F_CARRY] = check_carry(temp_rs, 1);
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
@@ -462,10 +464,10 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x2E)
     {
         printf("deca\n");
-        registers[rd] = registers[rs] - 1;
+        registers[rd] = temp_rs - 1;
 
-        flags[F_OVERFLOW] = sub_check_overflow(registers[rs], 1, registers[rd]);
-        flags[F_CARRY] = check_carry(registers[rs], -1);
+        flags[F_OVERFLOW] = sub_check_overflow(temp_rs, 1, registers[rd]);
+        flags[F_CARRY] = check_carry(temp_rs, -1);
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
@@ -475,10 +477,10 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x2F)
     {
         printf("addinc\n");
-        registers[rd] = registers[rs] + registers[rt] + 1;
+        registers[rd] = temp_rs + temp_rt + 1;
 
-        flags[F_OVERFLOW] = sum_check_overflow(registers[rs] + registers[rt], 1, registers[rd]);
-        flags[F_CARRY] = check_carry(registers[rs] + registers[rt], 1);
+        flags[F_OVERFLOW] = sum_check_overflow(temp_rs + temp_rt, 1, registers[rd]);
+        flags[F_CARRY] = check_carry(temp_rs + temp_rt, 1);
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
@@ -488,10 +490,10 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x30)
     {
         printf("subdec\n");
-        registers[rd] = registers[rs] - registers[rt] - 1;
+        registers[rd] = temp_rs - temp_rt - 1;
 
-        flags[F_OVERFLOW] = sub_check_overflow(registers[rs] - registers[rt], 1, registers[rd]);
-        flags[F_CARRY] = check_carry(registers[rs] - registers[rt], -1);
+        flags[F_OVERFLOW] = sub_check_overflow(temp_rs - temp_rt, 1, registers[rd]);
+        flags[F_CARRY] = check_carry(temp_rs - temp_rt, -1);
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
@@ -501,7 +503,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x00)
     {
         printf("lsl\n");
-        registers[rd] = registers[rs] << 1;
+        registers[rd] = temp_rs << 1;
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -514,7 +516,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x02)
     {
         printf("lsr\n");
-        unsigned int temp = registers[rs] >> 1;
+        unsigned int temp = temp_rs >> 1;
         registers[rd] = temp;
 
         flags[F_OVERFLOW] = false;
@@ -528,7 +530,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x04)
     {
         printf("asl\n");
-        registers[rd] = registers[rs] << 1;
+        registers[rd] = temp_rs << 1;
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -541,7 +543,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x03)
     {
         printf("asr\n");
-        registers[rd] = registers[rs] >> 1;
+        registers[rd] = temp_rs >> 1;
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] =false;
@@ -554,7 +556,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x2A)
     {
         printf("slt\n");
-        if (registers[rs] < registers[rt])
+        if (temp_rs < temp_rt)
             registers[rd] = 1;
         else registers[rd] = 0;
 
@@ -570,7 +572,7 @@ void decode_r_type(unsigned int instruction)
     {
         printf("jr\n");
         // - 1 por causa do incremento do for
-        pc = registers[rs] - 1;
+        pc = temp_rs - 1;
 
         // Altera flag aqui?
     }
@@ -578,7 +580,7 @@ void decode_r_type(unsigned int instruction)
     else if (func == 0x1A)
     {
         printf("div\n");
-        registers[rd] = registers[rs] / registers[rt];
+        registers[rd] = temp_rs / temp_rt;
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -603,6 +605,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     int rs = (instruction >> sftRs) & 0x1f;
     // sign extend o imediato
     int imm = (instruction & 0xFFFF) | ((instruction & 0x8000) ? 0xFFFF0000 : 0);
+    int temp_rs = registers[rs];
 
     printf("%X\n", instruction);
     printf("rd %d rs %d imm %d\n", rd, rs, imm);
@@ -638,10 +641,10 @@ void decode_i_type(unsigned int instruction, int opcode)
     {
 
         printf("beq\n");
-        if (registers[rd] == registers[rs])
+        if (registers[rd] == temp_rs)
         {
             pc = pc +imm; // Não decrementa pois seria pc + imm + 1
-            printf("%d %d\n", registers[rd], registers[rs]);
+            printf("%d %d\n", registers[rd], temp_rs);
             printf("Pulou\n");
         }
         // muda flag aqui?
@@ -650,10 +653,10 @@ void decode_i_type(unsigned int instruction, int opcode)
     else if (opcode == 0x05)
     {
         printf("bne\n");
-        if (registers[rd] != registers[rs])
+        if (registers[rd] != temp_rs)
         {
             pc = pc + imm; // Não decrementa pois seria pc + imm + 1
-            printf("%d %d\n", registers[rd], registers[rs]);
+            printf("%d %d\n", registers[rd], temp_rs);
             printf("Pulou\n");
         }
         // muda flag aqui?
@@ -674,10 +677,10 @@ void decode_i_type(unsigned int instruction, int opcode)
     else if (opcode == 0x08)
     {
         printf("addi\n");
-        registers[rd] = registers[rs] + imm;
+        registers[rd] = temp_rs + imm;
 
-        flags[F_OVERFLOW] = sum_check_overflow(registers[rs], imm, registers[rd]);
-        flags[F_CARRY] = check_carry(registers[rs], imm);
+        flags[F_OVERFLOW] = sum_check_overflow(temp_rs, imm, registers[rd]);
+        flags[F_CARRY] = check_carry(temp_rs, imm);
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
@@ -693,7 +696,7 @@ void decode_i_type(unsigned int instruction, int opcode)
             rd == 0x06 && flags[F_CARRY]    ||
             rd == 0x07 && flags[F_NEGZERO]  ||
             rd == 0x00 && flags[F_TRUE]    ||
-            rd == 0x00 && flags[F_OVERFLOW])
+            rd == 0x03 && flags[F_OVERFLOW])
         {
             // No urisc, o jt e o jf são pc relative
             printf("Pulou\n");
@@ -710,7 +713,7 @@ void decode_i_type(unsigned int instruction, int opcode)
             rd == 0x06 && !flags[F_CARRY]    ||
             rd == 0x07 && !flags[F_NEGZERO]  ||
             rd == 0x00 && !flags[F_TRUE]    ||
-            rd == 0x00 && !flags[F_OVERFLOW])
+            rd == 0x03 && !flags[F_OVERFLOW])
         {
             // Decrementa pra compensar o incremento do for
             printf("Pulou\n");
@@ -721,7 +724,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     else if (opcode == 0x0a)
     {
         printf("slti\n");
-        if (registers[rs] == imm)
+        if (temp_rs == imm)
             registers[rd] = 1;
         else registers[rd] = 0;
     }
@@ -729,7 +732,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     else if (opcode == 0x0c)
     {
         printf("andi\n");
-        registers[rd] = registers[rs] & imm;
+        registers[rd] = temp_rs & imm;
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -742,7 +745,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     else if (opcode == 0x0d)
     {
         printf("ori\n");
-        registers[rd] = registers[rs] | imm;
+        registers[rd] = temp_rs | imm;
 
         flags[F_OVERFLOW] = false;
         flags[F_CARRY] = false;
@@ -755,13 +758,13 @@ void decode_i_type(unsigned int instruction, int opcode)
     else if (opcode == 0x23)
     {
         printf("load\n");
-        registers[rd] = data_mem[registers[rs]];
+        registers[rd] = data_mem[temp_rs];
     }
     // store
     else if (opcode == 0x2b)
     {
         printf("store\n");
-        data_mem[registers[rd]] = registers[rs];
+        data_mem[registers[rd]] = temp_rs;
         //printf("%d %d\n", data_mem[registers[rd]], registers[rd]);
         //getchar();
     }
@@ -833,13 +836,17 @@ bool sum_check_overflow(int op1, int op2, int res)
     if (op1 < 0) sign_op1 = 1;
     else sign_op1 = 0;
 
-    if (op1 < 0) sign_op2 = 1;
+    if (op2 < 0) sign_op2 = 1;
     else sign_op2 = 0;
 
-    if (op1 < 0) sign_res = 1;
+    if (res < 0) sign_res = 1;
     else sign_res = 0;
 
-    return ((sign_op1 == sign_op2) == sign_res);
+    //printf("%d %d %d\n", op1, op2, res);
+    //printf("%d %d %d\n", sign_op1, sign_op2, sign_res);
+    //printf("%d\n", ((sign_op1 == sign_op2) && sign_op1 != sign_res));
+
+    return ((sign_op1 == sign_op2) && sign_op1 != sign_res);
 }
 
 bool sub_check_overflow(int op1, int op2, int res)
@@ -852,13 +859,17 @@ bool sub_check_overflow(int op1, int op2, int res)
     else sign_op1 = 0;
 
     // inverte por causa da subtração
-    if (op1 < 0) sign_op2 = 0;
+    if (op2 < 0) sign_op2 = 0;
     else sign_op2 = 1;
 
-    if (op1 < 0) sign_res = 1;
+    if (res < 0) sign_res = 1;
     else sign_res = 0;
 
-    return ((sign_op1 == sign_op2) == sign_res);
+    //printf("%d %d %d\n", op1, op2, res);
+    //printf("%d %d %d\n", sign_op1, sign_op2, sign_res);
+    //printf("%d\n", ((sign_op1 == sign_op2) && sign_op1 != sign_res));
+
+    return ((sign_op1 == sign_op2) && sign_op1 != sign_res);
 }
 
 bool check_carry(unsigned int op1, unsigned int op2)
