@@ -505,8 +505,9 @@ void decode_r_type(unsigned int instruction)
         printf("lsl\n");
         registers[rd] = temp_rs << 1;
 
+        // Verifica se o msb é 1
+        flags[F_CARRY] = (temp_rs & 0x80000000);
         flags[F_OVERFLOW] = false;
-        flags[F_CARRY] = false;
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
