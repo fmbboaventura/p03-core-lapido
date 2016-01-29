@@ -675,7 +675,7 @@ EscreveBinario(binario, saida);
                 binario = 0x08 << sftOpcode;
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
-                c = 0x3FFFFFF & c;
+                c = 0xFFFF & c;
                 binario = binario | c;
 
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
@@ -693,7 +693,7 @@ EscreveBinario(binario, saida);
                 binario = 0x0C << sftOpcode;
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
-                if(c > 0xFFFF) exit(-1);
+                c = 0xFFFF & c;
                 binario = binario | c;
 
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
@@ -711,7 +711,7 @@ EscreveBinario(binario, saida);
                 binario = 0x0D << sftOpcode;
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
-                if(c > 0xFFFF) exit(-1);
+                c = 0xFFFF & c;
                 binario = binario | c;
 
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
@@ -729,7 +729,7 @@ EscreveBinario(binario, saida);
                 binario = 0x0A << sftOpcode;
                 binario = binario | (rc << sftRd);
                 binario = binario | (ra << sftRs);
-                if(c > 0xFFFF) exit(-1);
+                c = 0xFFFF & c;
                 binario = binario | c;
 
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
@@ -810,7 +810,7 @@ EscreveBinario(binario, saida);
 
                 binario = 0x06 << sftOpcode;
                 binario = binario | (rc << sftRd);
-                c = 0x1FFFF & c;//if(c > 0xFFFF) exit(-1);
+                c = 0x1FFFFF & c;//if(c > 0xFFFF) exit(-1);
                 binario = binario | c;
 
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
