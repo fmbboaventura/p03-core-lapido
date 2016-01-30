@@ -533,8 +533,8 @@ void decode_r_type(unsigned int instruction)
         printf("asl\n");
         registers[rd] = temp_rs << 1;
 
-        flags[F_OVERFLOW] = false;
-        flags[F_CARRY] = false;
+        flags[F_OVERFLOW] = (temp_rs & 0x80000000) ^ (temp_rs & 0x40000000);
+        flags[F_CARRY] = (temp_rs & 0x80000000);
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
@@ -574,8 +574,6 @@ void decode_r_type(unsigned int instruction)
         printf("jr\n");
         // - 1 por causa do incremento do for
         pc = temp_rs - 1;
-
-        // Altera flag aqui?
     }
     //div
     else if (func == 0x1A)
@@ -618,12 +616,12 @@ void decode_i_type(unsigned int instruction, int opcode)
         printf("lch\n");
         registers[rd] = (imm << 16) | (registers[rd] & 0xffff);
 
-        flags[F_OVERFLOW] = false;
-        flags[F_CARRY] = false;
-        flags[F_ZERO] = (registers[rd] == 0);
-        flags[F_TRUE] = (registers[rd] != 0);
-        flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] < 0);
+        // flags[F_OVERFLOW] = false;
+        // flags[F_CARRY] = false;
+        // flags[F_ZERO] = (registers[rd] == 0);
+        // flags[F_TRUE] = (registers[rd] != 0);
+        // flags[F_NEGZERO] = (registers[rd] <= 0);
+        // flags[F_NEG] = (registers[rd] < 0);
     }
     // jal
     else if(opcode == 0x03)
@@ -728,6 +726,13 @@ void decode_i_type(unsigned int instruction, int opcode)
         if (temp_rs == imm)
             registers[rd] = 1;
         else registers[rd] = 0;
+
+        flags[F_OVERFLOW] = false;
+        flags[F_CARRY] = false;
+        flags[F_ZERO] = (registers[rd] == 0);
+        flags[F_TRUE] = (registers[rd] != 0);
+        flags[F_NEGZERO] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     // andi
     else if (opcode == 0x0c)
@@ -760,6 +765,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     {
         printf("load\n");
         registers[rd] = data_mem[temp_rs];
+        flags[F_ZERO] = (registers[rd] == 0);
     }
     // store
     else if (opcode == 0x2b)
