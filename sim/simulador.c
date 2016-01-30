@@ -290,7 +290,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //sub e zeros
     else if (func == 0x22)
@@ -303,7 +303,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //and
     else if (func == 0x24)
@@ -315,7 +315,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //or
     else if (func == 0x25)
@@ -328,7 +328,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //not
     else if (func == 0x21)
@@ -341,7 +341,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //xor
     else if (func == 0x26)
@@ -354,7 +354,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //andnota
     else if (func == 0x23)
@@ -367,7 +367,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //nor
     else if (func == 0x27)
@@ -380,7 +380,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //xnor
     else if (func == 0x28)
@@ -393,7 +393,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //ornotb
     else if (func == 0x29)
@@ -406,7 +406,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //nand
     else if (func == 0x1B)
@@ -419,7 +419,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //passa
     else if (func == 0x2B)
@@ -432,7 +432,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //passnota
     else if (func == 0x2C)
@@ -445,7 +445,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //inca
     else if (func == 0x2D)
@@ -458,7 +458,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //deca
     else if (func == 0x2E)
@@ -471,7 +471,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //addinc
     else if (func == 0x2F)
@@ -484,7 +484,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //subdec
     else if (func == 0x30)
@@ -497,7 +497,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //lsl
     else if (func == 0x00)
@@ -511,7 +511,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //lsr
     else if (func == 0x02)
@@ -525,7 +525,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //asl
     else if (func == 0x04)
@@ -538,7 +538,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //asr
     else if (func == 0x03)
@@ -551,7 +551,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     //slt
     else if (func == 0x2A)
@@ -566,7 +566,7 @@ void decode_r_type(unsigned int instruction)
             flags[F_ZERO] = (registers[rd] == 0);
             flags[F_TRUE] = (registers[rd] != 0);
             flags[F_NEGZERO] = (registers[rd] <= 0);
-            flags[F_NEG] = (registers[rd] <= 0);
+            flags[F_NEG] = (registers[rd] < 0);
     }
     //jr
     else if (func == 0x08)
@@ -588,7 +588,7 @@ void decode_r_type(unsigned int instruction)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     else {
         printf("-------------------------------------\n");
@@ -623,7 +623,7 @@ void decode_i_type(unsigned int instruction, int opcode)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     // jal
     else if(opcode == 0x03)
@@ -685,7 +685,7 @@ void decode_i_type(unsigned int instruction, int opcode)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     // jt
     else if (opcode == 0x09)
@@ -740,7 +740,7 @@ void decode_i_type(unsigned int instruction, int opcode)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     // ori
     else if (opcode == 0x0d)
@@ -753,7 +753,7 @@ void decode_i_type(unsigned int instruction, int opcode)
         flags[F_ZERO] = (registers[rd] == 0);
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] <= 0);
+        flags[F_NEG] = (registers[rd] < 0);
     }
     // load
     else if (opcode == 0x23)
