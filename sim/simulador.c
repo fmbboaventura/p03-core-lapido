@@ -573,7 +573,8 @@ void decode_r_type(unsigned int instruction)
     {
         printf("jr\n");
         // - 1 por causa do incremento do for
-        pc = temp_rs - 1;
+        pc = registers[rd] - 1;
+        printf("pc = %d\n", pc);
     }
     //div
     else if (func == 0x1A)
@@ -628,10 +629,12 @@ void decode_i_type(unsigned int instruction, int opcode)
     {
         printf("jal\n");
         // Guarda o endereço da próxima instrução
-        registers[7] = pc + 1;
+        registers[15] = pc + 1;
+        printf("r15 = %d\n", registers[15]);
 
         // Menos um por causa do incremento do for
         pc = registers[rd] - 1;
+        printf("pc = %d\n", pc);
 
         // Altera flag aqui?
     }

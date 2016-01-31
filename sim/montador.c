@@ -646,6 +646,14 @@ EscreveBinario(binario, saida);
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
 EscreveBinario(binario, saida);
             }
+            else if (strcmp(palavra, "ret") == 0)
+            {
+                binario = 0x00 << sftOpcode;
+                binario = binario | (0x0F << sftRd);
+                binario = binario | 0x08;
+                printf("Escrevendo %s PC = %d\n", palavra, pc);
+                EscreveBinario(binario, saida);
+            }
             else if (strcmp(palavra, "jr") == 0)
             {
                 LerPalavra (entrada, &p[0]);
@@ -655,7 +663,7 @@ EscreveBinario(binario, saida);
                 binario = binario | (rc << sftRd);
                 binario = binario | 0x08;
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
-EscreveBinario(binario, saida);
+                EscreveBinario(binario, saida);
             }
             //TERMNA O TIPO R
 
@@ -1475,7 +1483,8 @@ void CriaTabelas(FILE *entrada){
         if (instrucao)
          {
             //printf("Instrução %s\n", palavra);
-            if(strcmp("nop", palavra) != 0)
+            if(strcmp("nop", palavra) != 0 &&
+               strcmp("ret", palavra) != 0)
               Linha_Saltar(entrada);
             linhaCount++;
          }
