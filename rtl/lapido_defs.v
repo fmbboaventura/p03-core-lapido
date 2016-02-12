@@ -14,8 +14,6 @@
 `define FN_OR  6'h25
 `define FN_NOT 6'h21
 `define FN_XOR 6'h26
-`define FN_ANDNOTA 6'h23
-`define FN_ORNOTB 6'h29
 `define FN_NOR 6'h27
 `define FN_XNOR 6'h28
 `define FN_NAND 6'h1B
@@ -23,8 +21,6 @@
 `define FN_PASSNOTA 6'h2C
 `define FN_INCA 6'h2D
 `define FN_DECA 6'h2E
-`define FN_ADDINC 6'h2F
-`define FN_SUUBDEC 6'h30
 `define FN_LSL 6'h00
 `define FN_LSR 6'h02
 `define FN_ASL 6'h04
