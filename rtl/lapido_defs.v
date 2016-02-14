@@ -13,12 +13,12 @@
 `define NOP_INSTRUCTION 32'h20000000 // addi r0,r0,0
 
 /**************** Codigo das flags *****************/
-`define FL_ZERO     5'b0
-`define FL_TRUE     5'b1
-`define FL_NEG      5'b2
-`define FL_OVERFLOW 5'b3
-`define FL_NEGZERO  5'b4
-`define FL_CARRY    5'b5
+`define FL_ZERO     5'b00000
+`define FL_TRUE     5'b00001
+`define FL_NEG      5'b00010
+`define FL_OVERFLOW 5'b00011
+`define FL_NEGZERO  5'b00100
+`define FL_CARRY    5'b00101
 
 /******************* ALU funct *********************/
 `define FN_ADD  6'h20
@@ -31,8 +31,6 @@
 `define FN_XNOR 6'h28
 `define FN_NAND 6'h1B
 `define FN_PASSA 6'h2B
-`define FN_INCA 6'h2D
-`define FN_DECA 6'h2E
 `define FN_LSL  6'h00
 `define FN_LSR  6'h02
 `define FN_ASL  6'h04
