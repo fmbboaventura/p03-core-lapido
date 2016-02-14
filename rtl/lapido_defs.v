@@ -5,7 +5,9 @@
  * Description: Arquivo contendo as definicoes de
  * varios aspectios do processador LAPI DOpaCA LAMBA
  ***************************************************/
-`define PC_WIDTH 32
+
+`define PC_WIDTH       32
+`define FLAG_REG_WIDTH 32
 
 /***************** Instrucao NOP *******************/
 `define NOP_INSTRUCTION 32'h20000000 // addi r0,r0,0
