@@ -30,10 +30,8 @@
 `define FN_NOR  6'h27
 `define FN_XNOR 6'h28
 `define FN_NAND 6'h1B
-`define FN_PASSA 6'h2B
 `define FN_LSL  6'h00
 `define FN_LSR  6'h02
 `define FN_ASL  6'h04
 `define FN_ASR  6'h03
 `define FN_SLT  6'h2A
-`define FN_JR   6'h08
