@@ -1,7 +1,7 @@
 /***************************************************
  * Module: alu
  * Project: core_lapido
- * Author:
+ * Author: Afonso Machado e Filipe Boaventura
  * Description: Unidade Logico Aritmetica do
  * processador LAPI DOpaCA LAMBA. Este modulo opera
  * dois valores de 32 bis, de acordo com o código de
@@ -33,11 +33,15 @@ always @ ( * ) begin // quando qualquer entrada mudar, faca...
     case (alu_funct)
         `FN_ADD: begin
             alu_res = data_rs + data_rt;
-            //flags[`FL_OVERFLOW] = LOGICA DO OVERFLOW AQUI <===============
+            flags[`FL_OVERFLOW] =
+                (!data_rs[31] && !data_rt[31] && alu_res[31]) ||
+                (data_rs[31] && data_rt[31] && !alu_res[31]);
             end
         `FN_SUB: begin
             alu_res = data_rs - data_rt;
-            //flags[`FL_OVERFLOW] = LOGICA DO OVERFLOW AQUI <===============
+            flags[`FL_OVERFLOW] =
+                (!data_rs[31] && data_rt[31] && alu_res[31]) ||
+                (data_rs[31] && !data_rt[31] && !alu_res[31]);
             end
         `FN_ASL: begin
             alu_res = data_rs <<< 1;
