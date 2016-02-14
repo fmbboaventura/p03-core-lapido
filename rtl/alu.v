@@ -39,6 +39,68 @@ always @ ( * ) begin // quando qualquer entrada mudar, faca...
             alu_res = data_rs - data_rt;
             //flags[`FL_OVERFLOW] = logica do overflow aqui
             end
+        `FN_AND: begin
+            alu_res = data_rs & data_rt;
+            //flags[`FL_OVERFLOW] = logica do overflow aqui
+            end
+        `FN_NAND: begin
+            alu_res = data_rs ~& data_rt;
+            //flags[`FL_OVERFLOW] = logica do overflow aqui
+            end
+        `FN_OR: begin
+            alu_res = data_rs | data_rt;
+            //flags[`FL_OVERFLOW] = logica do overflow aqui
+            end
+        `FN_NOR: begin
+            alu_res = data_rs ~| data_rt;
+            //flags[`FL_OVERFLOW] = logica do overflow aqui
+            end
+        `FN_XNOR: begin
+            alu_res = data_rs ~^ data_rt;
+            //flags[`FL_OVERFLOW] = logica do overflow aqui
+            end
+        `FN_XOR: begin
+            alu_res = data_rs ^ data_rt;
+            //flags[`FL_OVERFLOW] = logica do overflow aqui
+            end
+        `FN_NOT: begin
+            alu_res = ~data_rs;
+            //flags[`FL_OVERFLOW] = logica do overflow aqui
+            end
+        `FN_PASSA: begin
+            alu_res = data_rs;
+            //flags[`FL_OVERFLOW] = logica do overflow aqui
+            end
+        `FN_LSL: begin
+            alu_res = data_rs << 1;
+            //flags[`FL_OVERFLOW] = logica do overflow aqui
+            end
+        `FN_LSR: begin
+            alu_res = data_rs >> 1;
+            //flags[`FL_OVERFLOW] = logica do overflow aqui
+            end
+        `FN_ASL: begin
+            alu_res = data_rs <<< 1;
+            //flags[`FL_OVERFLOW] = logica do overflow aqui
+            end
+        `FN_ASR: begin
+            alu_res = data_rs >>> 1;
+            //flags[`FL_OVERFLOW] = logica do overflow aqui
+            end
+        `FN_SLT: begin
+            if(data_rs < data_rt) 
+                begin
+                    alu_res = 1;
+                end
+            else
+                begin
+                    alu_res = 0;
+                end
+            //flags[`FL_OVERFLOW] = logica do overflow aqui
+            end
+        `FN_JR: begin
+            //flags[`FL_OVERFLOW] = logica do overflow aqui
+            end     
         default: begin
             flags[`FL_OVERFLOW] = 0; // essas operacoes nao causam oveflow
             //case (alu_funct) // TODO implementar case com os funct restantes
