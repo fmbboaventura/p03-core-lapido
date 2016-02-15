@@ -7,11 +7,7 @@ module program_counter (
 );
 
 always @ (clk, pc_in, pc_out) begin 
-	case (clk)
-		1'b0 : pc_in = pc_out;
-		1'b1 : pc_out = pc_in;
 
-	endcase
 end
 
 endmodule

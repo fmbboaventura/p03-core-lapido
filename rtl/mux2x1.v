@@ -15,6 +15,6 @@ module mux2x1 (
 	
 );
 
-assign out = sel ? in_b : in_b; //Selecao
+assign out = sel ? in_a : in_b; //Selecao
 
 endmodule
