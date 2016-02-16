@@ -64,8 +64,8 @@ always @ (posedge clk or posedge rst) begin
 	end
 end
 
-assign data_rs = registers[data_rs];
+assign data_rs = registers[rs];
 
-assign data_rt = registers[data_rt];
+assign data_rt = registers[rt];
 
 endmodule
