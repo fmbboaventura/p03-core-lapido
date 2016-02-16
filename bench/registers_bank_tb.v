@@ -15,7 +15,7 @@ module registers_bank_tb;
 	wire [31:0] data_rs;
 	wire [31:0] data_rt;
 
-	registers_bank uut (
+	register_file uut (
 		.clk(clk),
 		.rst(rst),
 		.en(en),
