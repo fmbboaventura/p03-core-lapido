@@ -5,7 +5,7 @@
  * Description: Banco de registradores contendo os
  * 16 registradores de proposito geral.
  ***************************************************/
-`timescale 1ns/1ps
+`include "lapido_defs.v"
 
 module register_file (
 	input clk,
@@ -14,14 +14,14 @@ module register_file (
 	input [4:0] rd,
 	input [4:0] rs,
 	input [4:0] rt,
-	input [31:0] data,
+	input [`GPR_WIDTH-1:0] data,
 
-	output [31:0] data_rs,
-	output [31:0] data_rt
+	output [`GPR_WIDTH-1:0] data_rs,
+	output [`GPR_WIDTH-1:0] data_rt
 
 );
 
-reg [31:0] registers [15:0];
+reg [`GPR_WIDTH-1:0] registers [`REGISTER_FILE_SIZE-1:0];
 
 always @ (posedge clk or posedge rst) begin
 	if(rst) begin
@@ -41,22 +41,6 @@ always @ (posedge clk or posedge rst) begin
 		registers[13]=32'b0;
 		registers[14]=32'b0;
 		registers[15]=32'b0;
-		registers[16]=32'b0;
-		registers[17]=32'b0;
-		registers[18]=32'b0;
-		registers[19]=32'b0;
-		registers[20]=32'b0;
-		registers[21]=32'b0;
-		registers[22]=32'b0;
-		registers[23]=32'b0;
-		registers[24]=32'b0;
-		registers[25]=32'b0;
-		registers[26]=32'b0;
-		registers[27]=32'b0;
-		registers[28]=32'b0;
-		registers[29]=32'b0;
-		registers[30]=32'b0;
-		registers[31]=32'b0;
 	end else begin
 		if(en) begin
 			registers[rd] <= data;
