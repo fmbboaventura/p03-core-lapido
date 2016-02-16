@@ -36,7 +36,7 @@ end*/
 
 always @ (posedge clk or posedge rst) begin 
 	if(rst) begin
-		registers[0]=32'd0;
+			registers[0]=32'b0;
 			registers[1]=32'b0;
 			registers[2]=32'b0;
 			registers[3]=32'b0;
