@@ -76,8 +76,8 @@ always @ (posedge clk or posedge rst) begin
 	end
 end
 
-assign rs = (data_rs == 0) ? 32'd0 : registers[data_rs];
+assign data_rs = (data_rs == 0) ? 32'd0 : registers[data_rs];
 
-assign rt = (data_rt == 0) ? 32'd0 : registers[data_rt];
+assign data_rt = (data_rt == 0) ? 32'd0 : registers[data_rt];
 
 endmodule
