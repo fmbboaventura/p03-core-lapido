@@ -1,4 +1,4 @@
-module mux3x1;
+module mux3x1_tb;
 
 	reg [31:0] in_a;
 	reg [31:0] in_b;
