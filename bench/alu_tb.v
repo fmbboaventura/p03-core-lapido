@@ -10,16 +10,17 @@ module alu_tb();
 	
 	reg [31:0] data_rs;		// Primeiro operando
 	reg [31:0] data_rt; 	// Segundo operando
-    reg [5:0]  alu_funct, // Operacao da alu
+    reg [5:0] alu_funct, // Operacao da alu
 
     wire [32:0] alu_res, // O 33th bit eh o carry da alu
     wire [4:0] flags     // Demais flags
 
-    alu uut(.data_rs(data_rs),
-     .data_rt(data_rt),
-      .alu_funct(alu_funct).
-      .alu_res(alu_res).
-      .wire(flags));
+    alu uut(
+    	.data_rs(data_rs),
+     	.data_rt(data_rt),
+      	.alu_funct(alu_funct).
+      	.alu_res(alu_res).
+      	.wire(flags));
 	
 
 
@@ -35,7 +36,7 @@ module alu_tb();
 
 			data_rs = 32'b00000000000000000000000000000010;
 			data_rt = 32'b00000000000000000000000000000001;
-			alu_funct = `FN_ADD;
+			alu_funct = `FN_SUB;
 			#100;
 			$Display("%b - %b = %b", data_rs, data_rt, alu_res);
 			//00000000000000000000000000000010 - 00000000000000000000000000000001= 0000000000000000000000000000001
