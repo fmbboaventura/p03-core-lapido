@@ -80,7 +80,7 @@ module registers_bank_tb;
 			$display("read_all_regs_from_rs:");
 			$display("------------------------------");
 			i=0;
-			while(i<8) begin
+			while(i<16) begin
 				rs = i;
 				#(PCLK*1)
 				$write("%d\t",rs);
@@ -95,7 +95,7 @@ module registers_bank_tb;
 			$display("read_all_regs_from_read_port_2:");
 			$display("------------------------------");
 			i=0;
-			while(i<8) begin
+			while(i<16) begin
 				rt = i;
 				#(PCLK*1)
 				$write("%d\t",rt);
@@ -110,7 +110,7 @@ module registers_bank_tb;
 			$display("write_all_regs(random):");
 			$display("------------------------------");
 			i=0;
-			while(i<8) begin
+			while(i<16) begin
 				en=1;
 				rd = i;
 				data = $random % 2147483647;
@@ -130,7 +130,7 @@ module registers_bank_tb;
 		begin
 			$display("write_and_read_all_regs(random):");
 			$display("------------------------------");
-			while(i<8) begin
+			while(i<16) begin
 				en=1;
 				rd = i;
 				data = $random % 2147483647;
@@ -154,7 +154,7 @@ module registers_bank_tb;
 			$display("read from rs (read regs being wrote will hold its value):");
 			$display("------------------------------");
 			i=0;
-			while(i<8) begin
+			while(i<16) begin
 				$write("%d\t",read_tmp_1[i]);
 				i=i+1;
 			end
@@ -163,7 +163,7 @@ module registers_bank_tb;
 			$display("read from rt (read wrote regs will get its new value):");
 			$display("------------------------------");
 			i=0;
-			while(i<8) begin
+			while(i<16) begin
 				$write("%d\t",read_tmp_2[i]);
 				i=i+1;
 			end

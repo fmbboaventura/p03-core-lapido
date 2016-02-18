@@ -5,22 +5,24 @@
  * Description: Test Bench criado para o modulo da alu.
  ***************************************************/
 
+`include "lapido_defs.v"
+
 `timescale 1ns/1ps
 module alu_tb();
 	
 	reg [31:0] data_rs;		// Primeiro operando
 	reg [31:0] data_rt; 	// Segundo operando
-    reg [5:0] alu_funct, // Operacao da alu
+    reg [5:0] alu_funct; // Operacao da alu
 
-    wire [32:0] alu_res, // O 33th bit eh o carry da alu
-    wire [4:0] flags     // Demais flags
+    wire [32:0] alu_res; // O 33th bit eh o carry da alu
+    wire [4:0] flags;     // Demais flags
 
     alu uut(
     	.data_rs(data_rs),
      	.data_rt(data_rt),
-      	.alu_funct(alu_funct).
-      	.alu_res(alu_res).
-      	.wire(flags));
+      	.alu_funct(alu_funct),
+      	.alu_res(alu_res),
+      	.flags(flags));
 	
 
 
