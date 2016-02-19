@@ -7,41 +7,59 @@
 
 `include "lapido_defs.v"
 
-`timescale 1ns/1ps
 module alu_tb();
-	
-	reg [31:0] data_rs;		// Primeiro operando
-	reg [31:0] data_rt; 	// Segundo operando
-    reg [5:0] alu_funct; // Operacao da alu
 
-    wire [32:0] alu_res; // O 33th bit eh o carry da alu
-    wire [4:0] flags;     // Demais flags
+	reg signed [31:0] op1;		// Primeiro operando
+	reg signed [31:0] op2; 	// Segundo operando
+    reg [5:0] alu_funct; 	// Operacao da alu
 
-    alu uut(
-    	.data_rs(data_rs),
-     	.data_rt(data_rt),
-      	.alu_funct(alu_funct),
-      	.alu_res(alu_res),
-      	.flags(flags));
-	
+    wire signed [32:0] alu_res; 	// O 33th bit eh o carry da alu
+    wire [4:0] flags;     	// Demais flags
+
+    alu dut(
+		.op1(op1),
+		.op2(op2),
+		.alu_funct(alu_funct),
+		.alu_res(alu_res),
+		.flags(flags)
+	);
 
 
-	initial
+
+	initial begin
+		op1 = 0;
+		op2 = 0;
+		alu_funct = 0;
+
+		test_add;
+	end
+
+	task display_flags;
 		begin
-			data_rs = 32'b00000000000000000000000000000010;
-			data_rt = 32'b00000000000000000000000000000001;
-			alu_funct = `FN_ADD;
-			#100;
-			$Display("%b + %b = %b", data_rs, data_rt, alu_res);
-			//00000000000000000000000000000010 + 00000000000000000000000000000001= 00000000000000000000000000000011
-
-
-			data_rs = 32'b00000000000000000000000000000010;
-			data_rt = 32'b00000000000000000000000000000001;
-			alu_funct = `FN_SUB;
-			#100;
-			$Display("%b - %b = %b", data_rs, data_rt, alu_res);
-			//00000000000000000000000000000010 - 00000000000000000000000000000001= 0000000000000000000000000000001
+			$display("Flags: ");
+			$display(
+				"Zero: %b\tTrue: %b\tNeg: %b\tOveflow: %b\nNegZero: %b\tCarry: %b",
+				flags[`FL_ZERO], flags[`FL_TRUE], flags[`FL_NEG], flags[`FL_OVERFLOW],
+				flags[`FL_NEGZERO],
+				alu_res[32] // <--carry da alu
+		    );
 		end
+	endtask
+
+	task test_add;
+		begin
+			$display("FN_ADD");
+			alu_funct = `FN_ADD;
+			op1 = $random;
+			op2 = $random;
+			#1;
+			$display("rs: %d\trt: %d\tres: %d", op1, op2, alu_res);
+			display_flags;
+
+			if(alu_res == op1 + op2) $display("OK!");
+			else $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
+			$time, op1 + op2, alu_res);
+		end
+	endtask // test_add
 
 endmodule
