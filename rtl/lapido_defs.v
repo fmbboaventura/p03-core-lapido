@@ -37,3 +37,7 @@
 `define FN_ASL  6'h04
 `define FN_ASR  6'h03
 `define FN_SLT  6'h2A
+
+/*************** Sinais de controle ****************/
+`define CTRL_LCL 2'b01
+`define CTRL_LCH 2'b10

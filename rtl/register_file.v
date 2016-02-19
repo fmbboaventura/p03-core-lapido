@@ -11,17 +11,14 @@ module register_file (
 	input clk,
 	input rst,
 	input en,
+	input ctrl,    // Controle de  atribuição, usado no lcl e lch
 	input [4:0] rd,
 	input [4:0] rs,
 	input [4:0] rt,
 	input [`GPR_WIDTH-1:0] data,
 
 	output [`GPR_WIDTH-1:0] data_rs,
-	output [`GPR_WIDTH-1:0] 
-
-	//ADICIONAR JAL NO BANCO DE REGITRADORES
-	//ADICIONAR A INSERÇÃO LCL, LCH BLABLA
-
+	output [`GPR_WIDTH-1:0] data_rt
 );
 
 reg [`GPR_WIDTH-1:0] registers [`REGISTER_FILE_SIZE-1:0];
@@ -46,7 +43,11 @@ always @ (posedge clk or posedge rst) begin
 		registers[15]=32'b0;
 	end else begin
 		if(en) begin
-			registers[rd] <= data;
+			case (ctrl)
+				`CTRL_LCL: registers[rd] <= data | (registers[rd] & 32'hffff0000);
+				`CTRL_LCH: registers[rd] <= (data << 16) | (registers[rd] & 32'hffff);
+				default: registers[rd] <= data;
+			endcase
 		end
 	end
 end
