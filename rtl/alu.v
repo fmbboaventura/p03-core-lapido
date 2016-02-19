@@ -21,67 +21,67 @@
 
 module alu
 (
-    input [31:0] data_rs,   // Primeiro operando
-    input [31:0] data_rt,   // Segundo operando
+    input signed [31:0] op1,   // Primeiro operando
+    input signed [31:0] op2,   // Segundo operando
     input [5:0]  alu_funct, // Operacao da alu
 
-    output reg [32:0] alu_res, // O 33th bit eh o carry da alu
+    output reg signed [32:0] alu_res, // O 33th bit eh o carry da alu
     output reg [4:0] flags     // Demais flags
 );
 
 always @ ( * ) begin // quando qualquer entrada mudar, faca...
     case (alu_funct)
         `FN_ADD: begin
-            alu_res = data_rs + data_rt;
+            alu_res = op1 + op2;
             flags[`FL_OVERFLOW] =
-                (!data_rs[31] && !data_rt[31] && alu_res[31]) ||
-                (data_rs[31] && data_rt[31] && !alu_res[31]);
+                (!op1[31] && !op2[31] && alu_res[31]) ||
+                (op1[31] && op2[31] && !alu_res[31]);
             end
         `FN_SUB: begin
-            alu_res = data_rs - data_rt;
+            alu_res = op1 - op2;
             flags[`FL_OVERFLOW] =
-                (!data_rs[31] && data_rt[31] && alu_res[31]) ||
-                (data_rs[31] && !data_rt[31] && !alu_res[31]);
+                (!op1[31] && op2[31] && alu_res[31]) ||
+                (op1[31] && !op2[31] && !alu_res[31]);
             end
         `FN_ASL: begin
-            alu_res = data_rs <<< 1;
-            flags[`FL_OVERFLOW] = data_rs[31] ^ data_rs[30];
+            alu_res = op1 <<< 1;
+            flags[`FL_OVERFLOW] = op1[31] ^ op1[30];
             end
         default: begin
             flags[`FL_OVERFLOW] = 0; // essas operacoes nao causam oveflow
             case (alu_funct)
             `FN_ASR: begin
-                alu_res = data_rs >>> 1;
+                alu_res = op1 >>> 1;
                 end
             `FN_AND: begin
-                alu_res = data_rs & data_rt;
+                alu_res = op1 & op2;
                 end
             `FN_NAND: begin
-                alu_res = ~(data_rs & data_rt);
+                alu_res = ~(op1 & op2);
                 end
             `FN_OR: begin
-                alu_res = data_rs | data_rt;
+                alu_res = op1 | op2;
                 end
             `FN_NOR: begin
-                alu_res = ~(data_rs | data_rt);
+                alu_res = ~(op1 | op2);
                 end
             `FN_XNOR: begin
-                alu_res = data_rs ~^ data_rt;
+                alu_res = op1 ~^ op2;
                 end
             `FN_XOR: begin
-                alu_res = data_rs ^ data_rt;
+                alu_res = op1 ^ op2;
                 end
             `FN_NOT: begin
-                alu_res = ~data_rs;
+                alu_res = ~op1;
                 end
             `FN_LSL: begin
-                alu_res = data_rs << 1;
+                alu_res = op1 << 1;
                 end
             `FN_LSR: begin
-                alu_res = data_rs >> 1;
+                alu_res = op1 >> 1;
                 end
             `FN_SLT: begin
-                if(data_rs < data_rt)
+                if(op1 < op2)
                     begin
                         alu_res = 1;
                     end
@@ -97,6 +97,7 @@ always @ ( * ) begin // quando qualquer entrada mudar, faca...
     flags[`FL_ZERO] = (alu_res == 0);
     flags[`FL_TRUE] = !flags[`FL_ZERO];
     flags[`FL_NEG] = alu_res[31];
+    flags[`FL_NEGZERO] = flags[`FL_NEG] | flags[`FL_ZERO];
 end
 
 endmodule // alu
