@@ -17,7 +17,10 @@ module register_file (
 	input [`GPR_WIDTH-1:0] data,
 
 	output [`GPR_WIDTH-1:0] data_rs,
-	output [`GPR_WIDTH-1:0] data_rt
+	output [`GPR_WIDTH-1:0] 
+
+	//ADICIONAR JAL NO BANCO DE REGITRADORES
+	//ADICIONAR A INSERÇÃO LCL, LCH BLABLA
 
 );
 
