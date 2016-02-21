@@ -170,16 +170,16 @@ void Traducao(FILE *entrada, FILE *saida){
     unsigned int binario;
 
     int sftOpcode = 26;
-    int sftRd = 21;
-    int sftRs = 16;
-    int sftRt = 11;
-    int shamt = 6; // Não use o shamt por enquanto
+    int sftRs = 21;//16;
+    int sftRt = 16;//11;
+    int sftRd = 11;//21;
+    int shamt = 6; // Não use o shamt por enquanto;
 
-    palavra = malloc(sizeof(char) * TAM_LINHA);
-    p = malloc(sizeof(char) * 3);
-    p[0] = malloc(sizeof(char) * TAM_LINHA);
-    p[1] = malloc(sizeof(char) * TAM_LINHA);
-    p[2] = malloc(sizeof(char) * TAM_LINHA);
+    palavra = malloc(sizeof(palavra) * TAM_LINHA);
+    p = malloc(sizeof(p) * 3);
+    p[0] = malloc(sizeof(p[0]) * TAM_LINHA);
+    p[1] = malloc(sizeof(p[1]) * TAM_LINHA);
+    p[2] = malloc(sizeof(p[2]) * TAM_LINHA);
 
     LerPalavra(entrada, &palavra);
     tam = strlen(palavra);
@@ -649,7 +649,7 @@ EscreveBinario(binario, saida);
             else if (strcmp(palavra, "ret") == 0)
             {
                 binario = 0x00 << sftOpcode;
-                binario = binario | (0x0F << sftRd);
+                binario = binario | (0x0F << sftRs);
                 binario = binario | 0x08;
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
                 EscreveBinario(binario, saida);
@@ -660,7 +660,7 @@ EscreveBinario(binario, saida);
                 rc = strtol(&p[0][1], NULL, 10);
 
                 binario = 0x00 << sftOpcode;
-                binario = binario | (rc << sftRd);
+                binario = binario | (rc << sftRs);
                 binario = binario | 0x08;
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
                 EscreveBinario(binario, saida);
@@ -681,7 +681,7 @@ EscreveBinario(binario, saida);
                 //getchar();
 
                 binario = 0x08 << sftOpcode;
-                binario = binario | (rc << sftRd);
+                binario = binario | (rc << sftRt);
                 binario = binario | (ra << sftRs);
                 c = 0xFFFF & c;
                 binario = binario | c;
@@ -699,7 +699,7 @@ EscreveBinario(binario, saida);
                 c = strtol(&p[2][0], NULL, 10);
 
                 binario = 0x0C << sftOpcode;
-                binario = binario | (rc << sftRd);
+                binario = binario | (rc << sftRt);
                 binario = binario | (ra << sftRs);
                 c = 0xFFFF & c;
                 binario = binario | c;
@@ -717,7 +717,7 @@ EscreveBinario(binario, saida);
                 c = strtol(&p[2][0], NULL, 10);
 
                 binario = 0x0D << sftOpcode;
-                binario = binario | (rc << sftRd);
+                binario = binario | (rc << sftRt);
                 binario = binario | (ra << sftRs);
                 c = 0xFFFF & c;
                 binario = binario | c;
@@ -735,7 +735,7 @@ EscreveBinario(binario, saida);
                 c = strtol(&p[2][0], NULL, 10);
 
                 binario = 0x0A << sftOpcode;
-                binario = binario | (rc << sftRd);
+                binario = binario | (rc << sftRt);
                 binario = binario | (ra << sftRs);
                 c = 0xFFFF & c;
                 binario = binario | c;
@@ -753,7 +753,7 @@ EscreveBinario(binario, saida);
                 c = strtol(&p[2][0], NULL, 10);
 
                 binario = 0x04 << sftOpcode;
-                binario = binario | (rc << sftRd);
+                binario = binario | (rc << sftRt);
                 binario = binario | (ra << sftRs);
                 bool label = false;
                 int i;
@@ -786,7 +786,7 @@ EscreveBinario(binario, saida);
                 c = strtol(&p[2][0], NULL, 10);
 
                 binario = 0x05 << sftOpcode;
-                binario = binario | (rc << sftRd);
+                binario = binario | (rc << sftRt);
                 binario = binario | (ra << sftRs);
                 bool label = false;
                 int i;
@@ -817,8 +817,8 @@ EscreveBinario(binario, saida);
                 c = strtol(&p[1][0], NULL, 10);
 
                 binario = 0x06 << sftOpcode;
-                binario = binario | (rc << sftRd);
-                c = 0x1FFFFF & c;//if(c > 0xFFFF) exit(-1);
+                binario = binario | (rc << sftRt);
+                c = 0xFFFF & c;//0x1FFFFF & c;//if(c > 0xFFFF) exit(-1);
                 binario = binario | c;
 
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
@@ -838,7 +838,7 @@ EscreveBinario(binario, saida);
         				}
 
                 binario = 0x07 << sftOpcode;
-                binario = binario | (rc << sftRd);
+                binario = binario | (rc << sftRt);
 
                 //printf("%s\n", p[1]);
 
@@ -882,7 +882,7 @@ EscreveBinario(binario, saida);
         				}
 
                 binario = 0x01 << sftOpcode;
-                binario = binario | (rc << sftRd);
+                binario = binario | (rc << sftRt);
 
                 //printf("%s\n", p[1]);
 
@@ -920,12 +920,12 @@ EscreveBinario(binario, saida);
                 int
 
                 binario = 0x09 << sftOpcode;
-                binario = binario | (0x04 << sftRd);
+                binario = binario | (0x02 << sftRs);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
                 printf("%d\n", c);
-                if(c > 0xFFFF)
-                    exit -1;
+                // if(c > 0xFFFF)
+                //     exit -1;
 
                 int offset = 0;
                 for (i = 0; i < MAX_TAB; i++)
@@ -952,12 +952,12 @@ EscreveBinario(binario, saida);
                 char label = 0;
 
                 binario = 0x09 << sftOpcode;
-                binario = binario | (0x05 << sftRd);
+                binario = binario | (0x00 << sftRs);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
                 printf("%d\n", c);
-                if(c > 0xFFFF)
-                    exit -1;
+                // if(c > 0xFFFF)
+                //     exit -1;
                 int offset = 0;
                 for (i = 0; i < MAX_TAB; i++)
                     {
@@ -983,12 +983,12 @@ EscreveBinario(binario, saida);
                 char label = 0;
 
                 binario = 0x09 << sftOpcode;
-                binario = binario | (0x06 << sftRd);
+                binario = binario | (0x05 << sftRs);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
                 printf("%d\n", c);
-                if(c > 0xFFFF)
-                    exit -1;
+                // if(c > 0xFFFF)
+                //     exit -1;
                 int offset = 0;
                 for (i = 0; i < MAX_TAB; i++)
                     {
@@ -1014,12 +1014,12 @@ EscreveBinario(binario, saida);
                 char label = 0;
 
                 binario = 0x09 << sftOpcode;
-                binario = binario | (0x07 << sftRd);
+                binario = binario | (0x04 << sftRs);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
                 printf("%d\n", c);
-                if(c > 0xFFFF)
-                    exit -1;
+                // if(c > 0xFFFF)
+                //     exit -1;
                 int offset =0 ;
                 for (i = 0; i < MAX_TAB; i++)
                     {
@@ -1045,12 +1045,12 @@ EscreveBinario(binario, saida);
                 char label = 0;
 
                 binario = 0x09 << sftOpcode;
-                binario = binario | (0x00 << sftRd);
+                binario = binario | (0x01 << sftRs);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
                 printf("%d\n", c);
-                if(c > 0xFFFF)
-                    exit -1;
+                // if(c > 0xFFFF)
+                //     exit -1;
                 int offset = 0;
                 for (i = 0; i < MAX_TAB; i++)
                     {
@@ -1076,12 +1076,12 @@ EscreveBinario(binario, saida);
                 char label = 0;
 
                 binario = 0x09 << sftOpcode;
-                binario = binario | (0x03 << sftRd);
+                binario = binario | (0x03 << sftRs);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
                 printf("%d\n", c);
-                if(c > 0xFFFF)
-                    exit -1;
+                // if(c > 0xFFFF)
+                //     exit -1;
                 int offset = 0;
                 for (i = 0; i < MAX_TAB; i++)
                     {
@@ -1107,12 +1107,12 @@ EscreveBinario(binario, saida);
                 char label = 0;
 
                 binario = 0x10 << sftOpcode;
-                binario = binario | (0x04 << sftRd);
+                binario = binario | (0x02 << sftRs);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
                 printf("%d\n", c);
-                if(c > 0xFFFF)
-                    exit -1;
+                // if(c > 0xFFFF)
+                //     exit -1;
                 int offset = 0;
                 for (i = 0; i < MAX_TAB; i++)
                     {
@@ -1138,12 +1138,12 @@ EscreveBinario(binario, saida);
                 char label = 0;
 
                 binario = 0x10 << sftOpcode;
-                binario = binario | (0x05 << sftRd);
+                binario = binario | (0x00 << sftRs);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
                 printf("%d\n", c);
-                if(c > 0xFFFF)
-                    exit -1;
+                // if(c > 0xFFFF)
+                //     exit -1;
                 int offset = 0;
                 for (i = 0; i < MAX_TAB; i++)
                     {
@@ -1169,12 +1169,12 @@ EscreveBinario(binario, saida);;
                 char label = 0;
 
                 binario = 0x10 << sftOpcode;
-                binario = binario | (0x06 << sftRd);
+                binario = binario | (0x05 << sftRs);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
                 printf("%d\n", c);
-                if(c > 0xFFFF)
-                    exit -1;
+                // if(c > 0xFFFF)
+                //     exit -1;
                 int offset = 0;
                 for (i = 0; i < MAX_TAB; i++)
                     {
@@ -1200,12 +1200,12 @@ EscreveBinario(binario, saida);
                 char label = 0;
 
                 binario = 0x10 << sftOpcode;
-                binario = binario | (0x07 << sftRd);
+                binario = binario | (0x04 << sftRs);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
                 printf("%d\n", c);
-                if(c > 0xFFFF)
-                    exit -1;
+                // if(c > 0xFFFF)
+                //     exit -1;
                 int offset = 0;
                 for (i = 0; i < MAX_TAB; i++)
                     {
@@ -1231,12 +1231,12 @@ EscreveBinario(binario, saida);
                 char label = 0;
 
                 binario = 0x10 << sftOpcode;
-                binario = binario | (0x00 << sftRd);
+                binario = binario | (0x01 << sftRs);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
                 printf("%d\n", c);
-                if(c > 0xFFFF)
-                    exit -1;
+                // if(c > 0xFFFF)
+                //     exit -1;
                 int offset = 0;
                 for (i = 0; i < MAX_TAB; i++)
                     {
@@ -1262,12 +1262,12 @@ EscreveBinario(binario, saida);
                 char label = 0;
 
                 binario = 0x10 << sftOpcode;
-                binario = binario | (0x03 << sftRd);
+                binario = binario | (0x03 << sftRs);
                 LerPalavra(entrada, &p[0]);
                 c = strtol(&p[0][1], NULL, 10);
                 printf("%d\n", c);
-                if(c > 0xFFFF)
-                    exit -1;
+                // if(c > 0xFFFF)
+                //     exit -1;
                     int offset = 0;
                 for (i = 0; i < MAX_TAB; i++)
                     {
@@ -1297,10 +1297,10 @@ EscreveBinario(binario, saida);
                 //c = strtol(&p[2][1], NULL, 10);
                 //printf("%s\n", p[2]);
                 binario = 0x23 << sftOpcode;
-                binario = binario | (rc << sftRd);
+                binario = binario | (rc << sftRt);
                 binario = binario | (ra << sftRs);
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
-EscreveBinario(binario, saida);
+                EscreveBinario(binario, saida);
             }
             else if (strcmp(palavra, "store") == 0)
             {
@@ -1312,8 +1312,8 @@ EscreveBinario(binario, saida);
                 //c = strtol(&p[2][1], NULL, 10);
                 //printf("%s\n", p[2]);
                 binario = 0x2B << sftOpcode;
-                binario = binario | (rc << sftRd);
-                binario = binario | (ra << sftRs);
+                binario = binario | (rc << sftRs);
+                binario = binario | (ra << sftRt);
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
 EscreveBinario(binario, saida);
             }
@@ -1343,7 +1343,7 @@ EscreveBinario(binario, saida);
                 rc = strtol(&p[0][1], NULL, 10);
 
                 binario = 0x03 << sftOpcode;
-                binario = binario | (rc << sftRd);
+                binario = binario | (rc << sftRs);
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
 EscreveBinario(binario, saida);
             }
@@ -1355,7 +1355,7 @@ EscreveBinario(binario, saida);
                 c = 0;
 
                 binario = 0x08 << sftOpcode;
-                binario = binario | (rc << sftRd);
+                binario = binario | (rc << sftRt);
                 binario = binario | (ra << sftRs);
                 binario = binario | c;
                 printf("Escrevendo %s PC = %d\n", palavra, pc);

@@ -17,11 +17,11 @@
 
 // Definindo a posição das flags no vetor
 #define F_ZERO     0
-#define F_NEG      1
-#define F_CARRY    2
-#define F_NEGZERO  3
-#define F_OVERFLOW 4
-#define F_TRUE     5
+#define F_TRUE     1
+#define F_NEG      2
+#define F_OVERFLOW 3
+#define F_NEGZERO  4
+#define F_CARRY    5
 
 // Contador de programa
 int pc=0;
@@ -34,9 +34,9 @@ bool flags[MAX_FLAGS];
 
 // Variaveis para auxiliar na descoberta dos campos das instruções
 int sftOpcode = 26;
-int sftRd = 21;
-int sftRs = 16;
-int sftRt = 11;
+int sftRs = 21;//16;
+int sftRt = 16;//11;
+int sftRd = 11;//21;
 
 // Vetor representando a memória de instrução
 unsigned int *inst_mem;
@@ -221,6 +221,7 @@ void execute()
         else abort();
 
         //getchar();
+        printf("Breakpoint\n");
     }
 }
 
@@ -573,7 +574,7 @@ void decode_r_type(unsigned int instruction)
     {
         printf("jr\n");
         // - 1 por causa do incremento do for
-        pc = registers[rd] - 1;
+        pc = temp_rs - 1;//registers[rd] - 1;
         printf("pc = %d\n", pc);
     }
     //div
@@ -601,14 +602,14 @@ void decode_r_type(unsigned int instruction)
 void decode_i_type(unsigned int instruction, int opcode)
 {
     // Identifica os campos da instrução
-    int rd = (instruction >> sftRd) & 0x1f;
+    int rd = (instruction >> sftRt) & 0x1f; // O registrador de destino no tipo I é o rt
     int rs = (instruction >> sftRs) & 0x1f;
     // sign extend o imediato
     int imm = (instruction & 0xFFFF) | ((instruction & 0x8000) ? 0xFFFF0000 : 0);
     int temp_rs = registers[rs];
 
     printf("%X\n", instruction);
-    printf("rd %d rs %d imm %d\n", rd, rs, imm);
+    printf("rt %d rs %d imm %d\n", rd, rs, imm);
     //getchar();
 
     // lch
@@ -633,7 +634,7 @@ void decode_i_type(unsigned int instruction, int opcode)
         printf("r15 = %d\n", registers[15]);
 
         // Menos um por causa do incremento do for
-        pc = registers[rd] - 1;
+        pc = temp_rs - 1;//registers[rd] - 1;
         printf("pc = %d\n", pc);
 
         // Altera flag aqui?
@@ -693,12 +694,13 @@ void decode_i_type(unsigned int instruction, int opcode)
     {
         printf("JT\n");
         // rd contém o código da condição
-        if (rd == 0x04 && flags[F_NEG]      ||
-            rd == 0x05 && flags[F_ZERO]     ||
-            rd == 0x06 && flags[F_CARRY]    ||
-            rd == 0x07 && flags[F_NEGZERO]  ||
-            rd == 0x00 && flags[F_TRUE]    ||
-            rd == 0x03 && flags[F_OVERFLOW])
+        // if (rd == 0x04 && flags[F_NEG]      ||
+        //     rd == 0x05 && flags[F_ZERO]     ||
+        //     rd == 0x06 && flags[F_CARRY]    ||
+        //     rd == 0x07 && flags[F_NEGZERO]  ||
+        //     rd == 0x00 && flags[F_TRUE]    ||
+        //     rd == 0x03 && flags[F_OVERFLOW])
+        if(flags[rs])
         {
             // No urisc, o jt e o jf são pc relative
             printf("Pulou\n");
@@ -710,12 +712,13 @@ void decode_i_type(unsigned int instruction, int opcode)
     {
         printf("JF\n");
         // rd contém o código da condição
-        if (rd == 0x04 && !flags[F_NEG]      ||
-            rd == 0x05 && !flags[F_ZERO]     ||
-            rd == 0x06 && !flags[F_CARRY]    ||
-            rd == 0x07 && !flags[F_NEGZERO]  ||
-            rd == 0x00 && !flags[F_TRUE]    ||
-            rd == 0x03 && !flags[F_OVERFLOW])
+        // if (rd == 0x04 && !flags[F_NEG]      ||
+        //     rd == 0x05 && !flags[F_ZERO]     ||
+        //     rd == 0x06 && !flags[F_CARRY]    ||
+        //     rd == 0x07 && !flags[F_NEGZERO]  ||
+        //     rd == 0x00 && !flags[F_TRUE]    ||
+        //     rd == 0x03 && !flags[F_OVERFLOW])
+        if(!flags[rs])
         {
             // Decrementa pra compensar o incremento do for
             printf("Pulou\n");
@@ -774,7 +777,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     else if (opcode == 0x2b)
     {
         printf("store\n");
-        data_mem[registers[rd]] = temp_rs;
+        data_mem[temp_rs] = registers[rd];
         //printf("%d %d\n", data_mem[registers[rd]], registers[rd]);
         //getchar();
     }
