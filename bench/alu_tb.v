@@ -62,4 +62,207 @@ module alu_tb();
 		end
 	endtask // test_add
 
+	task test_sub;
+		begin
+			$display("FN_SUB");
+			alu_funct = `FN_SUB;
+			op1 = $random;
+			op2 = $random;
+			#1;
+			$display("rs: %d\trt: %d\tres: %d", op1, op2, alu_res);
+			display_flags;
+
+			if(alu_res == op1 - op2) $display("OK!");
+			else $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
+			$time, op1 - op2, alu_res);
+		end
+	endtask
+
+	task test_asl;
+		begin
+			$display("FN_ASL");
+			alu_funct = `FN_ASL;
+			op1 = $random;
+			#1;
+			$display("rs: %d\tres: %d", op1, alu_res);
+			display_flags;
+
+			if(alu_res == op1 <<< 1) $display("OK!");
+			else $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
+			$time, op1 <<< 1, alu_res);
+		end
+	endtask
+
+	task test_asr;
+		begin
+			$display("FN_ASR");
+			alu_funct = `FN_ASR;
+			op1 = $random;
+			#1;
+			$display("rs: %d\tres: %d", op1, alu_res);
+			display_flags;
+
+			if(alu_res == op1 >>> 1) $display("OK!");
+			else $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
+			$time, op1 >>> 1, alu_res);
+		end
+	endtask
+
+	task test_and;
+		begin
+			$display("FN_AND");
+			alu_funct = `FN_AND;
+			op1 = $random;
+			op2 = $random;
+			#1;
+			$display("rs: %d\trt: %d\tres: %d", op1, op2, alu_res);
+			display_flags;
+
+			if(alu_res == op1 & op2) $display("OK!");
+			else $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
+			$time, op1 & op2, alu_res);
+		end
+	endtask
+
+	task test_nand;
+		begin
+			$display("FN_NAND");
+			alu_funct = `FN_NAND;
+			op1 = $random;
+			op2 = $random;
+			#1;
+			$display("rs: %d\trt: %d\tres: %d", op1, op2, alu_res);
+			display_flags;
+
+			if(alu_res == ~(op1 & op2)) $display("OK!");
+			else $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
+			$time, ~(op1 & op2), alu_res);
+		end
+	endtask
+
+	task test_or;
+		begin
+			$display("FN_OR");
+			alu_funct = `FN_OR;
+			op1 = $random;
+			op2 = $random;
+			#1;
+			$display("rs: %d\trt: %d\tres: %d", op1, op2, alu_res);
+			display_flags;
+
+			if(alu_res == op1 | op2) $display("OK!");
+			else $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
+			$time, op1 | op2, alu_res);
+		end
+	endtask
+
+	task test_nor;
+		begin
+			$display("FN_NOR");
+			alu_funct = `FN_NOR;
+			op1 = $random;
+			op2 = $random;
+			#1;
+			$display("rs: %d\trt: %d\tres: %d", op1, op2, alu_res);
+			display_flags;
+
+			if(alu_res == ~(op1 | op2)) $display("OK!");
+			else $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
+			$time, ~(op1 | op2), alu_res);
+		end
+	endtask
+
+	task test_xnor;
+		begin
+			$display("FN_XNOR");
+			alu_funct = `FN_XNOR;
+			op1 = $random;
+			op2 = $random;
+			#1;
+			$display("rs: %d\trt: %d\tres: %d", op1, op2, alu_res);
+			display_flags;
+
+			if(alu_res == op1 ~^ op2) $display("OK!");
+			else $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
+			$time, op1 ~^ op2, alu_res);
+		end
+	endtask
+
+	task test_xor;
+		begin
+			$display("FN_XOR");
+			alu_funct = `FN_XOR;
+			op1 = $random;
+			op2 = $random;
+			#1;
+			$display("rs: %d\trt: %d\tres: %d", op1, op2, alu_res);
+			display_flags;
+
+			if(alu_res == op1 ^ op2) $display("OK!");
+			else $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
+			$time, op1 ^ op2, alu_res);
+		end
+	endtask
+
+	task test_not;
+		begin
+			$display("FN_NOT");
+			alu_funct = `FN_NOT;
+			op1 = $random;
+			#1;
+			$display("rs: %d\tres: %d", op1, alu_res);
+			display_flags;
+
+			if(alu_res == ~op1) $display("OK!");
+			else $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
+			$time, ~op1, alu_res);
+		end
+	endtask
+
+	task test_lsl;
+		begin
+			$display("FN_LSL");
+			alu_funct = `FN_LSL;
+			op1 = $random;
+			#1;
+			$display("rs: %d\tres: %d", op1, alu_res);
+			display_flags;
+
+			if(alu_res == op1 << 1) $display("OK!");
+			else $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
+			$time, op1 << 1, alu_res);
+		end
+	endtask
+
+	task test_lsr;
+		begin
+			$display("FN_LSR");
+			alu_funct = `FN_LSR;
+			op1 = $random;
+			#1;
+			$display("rs: %d\tres: %d", op1, alu_res);
+			display_flags;
+
+			if(alu_res == op1 >> 1) $display("OK!");
+			else $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
+			$time, op1 >> 1, alu_res);
+		end
+	endtask
+
+	task test_slt;
+		begin
+			$display("FN_SLT");
+			alu_funct = `FN_SLT;
+			op1 = $random;
+			op2 = $random;
+			#1;
+			$display("rs: %d\trt: %d\tres: %d", op1, op2, alu_res);
+			display_flags;
+
+			if(alu_res == 1) $display("OK!");
+			else $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
+			$time, 1, alu_res);
+		end
+	endtask
+
 endmodule
