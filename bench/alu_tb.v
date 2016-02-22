@@ -1,7 +1,7 @@
 /***************************************************
  * Module: alu_tb
  * Project: core_lapido
- * Author: Felipe Cordeiro
+ * Author: Afonso Machado, Felipe Cordeiro e Filipe Boaventura
  * Description: Test Bench criado para o modulo da alu.
  ***************************************************/
 
@@ -32,6 +32,20 @@ module alu_tb();
 		alu_funct = 0;
 
 		test_add;
+		test_sub;
+		test_asl;
+		test_asr;
+		test_and;
+		test_nand;
+		test_or;
+		test_nor;
+		test_xnor;
+		test_xor;
+		test_not;
+		test_lsl;
+		test_lsr;
+		test_slt;
+
 	end
 
 	task display_flags;

@@ -1,3 +1,10 @@
+/***************************************************
+ * Module: registers_bank_tb.v
+ * Project: core_lapido
+ * Author: Afonso Machado
+ * Description: Test Bench criado para o modulo do
+ * banco de registradores.
+ ***************************************************/
 
 
 `timescale 1ns / 1ps
