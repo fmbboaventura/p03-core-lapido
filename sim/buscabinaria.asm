@@ -7,7 +7,7 @@
      	lch r0,HIGHBYTE ARR1 ; r0 contém o limite inferior do array
 		loadlit r14,10 ; r14 contém o tamanho do array
 		deca r1,r14 ; r1 contém o limite superior do array
-		loadlit r15,15
+		loadlit r15,31
 		zeros r13     ; r13 comtém 0 para comparações
 LOOP:
      	add r4,r0,r1 ;soma os limites...
