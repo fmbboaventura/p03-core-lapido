@@ -6,6 +6,9 @@
  * LAPI DOpaCA LAMBA. Gera sinais de controle para o
  * datapah de acordo com o opcode fornecido.
  ***************************************************/
+
+`include "lapido_defs.v"
+
 module control_unit
 (
     input [5:0] opcode,   // opcode da instrucao
@@ -20,7 +23,7 @@ module control_unit
     output reg sel_beq_bne,      // Seleciona entre beq e bne
     output reg sel_branch_jflag, // Seleciona o tipo de branch a ser executado
     output reg is_branch,        // A instrucao eh um desvio pc-relative
-    output reg is_jump,          // A instrucao eh um salto incondicional
+    output reg is_jump          // A instrucao eh um salto incondicional
 );
 
 always @ ( opcode ) begin
