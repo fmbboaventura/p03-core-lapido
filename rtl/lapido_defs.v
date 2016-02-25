@@ -22,7 +22,14 @@
 `define FL_NEGZERO  5'b00100
 `define FL_CARRY    5'b00101
 
-/******************* ALU funct *********************/
+/******************** opcode ***********************/
+`define OP_R_TYPE 6'h00
+`define OP_J_TYPE 6'h02
+`define OP_JAL    6'h03
+`define OP_LOAD   6'h23
+`define OP_STORE  6'h2B
+
+/******************* funct *********************/
 `define FN_ADD  6'h20
 `define FN_SUB  6'h22
 `define FN_AND  6'h24
@@ -37,6 +44,9 @@
 `define FN_ASL  6'h04
 `define FN_ASR  6'h03
 `define FN_SLT  6'h2A
+`define FN_JR   6'h08
+
+//TODO: Alu op e alu ctrl?
 
 /*************** Sinais de controle ****************/
 `define CTRL_LCL 2'b01
