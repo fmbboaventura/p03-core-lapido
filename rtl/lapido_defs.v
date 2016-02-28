@@ -32,6 +32,12 @@
 `define OP_BNE    6'h05
 `define OP_JT     6'h09
 `define OP_JF     6'h10
+`define OP_ADDI   6'h08
+`define OP_ANDI   6'h0C
+`define OP_ORI    6'h0D
+`define OP_SLTI   6'h0A
+`define OP_LCL    6'h01
+`define OP_LCH    6'h07
 
 /******************* funct *********************/
 `define FN_ADD  6'h20
@@ -51,7 +57,3 @@
 `define FN_JR   6'h08
 
 //TODO: Alu op e alu ctrl?
-
-/*************** Sinais de controle ****************/
-`define CTRL_LCL 2'b01
-`define CTRL_LCH 2'b10

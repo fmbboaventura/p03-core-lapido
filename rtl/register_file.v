@@ -43,11 +43,7 @@ always @ (posedge clk or posedge rst) begin
 		registers[15]=32'b0;
 	end else begin
 		if(en) begin
-			case (ctrl)
-				`CTRL_LCL: registers[rd] <= data | (registers[rd] & 32'hffff0000);
-				`CTRL_LCH: registers[rd] <= (data << 16) | (registers[rd] & 32'hffff);
-				default: registers[rd] <= data;
-			endcase
+			registers[rd] <= data;
 		end
 	end
 end

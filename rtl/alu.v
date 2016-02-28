@@ -90,6 +90,14 @@ always @ ( * ) begin // quando qualquer entrada mudar, faca...
                         alu_res = 0;
                     end
                 end
+            `OP_LCL: begin
+                // op2 eh o imediato. op1 e o dado do registrador
+                alu_res = op2 | (op1 & 32'hffff0000);
+            end
+            `OP_LCH: begin
+                // op2 eh o imediato. op1 e o dado do registrador
+                alu_res = (op2 << 16) | (op1 & 32'hffff);
+            end
             endcase
             end
     endcase
