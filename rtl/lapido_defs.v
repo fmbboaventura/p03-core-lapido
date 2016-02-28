@@ -28,6 +28,10 @@
 `define OP_JAL    6'h03
 `define OP_LOAD   6'h23
 `define OP_STORE  6'h2B
+`define OP_BEQ    6'h04
+`define OP_BNE    6'h05
+`define OP_JT     6'h09
+`define OP_JF     6'h10
 
 /******************* funct *********************/
 `define FN_ADD  6'h20
