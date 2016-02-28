@@ -23,21 +23,22 @@
 `define FL_CARRY    5'b00101
 
 /******************** opcode ***********************/
-`define OP_R_TYPE 6'h00
-`define OP_J_TYPE 6'h02
-`define OP_JAL    6'h03
-`define OP_LOAD   6'h23
-`define OP_STORE  6'h2B
-`define OP_BEQ    6'h04
-`define OP_BNE    6'h05
-`define OP_JT     6'h09
-`define OP_JF     6'h10
-`define OP_ADDI   6'h08
-`define OP_ANDI   6'h0C
-`define OP_ORI    6'h0D
-`define OP_SLTI   6'h0A
-`define OP_LCL    6'h01
-`define OP_LCH    6'h07
+`define OP_R_TYPE  6'h00
+`define OP_J_TYPE  6'h02
+`define OP_JAL     6'h03
+`define OP_LOAD    6'h23
+`define OP_STORE   6'h2B
+`define OP_BEQ     6'h04
+`define OP_BNE     6'h05
+`define OP_JT      6'h09
+`define OP_JF      6'h10
+`define OP_ADDI    6'h08
+`define OP_ANDI    6'h0C
+`define OP_ORI     6'h0D
+`define OP_SLTI    6'h0A
+`define OP_LCL     6'h01
+`define OP_LCH     6'h07
+`define OP_LOADLIT 6'h06
 
 /******************* funct *********************/
 `define FN_ADD  6'h20
@@ -55,5 +56,30 @@
 `define FN_ASR  6'h03
 `define FN_SLT  6'h2A
 `define FN_JR   6'h08
-
 //TODO: Alu op e alu ctrl?
+
+/***************** Controle ********************/
+// Seletores do registrador de destino
+`define REG_DST_RT 2'h0
+`define REG_DST_RD 2'h1
+`define REG_DST_15 2'h2
+
+// Seletores do segundo operando da alu
+`define ALU_SRC_REG 2'h0
+`define ALU_SRC_IMM 2'h1
+
+// Seletores do salto incondicional
+`define SEL_JR 1'h0
+`define SEL_J  1'h1
+
+// Seletores do branch
+`define SEL_BEQ 1'h0
+`define SEL_BNE 1'h1
+`define SEL_JF  1'h0
+`define SEL_JT  1'h1
+
+// Seletores do mux do WB
+`define WB_ALU 2'h0
+`define WB_MEM 2'h1
+`define WB_PC  2'h2
+`define WB_IMM 2'h3

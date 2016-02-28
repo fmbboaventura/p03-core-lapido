@@ -34,52 +34,56 @@ module control_unit
 );
 
 always @ ( opcode ) begin
+    // Desabilita branches, saltos e escrita em blocos sequenciais
     is_jump = 1'b0;
     is_branch = 1'b0;
-    reg_dst_mux = 2'b0; // Seleciona rt como registrador de destino
-    alu_src_mux = 2'b1; // Seleciona o imediato como o operando da alu
     mem_write_enable = 1'b0;
     reg_write_enable = 1'b0;
     fl_write_enable = 1'b0;
+    reg_dst_mux = `REG_DST_RT;  // Seleciona rt como registrador de destino
+    alu_src_mux = `ALU_SRC_IMM; // Seleciona o imediato como o operando da alu
+    wb_res_mux  = `WB_ALU;      // Seleciona a saida da alu como o dado a ser escrito
     case (opcode)
         `OP_STORE: begin
             mem_write_enable = 1'b1;
         end
         `OP_LOAD: begin
-            wb_res_mux  = 2'b1; // Seleciona saida da memoria como o dado a ser escrito
+            wb_res_mux  = `WB_MEM; // Seleciona saida da memoria como o dado a ser escrito
             reg_write_enable = 1'b1;
         end
         `OP_J_TYPE: begin
             is_jump = 1'b1;
-            sel_j_jr = 1'b1; // Seleciona o imediato como endereco do salto
+            sel_j_jr = `SEL_J; // Seleciona o imediato como endereco do salto
         end
         `OP_JAL: begin
             is_jump = 1'b1;
-            reg_dst_mux = 2'b10; // Seleciona o registrador 15
-            sel_j_jr = 1'b0; // Seleciona o valor do registrador como endereco do salto
+            reg_dst_mux = `REG_DST_15; // Seleciona o registrador 15
+            sel_j_jr = `SEL_JR;        // Seleciona o valor do registrador como endereco do salto
             reg_write_enable = 1'b1;
-            wb_res_mux = 2'b10; // Seleciona o pc+1 para ser escrito no r15
+            wb_res_mux = `WB_PC;       // Seleciona o pc+1 para ser escrito no r15
         end
         `OP_BEQ: begin
             is_branch = 1'b1;
-            sel_beq_bne = 1'b0;
+            sel_beq_bne = `SEL_BEQ; // Avalia a flag zero
         end
         `OP_BNE: begin
             is_branch = 1'b1;
-            sel_beq_bne = 1'b1;
+            sel_beq_bne = `SEL_BNE; // Avalia a flag true
         end
         `OP_JT: begin
             is_branch = 1'b1;
-            sel_jt_jf = 1'b1;
+            sel_jt_jf = `SEL_JT;
         end
         `OP_JF: begin
             is_branch = 1'b1;
-            sel_jt_jf = 1'b0;
+            sel_jt_jf = `SEL_JF;
+        end
+        `OP_LOADLIT: begin
+            wb_res_mux = `WB_IMM;
         end
         `OP_R_TYPE: begin
-            reg_dst_mux = 1'b1; // Seleciona rd como registrador de destino
-            wb_res_mux  = 2'b0; // Seleciona a saida da alu como o dado a ser escrito
-            alu_src_mux = 1'b0; // Seleciona dado do registrador como operando da alu
+            reg_dst_mux = `REG_DST_RD;  // Seleciona rd como registrador de destino
+            alu_src_mux = `ALU_SRC_REG; // Seleciona dado do registrador como operando da alu
 
             case (funct)
                 `FN_JR: begin
@@ -93,6 +97,25 @@ always @ ( opcode ) begin
             endcase
         end
         default: begin
+            reg_write_enable = 1'b1;
+            fl_write_enable = 1'b1;
+
+            case (opcode)
+                `OP_ADDI: begin
+                    alu_funct = `FN_ADD;
+                end
+                `OP_ANDI: begin
+                    alu_funct = `FN_ADD;
+                end
+                `OP_ORI: begin
+                    alu_funct = `FN_OR;
+                end
+                `OP_SLTI: begin
+                    alu_funct = `FN_SLT;
+                end
+                default: begin
+                end
+            endcase
         end
     endcase
 end
