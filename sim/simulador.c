@@ -423,31 +423,31 @@ void decode_r_type(unsigned int instruction)
         flags[F_NEG] = (registers[rd] < 0);
     }
     //passa
-    else if (func == 0x2B)
-    {
-        printf("passa/passb\n");
-        registers[rd] = temp_rs;
-
-        flags[F_OVERFLOW] = false;
-        flags[F_CARRY] = false;
-        flags[F_ZERO] = (registers[rd] == 0);
-        flags[F_TRUE] = (registers[rd] != 0);
-        flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] < 0);
-    }
+    // else if (func == 0x2B)
+    // {
+    //     printf("passa/passb\n");
+    //     registers[rd] = temp_rs;
+    //
+    //     flags[F_OVERFLOW] = false;
+    //     flags[F_CARRY] = false;
+    //     flags[F_ZERO] = (registers[rd] == 0);
+    //     flags[F_TRUE] = (registers[rd] != 0);
+    //     flags[F_NEGZERO] = (registers[rd] <= 0);
+    //     flags[F_NEG] = (registers[rd] < 0);
+    // }
     //passnota
-    else if (func == 0x2C)
-    {
-        printf("passnota\n");
-        registers[rd] = !temp_rs;
-
-        flags[F_OVERFLOW] = false;
-        flags[F_CARRY] = false;
-        flags[F_ZERO] = (registers[rd] == 0);
-        flags[F_TRUE] = (registers[rd] != 0);
-        flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] < 0);
-    }
+    // else if (func == 0x2C)
+    // {
+    //     printf("passnota\n");
+    //     registers[rd] = !temp_rs;
+    //
+    //     flags[F_OVERFLOW] = false;
+    //     flags[F_CARRY] = false;
+    //     flags[F_ZERO] = (registers[rd] == 0);
+    //     flags[F_TRUE] = (registers[rd] != 0);
+    //     flags[F_NEGZERO] = (registers[rd] <= 0);
+    //     flags[F_NEG] = (registers[rd] < 0);
+    // }
     //inca
     else if (func == 0x2D)
     {

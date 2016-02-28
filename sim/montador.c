@@ -561,27 +561,34 @@ EscreveBinario(binario, saida);
                 rc = strtol(&p[0][1], NULL, 10);
                 ra = strtol(&p[1][1], NULL, 10);
 
-                binario = 0x00 << sftOpcode;
-                binario = binario | (rc << sftRd);
-                binario = binario | (ra << sftRs);
-                binario = binario | 0x2B;
-                printf("Escrevendo %s PC = %d\n", palavra, pc);
-EscreveBinario(binario, saida);
-            }
-            else if (strcmp(palavra, "passnota") == 0)
-            {
-                LerPalavra (entrada, &p[0]);
-                LerPalavra (entrada, &p[1]);
-                rc = strtol(&p[0][1], NULL, 10);
-                ra = strtol(&p[1][1], NULL, 10);
+                // binario = 0x00 << sftOpcode;
+                // binario = binario | (rc << sftRd);
+                // binario = binario | (ra << sftRs);
+                // binario = binario | 0x2B;
 
-                binario = 0x00 << sftOpcode;
-                binario = binario | (rc << sftRd);
+                // Implementando passa como um addi
+                binario = 0x08 << sftOpcode;
+                binario = binario | (rc << sftRt);
                 binario = binario | (ra << sftRs);
-                binario = binario | 0x2C;
+                c = 0;
+                binario = binario | c;
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
 EscreveBinario(binario, saida);
             }
+//             else if (strcmp(palavra, "passnota") == 0)
+//             {
+//                 LerPalavra (entrada, &p[0]);
+//                 LerPalavra (entrada, &p[1]);
+//                 rc = strtol(&p[0][1], NULL, 10);
+//                 ra = strtol(&p[1][1], NULL, 10);
+//
+//                 binario = 0x00 << sftOpcode;
+//                 binario = binario | (rc << sftRd);
+//                 binario = binario | (ra << sftRs);
+//                 binario = binario | 0x2C;
+//                 printf("Escrevendo %s PC = %d\n", palavra, pc);
+// EscreveBinario(binario, saida);
+//             }
             else if (strcmp(palavra, "zeros") == 0)
             {
                 LerPalavra (entrada, &p[0]);
@@ -598,7 +605,8 @@ EscreveBinario(binario, saida);
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
 EscreveBinario(binario, saida);
             }
-            else if (strcmp(palavra, "not") == 0)
+            else if (strcmp(palavra, "not") == 0 ||
+                     strcmp(palavra, "passnota") == 0)
             {
                 LerPalavra (entrada, &p[0]);
                 LerPalavra (entrada, &p[1]);
