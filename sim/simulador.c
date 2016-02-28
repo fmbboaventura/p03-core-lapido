@@ -616,7 +616,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     if(opcode == 0x07)
     {
         printf("lch\n");
-        registers[rd] = (imm << 16) | (registers[rd] & 0xffff);
+        registers[rd] = (imm << 16) | (temp_rs & 0xffff);
 
         // flags[F_OVERFLOW] = false;
         // flags[F_CARRY] = false;
@@ -674,7 +674,7 @@ void decode_i_type(unsigned int instruction, int opcode)
     else if (opcode == 0x01)
     {
         printf("lcl\n");
-        registers[rd] = imm | (registers[rd] & 0xffff0000);
+        registers[rd] = imm | (temp_rs & 0xffff0000);
     }
     // addi
     else if (opcode == 0x08)

@@ -838,6 +838,7 @@ EscreveBinario(binario, saida);
         				}
 
                 binario = 0x07 << sftOpcode;
+                binario = binario | (rc << sftRs); // registrador fonte é o mesmo de destino
                 binario = binario | (rc << sftRt);
 
                 //printf("%s\n", p[1]);
@@ -882,6 +883,7 @@ EscreveBinario(binario, saida);
         				}
 
                 binario = 0x01 << sftOpcode;
+                binario = binario | (rc << sftRs); // registrador fonte é o mesmo de destino
                 binario = binario | (rc << sftRt);
 
                 //printf("%s\n", p[1]);
