@@ -298,14 +298,20 @@ void Traducao(FILE *entrada, FILE *saida){
                 rc = strtol(&p[0][1], NULL, 10);
                 ra = strtol(&p[1][1], NULL, 10);
 
-                // põe o opcode no inicio da instrução
-                binario = 0x00 << sftOpcode;
-                // concatena com o registrador restino
-                binario = binario | (rc << sftRd);
-                // concatena com os registradores fonte
+                // // põe o opcode no inicio da instrução
+                // binario = 0x00 << sftOpcode;
+                // // concatena com o registrador restino
+                // binario = binario | (rc << sftRd);
+                // // concatena com os registradores fonte
+                // binario = binario | (ra << sftRs);
+                // // concatena com o function
+                // binario = binario | 0x2E;
+
+                binario = 0x08 << sftOpcode;
+                binario = binario | (rc << sftRt);
                 binario = binario | (ra << sftRs);
-                // concatena com o function
-                binario = binario | 0x2E;
+                c = 0xFFFF & (-1);
+                binario = binario | c;
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
 				        EscreveBinario(binario, saida);
             }
@@ -316,14 +322,20 @@ void Traducao(FILE *entrada, FILE *saida){
                 rc = strtol(&p[0][1], NULL, 10);
                 ra = strtol(&p[1][1], NULL, 10);
 
-                // põe o opcode no inicio da instrução
-                binario = 0x00 << sftOpcode;
-                // concatena com o registrador restino
-                binario = binario | (rc << sftRd);
-                // concatena com os registradores fonte
+                // // põe o opcode no inicio da instrução
+                // binario = 0x00 << sftOpcode;
+                // // concatena com o registrador restino
+                // binario = binario | (rc << sftRd);
+                // // concatena com os registradores fonte
+                // binario = binario | (ra << sftRs);
+                // // concatena com o function
+                // binario = binario | 0x2D;
+
+                binario = 0x08 << sftOpcode;
+                binario = binario | (rc << sftRt);
                 binario = binario | (ra << sftRs);
-                // concatena com o function
-                binario = binario | 0x2D;
+                c = 1;
+                binario = binario | c;
                 printf("Escrevendo %s PC = %d\n", palavra, pc);
 				        EscreveBinario(binario, saida);
             }

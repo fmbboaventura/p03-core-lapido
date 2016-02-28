@@ -449,31 +449,31 @@ void decode_r_type(unsigned int instruction)
     //     flags[F_NEG] = (registers[rd] < 0);
     // }
     //inca
-    else if (func == 0x2D)
-    {
-        printf("inca\n");
-        registers[rd] = temp_rs + 1;
-
-        flags[F_OVERFLOW] = sum_check_overflow(temp_rs, 1, registers[rd]);
-        flags[F_CARRY] = check_carry(temp_rs, 1);
-        flags[F_ZERO] = (registers[rd] == 0);
-        flags[F_TRUE] = (registers[rd] != 0);
-        flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] < 0);
-    }
-    //deca
-    else if (func == 0x2E)
-    {
-        printf("deca\n");
-        registers[rd] = temp_rs - 1;
-
-        flags[F_OVERFLOW] = sub_check_overflow(temp_rs, 1, registers[rd]);
-        flags[F_CARRY] = check_carry(temp_rs, -1);
-        flags[F_ZERO] = (registers[rd] == 0);
-        flags[F_TRUE] = (registers[rd] != 0);
-        flags[F_NEGZERO] = (registers[rd] <= 0);
-        flags[F_NEG] = (registers[rd] < 0);
-    }
+    // else if (func == 0x2D)
+    // {
+    //     printf("inca\n");
+    //     registers[rd] = temp_rs + 1;
+    //
+    //     flags[F_OVERFLOW] = sum_check_overflow(temp_rs, 1, registers[rd]);
+    //     flags[F_CARRY] = check_carry(temp_rs, 1);
+    //     flags[F_ZERO] = (registers[rd] == 0);
+    //     flags[F_TRUE] = (registers[rd] != 0);
+    //     flags[F_NEGZERO] = (registers[rd] <= 0);
+    //     flags[F_NEG] = (registers[rd] < 0);
+    // }
+    // //deca
+    // else if (func == 0x2E)
+    // {
+    //     printf("deca\n");
+    //     registers[rd] = temp_rs - 1;
+    //
+    //     flags[F_OVERFLOW] = sub_check_overflow(temp_rs, 1, registers[rd]);
+    //     flags[F_CARRY] = check_carry(temp_rs, -1);
+    //     flags[F_ZERO] = (registers[rd] == 0);
+    //     flags[F_TRUE] = (registers[rd] != 0);
+    //     flags[F_NEGZERO] = (registers[rd] <= 0);
+    //     flags[F_NEG] = (registers[rd] < 0);
+    // }
     //addinc
     else if (func == 0x2F)
     {
