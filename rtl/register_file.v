@@ -11,7 +11,6 @@ module register_file (
 	input clk,
 	input rst,
 	input en,
-	input ctrl,    // Controle de  atribuição, usado no lcl e lch
 	input [4:0] rd,
 	input [4:0] rs,
 	input [4:0] rt,
