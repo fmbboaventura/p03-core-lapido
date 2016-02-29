@@ -378,7 +378,7 @@
             for (i = 0; i < 14; i=i+1) begin
                 funct = funct_array[i];
                 #1;
-                $display("funct: %d", funct);
+                $display("funct: 0x%h", funct);
                 if(funct != `FN_JR && reg_write_enable == 1'b1 &&
                     fl_write_enable == 1'b1) begin
                     $display("OK!");
