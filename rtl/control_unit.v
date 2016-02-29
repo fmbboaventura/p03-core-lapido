@@ -64,10 +64,14 @@ always @ ( opcode ) begin
         end
         `OP_BEQ: begin
             is_branch = 1'b1;
+            alu_src_mux = `ALU_SRC_REG; //  Seleciona o rt
+            alu_funct = `FN_SUB;    // Subtrai o rs com o rt
             sel_beq_bne = `SEL_BEQ; // Avalia a flag zero
         end
         `OP_BNE: begin
             is_branch = 1'b1;
+            alu_src_mux = `ALU_SRC_REG; //  Seleciona o rt
+            alu_funct = `FN_SUB;    // Subtrai os registradores
             sel_beq_bne = `SEL_BNE; // Avalia a flag true
         end
         `OP_JT: begin
@@ -80,6 +84,7 @@ always @ ( opcode ) begin
         end
         `OP_LOADLIT: begin
             wb_res_mux = `WB_IMM;
+            reg_write_enable = 1'b1;
         end
         `OP_R_TYPE: begin
             reg_dst_mux = `REG_DST_RD;  // Seleciona rd como registrador de destino
@@ -112,6 +117,12 @@ always @ ( opcode ) begin
                 end
                 `OP_SLTI: begin
                     alu_funct = `FN_SLT;
+                end
+                `OP_LCL: begin
+                    alu_funct = `OP_LCL;
+                end
+                `OP_LCH: begin
+                    alu_funct = `OP_LCH;
                 end
                 default: begin
                 end
