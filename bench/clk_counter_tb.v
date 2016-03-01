@@ -33,27 +33,27 @@ initial begin
     clk = 0;
     rst = 0;
     #10;
-    test_rst;
-    test_pc_write_false;
-    test_if_enable_true;
+    test_rst; // Testa se o rst poe o contador no zero
+    test_pc_write_false; // O pc write so pode ser 1 quando o contador eh 4
+    test_if_enable_true; // O if enable tem que ser 1 quando o contador ta no zero
 
-    old_count = dut.counter;
-    #9; // espera um ciclo de clock
+    old_count = dut.counter; // Nesse ponto, o contador deve ser 0
+    #9; // espera um ciclo de clock. O contador passa a ser 1
     repeat(3) begin
-        test_count;
-        test_pc_write_false;
-        test_if_enable_false;
-        old_count = dut.counter;
-        #10;
+        test_count; // testa se o valor atual do contador eh == valor antigo + 1
+        test_pc_write_false; // deve ser falso pra qualquer valor != de 4
+        test_if_enable_false; // deve ser falso pra qualquer valor != de 0
+        old_count = dut.counter; // atualiza o valor antigo
+        #10; // espera um ciclo para atualizar o contador
     end
-    test_count;
-    test_pc_write_true;
-    test_if_enable_false;
+    test_count; // nesse ponto, o contador deve ser 4 e o valor antigo 3
+    test_pc_write_true; // testa se o pc write foi acertado
+    test_if_enable_false; // deve ser falso pra qualquer valor != de 0
     old_count = -1;
-    #10;
-    test_count;
+    #10; // espera mais um ciclo de clock. O valor do contador deve ir para 0
+    test_count; // testa se o contador == -1 +1
     test_pc_write_false;
-    test_if_enable_true;
+    test_if_enable_true; // testa se o fetch foi habilitado
     $stop;
 end
 
