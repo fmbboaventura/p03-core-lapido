@@ -19,7 +19,7 @@ reg [2:0] counter;
 
 always @ (posedge clk or posedge rst) begin
     if(rst) begin
-        counter <= 3'b100;
+        counter <= 3'b000;
     end else if (counter == 3'b100) begin
         counter <= 3'b000;
     end else begin
