@@ -89,7 +89,6 @@ always @ ( opcode ) begin
         `OP_R_TYPE: begin
             reg_dst_mux = `REG_DST_RD;  // Seleciona rd como registrador de destino
             alu_src_mux = `ALU_SRC_REG; // Seleciona dado do registrador como operando da alu
-
             case (funct)
                 `FN_JR: begin
                     is_jump = 1'b1;
@@ -110,7 +109,7 @@ always @ ( opcode ) begin
                     alu_funct = `FN_ADD;
                 end
                 `OP_ANDI: begin
-                    alu_funct = `FN_ADD;
+                    alu_funct = `FN_AND;
                 end
                 `OP_ORI: begin
                     alu_funct = `FN_OR;
