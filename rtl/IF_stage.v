@@ -16,7 +16,7 @@ module IF_stage (
     input is_jump,
 
     output [31:0] instruction,
-    output reg [`PC_WIDTH - 1:0] next_pc
+    output [`PC_WIDTH - 1:0] next_pc
 );
 
 wire pc_write;
@@ -33,11 +33,12 @@ clk_counter counter(
 );
 
 ram imem(
-    .read_file(0),
-    .write_file(0),
-    .WE(0),    // write enalbe. Memoria de instrucao nao pode ser escrita
+    .read_file(rst), //
+    .write_file(1'b0),
+    .WE(1'b0),    // write enalbe. Memoria de instrucao nao pode ser escrita
+    .clk(clk),
     .ADRESS(pc),
-    .DATA(x),
+    .DATA(32'bx),
     .Q(imem_out)
 );
 
@@ -48,11 +49,12 @@ mux2x1 mux(
     .out(instruction)
 );
 
-always @ (posedge clk or rst) begin
+always @ (posedge clk or posedge rst) begin
     if (rst) begin
        pc <= `PC_WIDTH'b0;
     end else begin
-        next_pc <= pc + 1;
+    // Substituir por assignment contínuo?
+    // Substituir por somadores e muxes?
         if(pc_write) begin
             if(is_jump) begin pc <= jump_addr; end
             else if (branch_taken) begin pc <= branch_addr; end
@@ -61,19 +63,6 @@ always @ (posedge clk or rst) begin
     end
 end
 
-endmodule // IF_stage
-// clk_counter counter(
-//     .clk(clk),
-//     .rst(rst),
-//     .pc_write(pc_write)
-// );
-//
-// always @ (posedge clk or rst) begin
-//     if (rst) begin
-//        pc <= `PC_WIDTH'b0;
-//     end else if (pc_write) begin
-//         if (is_jump) begin pc <= jump_addr; end
-//         else if (branch_taken) begin pc <= branch_addr; end
-//         else begin pc <= pc + 1;
-//     end
-// end
+assign next_pc = pc + 1;
+
+endmodule

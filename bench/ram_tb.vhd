@@ -30,7 +30,7 @@ architecture TB_ARCHITECTURE of ram_tb is
 			write_file : in std_logic;
 			WE : in std_logic;
 			clk : in std_logic;
-			ADRESS : in std_logic_vector(9 downto 0);
+			ADRESS : in std_logic_vector(31 downto 0);
 			DATA : in std_logic_vector(31 downto 0);
 			Q : out std_logic_vector(31 downto 0) );
 	end component;
@@ -39,7 +39,7 @@ architecture TB_ARCHITECTURE of ram_tb is
 	signal write_file : std_logic;
 	signal WE : std_logic;
 	signal clk : std_logic;
-	signal ADRESS : std_logic_vector(9 downto 0);
+	signal ADRESS : std_logic_vector(31 downto 0);
 	signal DATA : std_logic_vector(31 downto 0);
 	signal Q : std_logic_vector(31 downto 0);
 begin
@@ -57,18 +57,18 @@ begin
 			Q => Q
 		);
 
-	teste : process	
+	teste : process
 	variable DATA_TMP : STD_LOGIC_VECTOR(31 downto 0);
 	variable index : integer;
-	begin  
+	begin
 		write_file <='0';
-		read_file <='0';	
+		read_file <='0';
 		clk <= '0';
-		-- le o arquivo rom.out para a memoria 	
+		-- le o arquivo rom.out para a memoria
 		WAIT FOR 1 PS;
 		read_file <='1';
-		WAIT FOR 1 PS; 
-		clk <= '1';		
+		WAIT FOR 1 PS;
+		clk <= '1';
 		WAIT FOR 1 PS;
 		read_file <='0';
 		clk <= '0';
@@ -79,33 +79,33 @@ begin
 		while (index < dim) loop
 			-- le a posicao da memoriadada por 'index' e coloca em DATA_TMP
 			WE <= '0';
-			ADRESS <= CONV_STD_LOGIC_VECTOR(index,10);
+			ADRESS <= CONV_STD_LOGIC_VECTOR(index,32);
 			clk <= '1';
-			WAIT FOR 1 PS;	
-			clk <= '0';		
 			WAIT FOR 1 PS;
-			DATA_TMP := Q;		
+			clk <= '0';
+			WAIT FOR 1 PS;
+			DATA_TMP := Q;
 			-- calcula o novo valor a escrever na memoria (incrementa o valor)
 			DATA <= DATA_TMP + 1;
 			-- escreve a posicao de memoria	dada por 'index'
 			WE <= '1';
-			WAIT FOR 1 PS;		
+			WAIT FOR 1 PS;
 			clk <= '1';
-			WAIT FOR 1 PS;		
+			WAIT FOR 1 PS;
 			WE <= '0';
-			clk <= '0';	
-			WAIT FOR 1 PS;				
+			clk <= '0';
+			WAIT FOR 1 PS;
 			index := index +1;
 		end loop;
 		-- escreve a memoria no arquivo data.out
 		write_file <='1';
 		clk <= '1';
 		WAIT FOR 1 PS;
-		clk <= '0';	  
+		clk <= '0';
 		write_file <='0';
 	 	report "O arquivo data.out foi escrito." severity Warning;
 		wait for 10 us;
-	end process teste;	
+	end process teste;
 end TB_ARCHITECTURE;
 
 configuration TESTBENCH_FOR_ram of ram_tb is
