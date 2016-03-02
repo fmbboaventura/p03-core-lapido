@@ -74,6 +74,22 @@ module IF_stage_tb ();
                 #10;
             end
         end
+
+        branch_taken = 0;
+        $stop;
+
+        for (i = 7; i >= 0; i = i - 1) begin
+            is_jump = 0;
+            jump_addr = i;
+            expected_pc = jump_addr;
+            #10; // Espera um ciclo.
+            is_jump = 1;
+            repeat (4) begin // na terceira iteracao, o contador esta no 4 e habilita o write_pc
+                test_instruction_fetch; // Devem ser nops nas 3 primeiras iteracoes
+                #10;
+            end
+        end
+        is_jump = 0;
         $stop;
     end
 
