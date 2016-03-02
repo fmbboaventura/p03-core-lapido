@@ -2,15 +2,18 @@
  * Module: control_unity_tb
  * Project: core_lapido
  * Author: Afonso Machado
- * Description: Test Bench criado para o modulo da alu.
+ * Description: Test Bench criado para o modulo da 
+ * unidade de controle, contendo as entradas de
+ * opcode e funct e a saída para as suas respectivas
+ * funções.
  ***************************************************/
 
  `include "lapido_defs.v"
 
  module control_unit_tb ();
 
- 	reg [5:0] opcode;
- 	reg [5:0] funct;
+ 	reg [5:0] opcode;  //Entrada do opcode
+ 	reg [5:0] funct;   // Entrada do funct se houver
 
  	wire [5:0] alu_funct;  // Seleciona a operacao da alu
     wire alu_src_mu;      // Seleciona o segundo operando da alu
@@ -59,7 +62,8 @@
     	opcode = 0;
     	funct = 0;
 
-        create_funct_array;
+        create_funct_array; //Criar um array contendo todas as opções de funct
+
         test_jr;
         test_store;
         test_load;
@@ -78,8 +82,6 @@
         test_lcl;
         test_lch;
         test_op_r_type_no_jr;
-
-    	//colocar as chamadas aos testes aqui
 
     end
 
