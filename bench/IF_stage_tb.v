@@ -53,11 +53,24 @@ module IF_stage_tb ();
         #10;
         set_up;
 
+        // Testa a execucao das instrucoes na ordem em que estao na memoria (sem saltos ou branchs)
         for (i = 0; i < 8; i = i + 1) begin
             expected_pc = i;
             fetched_instruction = instruction;
             repeat (5) begin
                 test_instruction_fetch;
+                #10;
+            end
+        end
+
+        for (i = 7; i >= 0; i = i - 1) begin
+            branch_taken = 0;
+            branch_addr = i; // O IF_stage ja recebe o branch calculado
+            expected_pc = branch_addr;
+            #10; // Espera um ciclo.
+            branch_taken = 1;
+            repeat (4) begin // na terceira iteracao, o contador esta no 4 e habilita o write_pc
+                test_instruction_fetch; // Devem ser nops nas 3 primeiras iteracoes
                 #10;
             end
         end
@@ -68,7 +81,6 @@ module IF_stage_tb ();
     always begin
         #5  clk =  ! clk;
     end
-
 
     task set_up;
     begin
@@ -112,8 +124,6 @@ module IF_stage_tb ();
         end
     end
     endtask
-
-
 
     task load_expected_mem_values;
     begin
