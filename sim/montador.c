@@ -1397,11 +1397,11 @@ EscreveBinario(binario, saida);
  */
 void EscreveBinario(unsigned int instrucao, FILE *saida)
 {
-	unsigned int max = 0x80000000;
-    int i;
-    int bit;
+	//unsigned int max = 0x80000000;
+    //int i;
+    //int bit;
 
-    for (i = 0; i < 32; i++)
+    /*for (i = 0; i < 32; i++)
     {
         if(instrucao >= max) bit = 1;
         else bit = 0;
@@ -1409,8 +1409,9 @@ void EscreveBinario(unsigned int instrucao, FILE *saida)
         //getchar();
         instrucao = instrucao << 1;
         fprintf(saida, "%d", bit);
-    }
-    fprintf(saida, "\n");
+    }*/
+    fprintf(saida, "%x\n", instrucao);
+    //fprintf(saida, "\n");
     pc ++;
 }
 
