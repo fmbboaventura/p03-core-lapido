@@ -69,7 +69,7 @@ Q <= ram_mem(CONV_INTEGER(ADRESS));
 --quando read_file transita para '1' o arquivo rom.out e escrito na memoria--
 -----------------------------------------------------------------------------
 le: process(read_file)
-file INFILE : TEXT  is in "../bench/rom.out"; -- utilize o caminho absoluto para o arquivo
+file INFILE : TEXT  is in "../sim/inst.txt"; -- utilize o caminho absoluto para o arquivo
 variable DATA_TEMP : STD_LOGIC_VECTOR(31 downto 0);
 variable IN_LINE: LINE;
 variable index :integer;
