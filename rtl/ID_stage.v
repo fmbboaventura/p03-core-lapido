@@ -27,9 +27,9 @@ module ID_stage
     output [31:0] rt_data,
 
     // campos das instrucoes
-    output [4:0] flag_addr, // campo rs da instrucao
-    output [4:0] rt,
-    output [4:0] rd,
+    output reg [4:0] flag_addr, // campo rs da instrucao
+    output reg [4:0] rt,
+    output reg [4:0] rd,
     output [31:0] imm,
 
     // Sinais para o estagio EX
@@ -46,10 +46,25 @@ module ID_stage
     output sel_jt_jf,        // Seleciona entre jt e jf na fmu
     output is_branch,        // A instrucao eh um desvio pc-relative
 
+    output sel_jflag_branch, // seletor do tipo do branch
+
     // Sinais para o estagio WB
     output [1:0] wb_res_mux, // Seleciona o dado que sera escrito no registrador
     output reg_write_enable // Habilita a escrita no banco de registradores
 );
+
+reg [15:0] imm16;
+reg [5:0] opcode;
+reg [5:0] funct;
+
+always @ (posedge clk) begin
+    flag_addr <= instruction[25:21];
+    rt <= instruction[20:16];
+    rd <= instruction[15:11];
+    imm16 <= instruction[15:0];
+    opcode <= instruction[31:26];
+    funct <= instruction[5:0];
+end
 
 register_file reg_file
 (
@@ -64,16 +79,12 @@ register_file reg_file
     .data_rt(rt_data)
 );
 
-assign flag_addr = instruction[25:21];
-assign rt = instruction[20:16];
-assign rd = instruction[15:11];
-
-ext_de_sinal sx (.unex(instruction[15:0]), .ext(imm));
+ext_de_sinal sx (.unex(imm16), .ext(imm));
 
 control_unit ctrl
 (
-    .opcode(instruction[31:26]),
-    .funct(instruction[5:0]),
+    .opcode(opcode),
+    .funct(funct),
     .alu_funct(alu_funct),  // Seleciona a operacao da alu
     .alu_src_mux(alu_src_mux),      // Seleciona o segundo operando da alu
     .sel_j_jr(sel_j_jr),         // Seleciona a fonte do endereco do salto incondicional
@@ -86,6 +97,8 @@ control_unit ctrl
     .fl_write_enable(fl_write_enable),  // Habilita a escrita no registrador de flags
     .sel_jt_jf(sel_jt_jf),        // Seleciona entre jt e jf na fmu
     .is_branch(is_branch),        // A instrucao eh um desvio pc-relative
+
+    .sel_jflag_branch(sel_jflag_branch), // seletor do tipo do branch
 
     // Sinais para o estagio WB
     .wb_res_mux(wb_res_mux), // Seleciona o dado que sera escrito no registrador
