@@ -2,7 +2,9 @@
  * Module: MEM_stage
  * Project: core_lapido
  * Author: Afonso Machado
- * Description:
+ * Description: Módulo responsavel pelas operações
+ * com a memória de dados de com a flags que a ALU
+ * gerou.
  ***************************************************/
  `include "lapido_defs.v"
 
