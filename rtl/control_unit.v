@@ -28,6 +28,8 @@ module control_unit
     output reg sel_jt_jf,        // Seleciona entre jt e jf na fmu
     output reg is_branch,        // A instrucao eh um desvio pc-relative
 
+    output reg sel_jflag_branch, // seletor do tipo do branch
+
     // Sinais para o estagio WB
     output reg [1:0] wb_res_mux, // Seleciona o dado que sera escrito no registrador
     output reg reg_write_enable // Habilita a escrita no banco de registradores
@@ -67,20 +69,24 @@ always @ ( opcode ) begin
             alu_src_mux = `ALU_SRC_REG; //  Seleciona o rt
             alu_funct = `FN_SUB;    // Subtrai o rs com o rt
             sel_beq_bne = `SEL_BEQ; // Avalia a flag zero
+            sel_jflag_branch = `SEL_BRANCH;
         end
         `OP_BNE: begin
             is_branch = 1'b1;
             alu_src_mux = `ALU_SRC_REG; //  Seleciona o rt
             alu_funct = `FN_SUB;    // Subtrai os registradores
             sel_beq_bne = `SEL_BNE; // Avalia a flag true
+            sel_jflag_branch = `SEL_BRANCH;
         end
         `OP_JT: begin
             is_branch = 1'b1;
             sel_jt_jf = `SEL_JT;
+            sel_jflag_branch =`SEL_JFLAG;
         end
         `OP_JF: begin
             is_branch = 1'b1;
             sel_jt_jf = `SEL_JF;
+            sel_jflag_branch =`SEL_JFLAG;
         end
         `OP_LOADLIT: begin
             wb_res_mux = `WB_IMM;

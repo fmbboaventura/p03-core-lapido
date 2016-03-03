@@ -27,6 +27,8 @@ module EX_stage
     input reg [4:0] in_rd,
 
     // Sinais para propagar
+    input reg in_sel_jflag_branch,
+
     input reg in_mem_write_enable,
     input reg in_sel_beq_bne,
     input reg in_fl_write_enable,
@@ -35,6 +37,8 @@ module EX_stage
     input reg in_is_jump,
     input reg [1:0] in_wb_res_mux,
     input reg in_reg_write_enable,
+
+    output out_sel_jflag_branch,
 
     output out_mem_write_enable,
     output out_sel_beq_bne,

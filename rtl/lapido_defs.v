@@ -78,6 +78,10 @@
 `define SEL_JF  1'h0
 `define SEL_JT  1'h1
 
+// Seleciona entre jt/jf e beq/bne
+`define SEL_JFLAG 1'b0
+`define SEL_BRANCH 1'b1
+
 // Seletores do mux do WB
 `define WB_ALU 2'h0
 `define WB_MEM 2'h1
