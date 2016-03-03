@@ -38,43 +38,59 @@ module EX_stage
     input reg [1:0] in_wb_res_mux,
     input reg in_reg_write_enable,
 
-    output out_sel_jflag_branch,
+    output reg out_sel_jflag_branch,
 
-    output out_mem_write_enable,
-    output out_sel_beq_bne,
-    output out_fl_write_enable,
-    output out_sel_jt_jf,
-    output out_is_branch,
-    output out_is_jump,
-    output [1:0] out_wb_res_mux,
-    output out_reg_write_enable,
+    output reg out_mem_write_enable,
+    output reg out_sel_beq_bne,
+    output reg out_fl_write_enable,
+    output reg out_sel_jt_jf,
+    output reg out_is_branch,
+    output reg out_is_jump,
+    output reg [1:0] out_wb_res_mux,
+    output reg out_reg_write_enable,
 
     // Dados para propagar
-    output [`PC_WIDTH - 1:0] out_next_pc,
-    output [31:0] out_immediate,
-    output [31:0] abs_addr,
-    output [31:0] mem_addr,
-    output [31:0] mem_data,
-    output [31:0] alu_out,
-    output [5:0] alu_flags_out,
-    output [4:0] flag_addr,
-    output [4:0] reg_dst
+    output reg [`PC_WIDTH - 1:0] out_next_pc,
+    output reg [31:0] out_immediate,
+    output reg [31:0] abs_addr,
+    output reg [31:0] mem_addr,
+    output reg [31:0] mem_data,
+    output reg [31:0] alu_out,
+    output reg [5:0] alu_flags_out,
+    output reg [4:0] flag_addr,
+    output reg [4:0] reg_dst
 );
 
-assign out_mem_write_enable = in_mem_write_enable;
-assign out_sel_beq_bne = in_sel_beq_bne;
-assign out_fl_write_enable = in_fl_write_enable;
-assign out_sel_jt_jf = in_sel_jt_jf;
-assign out_is_branch = in_is_branch;
-assign out_is_jump = in_is_jump;
-assign out_wb_res_mux = in_wb_res_mux;
-assign out_reg_write_enable = in_reg_write_enable;
+wire [32:0] full_alu_out;
+wire [4:0]  flags;
+wire [31:0] alu_src;
+wire [4:0] wire_reg_dst;
+wire [31:0] wire_abs_addr;
 
-assign out_next_pc = in_next_pc;
-assign out_immediate = in_immediate;
-assign mem_addr = in_data_rs;
-assign mem_data = in_data_rt;
-assign flag_addr = in_rs;
+
+always @ (posedge clk) begin
+    out_mem_write_enable <= in_mem_write_enable;
+    out_sel_beq_bne <= in_sel_beq_bne;
+    out_fl_write_enable <= in_fl_write_enable;
+    out_sel_jt_jf <= in_sel_jt_jf;
+    out_is_branch <= in_is_branch;
+    out_is_jump <= in_is_jump;
+    out_wb_res_mux <= in_wb_res_mux;
+    out_reg_write_enable <= in_reg_write_enable;
+
+    out_next_pc <= in_next_pc;
+    out_immediate <= in_immediate;
+    mem_addr <= in_data_rs;
+    mem_data <= in_data_rt;
+    flag_addr <= in_rs;
+
+    alu_out <= full_alu_out [31:0];
+    alu_flags_out <= flags;
+    alu_flags_out[5] <= full_alu_out [32];
+
+    abs_addr <= wire_abs_addr;
+    reg_dst <= wire_reg_dst;
+end
 
 mux3x1_5bit rd_mux
 (
@@ -82,7 +98,7 @@ mux3x1_5bit rd_mux
     .in_b(in_rd),
     .in_c(5'd15),
     .sel(reg_dst_mux),
-    .out(reg_dst)
+    .out(wire_reg_dst)
 );
 
 mux2x1 abs_addr_mux
@@ -90,10 +106,9 @@ mux2x1 abs_addr_mux
     .in_a(in_data_rs),
     .in_b(in_immediate),
     .sel(sel_j_jr),
-    .out(abs_addr)
+    .out(wire_abs_addr)
 );
 
-wire [31:0] alu_src;
 
 mux2x1 alu_mux
 (
@@ -103,8 +118,6 @@ mux2x1 alu_mux
     .out(alu_src)
 );
 
-wire [32:0] full_alu_out;
-wire [4:0]  flags;
 
 alu alu
 (
@@ -114,9 +127,5 @@ alu alu
     .alu_res(full_alu_out),
     .flags(flags)
 );
-
-assign alu_out = full_alu_out [31:0];
-assign alu_flags_out = flags;
-assign alu_flags_out[5] = full_alu_out [32];
 
 endmodule // EX_stage
