@@ -12,7 +12,7 @@ module WB_stage
 (
     input reg in_is_jump,
     input reg in_branch_taken,
-    input reg in_branch_addr,
+    input reg [`PC_WIDTH - 1:0] in_branch_addr,
     input reg in_reg_write_enable,
     input reg [1:0] wb_res_mux,
     input reg [`PC_WIDTH-1: 0] next_pc, // o pc + 1 do jal
@@ -24,7 +24,7 @@ module WB_stage
 
     output out_is_jump,
     output out_branch_taken,
-    output out_branch_addr,
+    output [`PC_WIDTH - 1:0] out_branch_addr,
     output out_reg_write_enable,
     output [`PC_WIDTH-1: 0] wb_res,
     output [4:0]  out_reg_dst,

@@ -2,9 +2,7 @@
  * Module: MEM_stage
  * Project: core_lapido
  * Author: Afonso Machado
- * Description: Módulo responsavel pelas operações
- * com a memória de dados de com a flags que a ALU
- * gerou.
+ * Description:
  ***************************************************/
  `include "lapido_defs.v"
 
@@ -12,6 +10,7 @@ module MEM_stage (
 	input clk,    // Clock
 	input rst,
 
+    input [`PC_WIDTH - 1:0] in_branch_addr,
 	input reg in_mem_write_enable,//
     input reg in_sel_beq_bne,//
     input reg in_fl_write_enable,//
@@ -36,7 +35,7 @@ module MEM_stage (
 
     output reg out_is_jump,//
     output reg out_branch_taken,//
-    output reg out_branch_addr,
+    output reg [`PC_WIDTH - 1:0] out_branch_addr,
     output reg out_reg_write_enable,//
     output reg [1:0] out_wb_res_mux, //
     output reg [`PC_WIDTH-1: 0] out_next_pc, // o pc + 1 do jal
@@ -63,7 +62,7 @@ always @ (posedge clk) begin
 	out_next_pc <= in_next_pc;
 
 	out_jump_addr <= abs_addr;
-	out_branch_addr <= in_next_pc;
+	out_branch_addr <= in_branch_addr;
 	out_branch_taken <= in_is_branch & pra_and;
     out_mem_data <= wire_out_mem_data;
 end

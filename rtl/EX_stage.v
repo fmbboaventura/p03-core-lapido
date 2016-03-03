@@ -51,6 +51,7 @@ module EX_stage
 
     // Dados para propagar
     output reg [`PC_WIDTH - 1:0] out_next_pc,
+    output reg [`PC_WIDTH - 1:0] out_branch_addr,
     output reg [31:0] out_immediate,
     output reg [31:0] abs_addr,
     output reg [31:0] mem_addr,
@@ -90,6 +91,8 @@ always @ (posedge clk) begin
 
     abs_addr <= wire_abs_addr;
     reg_dst <= wire_reg_dst;
+
+    out_branch_addr <= in_next_pc + 1;
 end
 
 mux3x1_5bit rd_mux
