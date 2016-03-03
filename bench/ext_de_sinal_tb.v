@@ -18,9 +18,11 @@ end
 
 task display_comparator;
 	begin
-   		#10 unex = 16'b0000000011111111;
+   		unex = 16'b0000000011111111;
+        #1;
 		$display("unex: %b\t ext: %b", unex, ext);
-   		#20 unex = 16'b1000000011111111;
+   		unex = 16'b1000000011111111;
+        #1;
 		$display("unex: %b\t ext: %b", unex, ext);
 	end
 endtask

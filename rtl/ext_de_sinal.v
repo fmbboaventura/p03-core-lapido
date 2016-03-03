@@ -1,7 +1,7 @@
 module ext_de_sinal
              (
             input [15:0] unex,
-              
+
 	    output [31:0] ext
              );
 
