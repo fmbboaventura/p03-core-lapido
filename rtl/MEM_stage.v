@@ -8,7 +8,7 @@
 
 module MEM_stage (
 	input clk,    // Clock
-	input rst, 
+	input rst,
 
 	input reg in_mem_write_enable,//
     input reg in_sel_beq_bne,//
@@ -30,7 +30,7 @@ module MEM_stage (
     input reg [4:0] flag_addr,//
     input reg [4:0] in_reg_dst,//
 
-    input reg out_sel_jflag_branch,//
+    input reg sel_jflag_branch,//
 
     output reg out_is_jump,//
     output reg out_branch_taken,//
@@ -43,13 +43,13 @@ module MEM_stage (
     output reg [4:0]  out_reg_dst,//
     output reg [31:0] imm,//
     output reg [31:0] out_jump_addr//
-	
+
 );
 
-wire [1:0] jt_jf_ok;
-wire [1:0] beq_bne_ok;//
-wire [1:0] pra_and;
-
+wire jt_jf_ok;
+wire beq_bne_ok;//
+wire pra_and;
+wire [31:0] wire_out_mem_data;
 
 always @ (posedge clk) begin
 	out_is_jump <= in_is_jump;
@@ -63,17 +63,18 @@ always @ (posedge clk) begin
 	out_jump_addr <= abs_addr;
 	out_branch_addr <= in_next_pc;
 	out_branch_taken <= in_is_branch & pra_and;
+    out_mem_data <= wire_out_mem_data;
 end
 
-ram data_memory(
-	.read_file(1'b1),
+ram2 data_memory(
+	.read_file(rst),
 	.write_file(rst),
 	.DATA(in_mem_data),
 	.ADRESS(in_mem_addr),
 	.WE(in_mem_write_enable),
 	.clk(clk),
-	.Q(out_mem_data)
-	);
+	.Q(wire_out_mem_data)
+);
 
 fmu flags(
 	.clk(clk),
@@ -82,22 +83,24 @@ fmu flags(
 	.write_enable(in_fl_write_enable),
 	.sel_jt_jf(in_sel_jt_jf),
 	.jt_jf_ok(jt_jf_ok)
-	);
+);
 
-mux2x1 mux_flags(
-	.in_a(alu_flags),
-	.in_b(alu_flags),
-	.sel(in_sel_beq_bne),
-	.out(beq_bne_ok)
+// mux2x1 mux_flags(
+// 	.in_a(alu_flags[`FL_ZERO]),
+// 	.in_b(alu_flags[`FL_TRUE]),
+// 	.sel(in_sel_beq_bne),
+// 	.out(beq_bne_ok)
+// );
 
-	);
+assign beq_bne_ok = (in_sel_beq_bne) ? alu_flags[`FL_TRUE] : alu_flags[`FL_ZERO];
+assign para_and = (sel_jflag_branch) ? beq_bne_ok : jt_jf_ok;
 
-mux2x1 outro_mux(
-	.in_a(jt_jf_ok),
-	.in_b(beq_bne_ok),
-	.sel(out_sel_jflag_branch),
-	.out(pra_and)
 
-	);
+// mux2x1 jflags_branch_mux(
+// 	.in_a(jt_jf_ok),
+// 	.in_b(beq_bne_ok),
+// 	.sel(sel_jflag_branch),
+// 	.out(pra_and)
+// );
 
 endmodule
