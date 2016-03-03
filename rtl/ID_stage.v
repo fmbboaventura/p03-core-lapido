@@ -14,7 +14,7 @@ module ID_stage
     input reg [31:0] instruction,
     input reg [`PC_WIDTH-1:0] in_next_pc,
 
-    output [`PC_WIDTH-1:0] out_next_pc,
+    output reg [`PC_WIDTH-1:0] out_next_pc,
 
     // Do estágio wb
     input [4:0] reg_dst, // endereco do registrador destino
@@ -64,6 +64,7 @@ always @ (posedge clk) begin
     imm16 <= instruction[15:0];
     opcode <= instruction[31:26];
     funct <= instruction[5:0];
+    out_next_pc <= in_next_pc;
 end
 
 register_file reg_file
