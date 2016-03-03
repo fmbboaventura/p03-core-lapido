@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     /*Ponteiro para o arquivo de saida*/
     FILE *saida;
     //char *nome_arquivo;
-
+    getchar();
     CarregaVetorLabels();
     /*Abrindo o arquivo de entrada no modo de somente leitura*/
     AbrirArquivo(&codigo, argv[1], "r");
@@ -64,6 +64,7 @@ int main(int argc, char **argv)
     getchar();
     FecharArquivo(&codigo); //Fecha o arquivo de entrada
     FecharArquivo(&saida); //Fecha o arquivo de saída
+    FecharArquivo(&saida_dados);
     exit(0);
 }
 
@@ -74,7 +75,7 @@ void AbrirArquivo (FILE **arq, char *caminho_arq, char *modo)
 {
     if (!((*arq) = fopen (caminho_arq, modo)))
    {
-      printf ("O arquivo nao pode ser aberto.\n");
+      printf ("O arquivo %s nao pode ser aberto.\n", caminho_arq);
       exit (0);
    }
 }
@@ -1412,7 +1413,7 @@ void EscreveBinario(unsigned int instrucao, FILE *saida)
         instrucao = instrucao << 1;
         fprintf(saida, "%d", bit);
     }*/
-    fprintf(saida, "%x\n", instrucao);
+    fprintf(saida, "%08x\n", instrucao);
     //fprintf(saida, "\n");
     pc ++;
 }
