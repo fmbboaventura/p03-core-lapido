@@ -21,6 +21,7 @@ void LerPalavra(FILE *entrada, char **palavra);
 void Linha_Saltar (FILE *entrada);
 
 const int TAM_BUFFER = 255;
+FILE *saida_dados;
 
 /*Definição da struct para label*/
 typedef struct
@@ -49,6 +50,7 @@ int main(int argc, char **argv)
     AbrirArquivo(&saida, argv[2], "w");
     /*Alocando tabelas*/
     CriaTabelas(codigo);
+    AbrirArquivo(&saida_dados, "saidadados.txt", "w");
 
     for(i = 0; i < ind_tbLabels; i++)
     {
@@ -219,7 +221,7 @@ void Traducao(FILE *entrada, FILE *saida){
             if(strcmp(palavra, ".dseg") == 0)
             {
                 printf("Segmento de dados\n");
-                fprintf(saida, "*\n");
+                //fprintf(saida, "*\n");
             }
             if (strcmp(palavra, ".word") == 0)
             {
@@ -227,7 +229,7 @@ void Traducao(FILE *entrada, FILE *saida){
               LerPalavra (entrada, &p[0]);
               c = strtol(&p[0][0], NULL, 10);
               printf("Escrevendo constante %d\n", c);
-              EscreveBinario(c, saida);
+              EscreveBinario(c, saida_dados);
             }
         }
 
@@ -1397,11 +1399,11 @@ EscreveBinario(binario, saida);
  */
 void EscreveBinario(unsigned int instrucao, FILE *saida)
 {
-	unsigned int max = 0x80000000;
-    int i;
-    int bit;
+	//unsigned int max = 0x80000000;
+    //int i;
+    //int bit;
 
-    for (i = 0; i < 32; i++)
+    /*for (i = 0; i < 32; i++)
     {
         if(instrucao >= max) bit = 1;
         else bit = 0;
@@ -1409,8 +1411,9 @@ void EscreveBinario(unsigned int instrucao, FILE *saida)
         //getchar();
         instrucao = instrucao << 1;
         fprintf(saida, "%d", bit);
-    }
-    fprintf(saida, "\n");
+    }*/
+    fprintf(saida, "%x\n", instrucao);
+    //fprintf(saida, "\n");
     pc ++;
 }
 
