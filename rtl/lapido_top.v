@@ -14,6 +14,7 @@ module lapido_top (input clk, input rst);
     wire [`PC_WIDTH - 1:0] IF_ID_next_pc;
 
     // Do ID para o EX
+    wire [`PC_WIDTH - 1:0] ID_EX_out_next_pc;
     wire [31:0] ID_EX_rs_data;
     wire [31:0] ID_EX_rt_data;
     wire [4:0] ID_EX_flag_addr; // campo rs da instrucao
@@ -78,4 +79,51 @@ module lapido_top (input clk, input rst);
     wire WB_IF_out_branch_taken;
     wire [`PC_WIDTH - 1:0] WB_IF_out_branch_addr;
     wire [`PC_WIDTH - 1:0] WB_IF_out_jump_addr;
+
+    // Instanciando os estágios
+    IF_stage IF_stage_inst
+    (
+        // Entradas
+        .clk(clk),
+        .rst(rst),
+        .branch_addr(WB_IF_out_branch_addr),
+        .branch_taken(WB_IF_out_branch_taken),
+        .jump_addr(WB_IF_out_jump_addr),
+        .is_jump(WB_IF_out_is_jump),
+        // Saidas
+        .instruction(IF_ID_instruction),
+        .next_pc(IF_ID_next_pc)
+    );
+
+    ID_stage ID_stage_inst
+    (
+        // Entradas
+        .clk(clk),
+        .rst(rst),
+        .instruction(IF_ID_instruction),
+        .in_next_pc(IF_ID_next_pc),
+        .reg_dst(WB_ID_out_reg_dst), // endereco do registrador destino
+        .wb_res(WB_ID_wb_res), // dado a ser escrito no registrador
+        .in_reg_write_enable(WB_ID_out_reg_write_enable), // Habilita a escrita no registrador
+        .rs_data(ID_EX_rs_data),
+        .rt_data(ID_EX_rt_data),
+        .out_next_pc(ID_EX_out_next_pc),
+        .flag_addr(ID_EX_flag_addr), // campo rs da instrucao
+        .rt(ID_EX_rt),
+        .rd(ID_EX_rd),
+        .imm(ID_EX_imm),
+        .alu_funct(ID_EX_alu_funct),  // Seleciona a operacao da alu
+        .alu_src_mux(ID_EX_alu_src_mux),      // Seleciona o segundo operando da alu
+        .sel_j_jr(ID_EX_sel_j_jr),         // Seleciona a fonte do endereco do salto incondicional
+        .reg_dst_mux(ID_EX_reg_dst_mux),// Seleciona o endereco do registrador de escrita
+        .is_jump(ID_EX_is_jump),          // A instrucao eh um salto incondicional
+        .mem_write_enable(ID_EX_mem_write_enable), // Habilita a escrita na memoria
+        .sel_beq_bne(ID_EX_sel_beq_bne),      // Seleciona entre beq e bne
+        .fl_write_enable(ID_EX_fl_write_enable),  // Habilita a escrita no registrador de flags
+        .sel_jt_jf(ID_EX_sel_jt_jf),        // Seleciona entre jt e jf na fmu
+        .is_branch(ID_EX_is_branch),        // A instrucao eh um desvio pc-relative
+        .sel_jflag_branch(ID_EX_sel_jflag_branch), // seletor do tipo do branch
+        .wb_res_mux(ID_EX_wb_res_mux), // Seleciona o dado que sera escrito no registrador
+        .reg_write_enable(ID_EX_reg_write_enable) // Habilita a escrita no banco de registradores
+    );
 endmodule // lapido_top
