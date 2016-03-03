@@ -2,7 +2,8 @@
  * Module: ID_stage
  * Project: core_lapido
  * Author: Filipe Boaventura
- * Description:
+ * Description: Modulo responsável pela busca de
+ * operandos e decodificacao da instrucao.
  ***************************************************/
  `include "lapido_defs.v"
 
