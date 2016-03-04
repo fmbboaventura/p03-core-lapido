@@ -1,13 +1,10 @@
-/***************************************************
+ /***************************************************
  * Module: registers_bank_tb.v
  * Project: core_lapido
  * Author: Afonso Machado
  * Description: Test Bench criado para o modulo do
  * banco de registradores.
  ***************************************************/
-
-
-`timescale 1ns / 1ps
 
 module registers_bank_tb;
 
@@ -52,17 +49,11 @@ module registers_bank_tb;
 		rt = 0;
 
 		#100;
-
-		#(PCLK/2)
-		#1
-		#(PCLK*1) rst = 1;
-		#(PCLK*1) rst = 0;
-
-		#(PCLK*10);
 		display_all_regs;
 		write_all_regs;
 		read_all_regs_from_rs;
 		read_all_regs_from_rt;
+		write_reg_dest;
 		write_and_read_all_regs;
 		$stop;
 		$finish;
@@ -76,7 +67,7 @@ module registers_bank_tb;
 			$display("display_all_regs");
 			$display("----------------------");
 			for (i = 0; i < 16; i = i + 1) begin
-				$write("%d\t", uut.registers[i]);
+				$write("%d\t", uut.registers[i]); #(PCLK*1);
 			$display("----------------------");
 			end
 		end
@@ -120,7 +111,7 @@ module registers_bank_tb;
 			while(i<16) begin
 				en=1;
 				rd = i;
-				data = $random % 2147483647;
+				data = $random;
 				#(PCLK*1)
 				$write("%d\t",uut.registers[i]);
 				en=0;
@@ -137,6 +128,7 @@ module registers_bank_tb;
 		begin
 			$display("write_and_read_all_regs(random):");
 			$display("------------------------------");
+			i=0;
 			while(i<16) begin
 				en=1;
 				rd = i;
@@ -179,4 +171,20 @@ module registers_bank_tb;
 	
 	endtask
 
+	task write_reg_dest;
+		begin
+			$display("Register Destination Test:");
+			$display("------------------------------");
+			rst = 0;
+			en = 1;
+			#(PCLK*0.5);
+
+			$display("registers[rd]: %b\t data: %b", uut.registers[rd], data);
+			if (uut.registers[rd] == data)
+				$display("OK, passou no teste");
+			else
+				$display("Erro! Esperado %d, Obteve: %d", rd, data);
+		end
+	endtask
+			
 endmodule
