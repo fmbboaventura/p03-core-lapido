@@ -1,4 +1,4 @@
-J_TYPE  02
+J       02
 JAL     03
 LOAD    23
 STORE   2B
@@ -7,6 +7,9 @@ BNE     05
 JT      09
 JF      10
 ADDI    08
+PASSA   08
+INCA    08
+DECA    08
 ANDI    0C
 ORI     0D
 SLTI    0A
@@ -28,3 +31,6 @@ ASL     00
 ASR     00
 SLT     00
 JR      00
+ZEROS   00
+RET     00
+PASSNOTA 00

@@ -1,0 +1,6 @@
+ZERO     0
+TRUE     1
+NEG      2
+OVERFLOW 3
+NEGZERO  4
+CARRY    5
