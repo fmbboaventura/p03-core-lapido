@@ -1,7 +1,9 @@
 package br.uefs.assembler;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class Main {
 
@@ -15,6 +17,7 @@ public class Main {
     private static int codeLineCnt = 0;
 
     public static void main(String[] args) {
+        float beginTime = System.nanoTime();
         System.out.println("-----------------------------------");
         System.out.println("LAPI DOpaCA LAMBA Assembler ver 2.0");
         System.out.println("-----------------------------------");
@@ -54,8 +57,8 @@ public class Main {
             }
         }
 
-        dOut = new File(dsegOut);
-        pOut = new File(psegOut);
+        dOut = new File("assembled_files/" + dsegOut);
+        pOut = new File("assembled_files/" + psegOut);
 
         System.out.println("\nArquivo assembly (entrada): " + Main.input.getName());
         System.out.println("Arquivo em linguagem de maquina (instrucao): " + pOut.getName());
@@ -68,6 +71,10 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        System.out.println("\n-----------------------------------");
+        System.out.printf("Traducao Conluida em %fs\n", (System.nanoTime() - beginTime)/1000000000.0f);
+        System.out.println("-----------------------------------");
     }
 
     /**
@@ -148,8 +155,8 @@ public class Main {
         while ((line = sourceBr.readLine()) != null) {
             currentLine++;
 
-            line = line.trim().toUpperCase();
-            aux = line.split("[\\s,]");
+            //line = line.trim().toUpperCase();
+            aux = parseLine(line);//line.split("\\s+");
 
             for (int i =0; i < aux.length; i++) {
                 String s = aux[i];
@@ -165,7 +172,11 @@ public class Main {
                         int word = Integer.parseInt(aux[1]);
                         System.out.println("Escrevendo constante: " + word );
                         writeAssembled(dataBw, word);
-                    } else {
+                        break;
+                    }else if (s.contains(":")){
+                        continue;
+                    }
+                    else {
 
                         String cond = null; // Condição do jt/jf
                         if(s.contains(".")){
@@ -358,8 +369,44 @@ public class Main {
 //            System.out.printf(s + " %08X\n", functMap.get(s));
 //        }
 
+//        for (String s :
+//                flagMap.keySet()) {
+//            System.out.printf(s + " %08X\n", flagMap.get(s));
+//        }
+
         opcodeIn.close();
         functIn.close();
+        flagIn.close();
+    }
+
+    private static String[] parseLine(String line){
+        LinkedList<String> parsedLineList = new LinkedList<>();
+        String[] firstSplit, aux;
+
+        line = line.trim().toUpperCase();
+        
+        firstSplit = line.split("\\s+"); // Remove 1 ou mais espaços em branco
+
+        for (String s1 : firstSplit) { // Percorre para remover eventuais ','
+            if(s1.length() > 0){
+                if(s1.endsWith(";") && s1.length() > 1)
+                    s1 = s1.split(";")[0];
+                if(s1.contains(",")){
+                    aux = s1.split(",");
+
+                    for (String s2 : aux) {
+                        if(s2.length() > 0){
+                            parsedLineList.add(s2);
+                        }
+                    }
+                } else {
+                    parsedLineList.add(s1);
+                }
+            }
+        }
+
+
+        return Arrays.copyOf(parsedLineList.toArray(), parsedLineList.size(), String[].class);
     }
 
     private static void writeAssembled(BufferedWriter writer, int data) throws IOException {
@@ -368,6 +415,7 @@ public class Main {
 
     private static void writeAssembled(BufferedWriter writer, int data, String format) throws IOException {
         writer.write(String.format(format, data));
+        writer.newLine();
         //        try {
         //            BufferedWriter writer = new BufferedWriter(new FileWriter(dOut));
         //            writer.write(String.format("%08X", 15));
