@@ -6,10 +6,11 @@
  * varios aspectios do processador LAPI DOpaCA LAMBA
  ***************************************************/
 
-`define PC_WIDTH           32
-`define REGISTER_FILE_SIZE 16
-`define GPR_WIDTH          32
-`define FLAG_REG_WIDTH     32
+`define PC_WIDTH           32 // Tamanho do pc
+`define REGISTER_FILE_SIZE 16 // Numero de registradores de proposito geral
+`define GPR_WIDTH          32 // Tamanho do registrador de proposito geral
+`define GRP_ADDR_WIDTH      5 // Tamanho do endereco do registrador
+`define FLAG_REG_WIDTH     32 // Tamanho do registrador de flags
 
 /***************** Instrucao NOP *******************/
 `define NOP_INSTRUCTION 32'h20000000 // addi r0,r0,0
