@@ -76,7 +76,7 @@ module IF_stage_tb ();
         end
 
         branch_taken = 0;
-        $stop;
+        //$stop;
 
         for (i = 7; i >= 0; i = i - 1) begin
             is_jump = 0;

@@ -16,7 +16,7 @@ module IF_stage (
     input is_jump,
 
     output [31:0] instruction,
-    output [`PC_WIDTH - 1:0] next_pc
+    output reg [`PC_WIDTH - 1:0] next_pc
 );
 
 wire pc_write;
@@ -60,9 +60,10 @@ always @ (posedge clk or posedge rst) begin
             else if (branch_taken) begin pc <= branch_addr; end
             else begin pc <= next_pc; end
         end
+        next_pc <= pc + 1;
     end
 end
 
-assign next_pc = pc + 1;
+//assign next_pc = pc + 1;
 
 endmodule
