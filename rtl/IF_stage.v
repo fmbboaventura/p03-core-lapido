@@ -15,7 +15,7 @@ module IF_stage (
     input [`PC_WIDTH - 1:0] jump_addr,
     input is_jump,
 
-    output [31:0] instruction,
+    output [`INSTRUCTION_WIDTH-1:0] instruction,
     output reg [`PC_WIDTH - 1:0] next_pc
 );
 
@@ -23,7 +23,7 @@ wire pc_write;
 wire if_enable;
 reg [`PC_WIDTH - 1:0] pc;
 
-wire [31:0] imem_out; // Saida da Memoria de Instrucao
+wire [`INSTRUCTION_WIDTH-1:0] imem_out; // Saida da Memoria de Instrucao
 
 clk_counter counter(
     .clk(clk),
@@ -38,7 +38,7 @@ ram imem(
     .WE(1'b0),    // write enalbe. Memoria de instrucao nao pode ser escrita
     .clk(clk),
     .ADRESS(pc),
-    .DATA(32'bx),
+    .DATA(`INSTRUCTION_WIDTH-1'bx),
     .Q(imem_out)
 );
 
