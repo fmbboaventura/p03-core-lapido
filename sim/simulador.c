@@ -56,7 +56,7 @@ char const default_output_file[8] = "res.txt";
 void clear_all();
 
 // Lê o arquivo e inicializa as memórias
-void read_words(FILE **arq);
+void read_words(FILE **arq_data, FILE **arq_inst);
 
 // Converte uma string com uma sequencia de bits em um numero decimal
 unsigned int convert_to_int(char *bit_string);
@@ -93,26 +93,34 @@ bool check_carry(unsigned int op1, unsigned int op2);
 
 int main(int argc, char const *argv[]) {
     int exit_code = 0;
-    FILE *arq_mem;
+    FILE *arq_data;
+    FILE *arq_inst;
 
-    arq_mem = fopen(argv[1], "rt");
+    arq_data = fopen(argv[1], "rt");
+    arq_inst = fopen(argv[2], "rt");
 
-    if (arq_mem == NULL)
+    if (arq_data == NULL)
     {
-        printf("Arquivo de entrada não foi aberto!\n");
+        printf("Arquivo de entrada de dados não foi aberto!\n");
+        return EXIT_FAILURE;
+    }
+    if (arq_inst == NULL)
+    {
+        printf("Arquivo de entrada de instruções não foi aberto!\n");
         return EXIT_FAILURE;
     }
 
     inst_mem = malloc(sizeof(int) * MAX_MEM);
     data_mem  = malloc(sizeof(int) * MAX_MEM);
 
-    read_words(&arq_mem);
-    fclose(arq_mem);
+    read_words(&arq_data, &arq_inst);
+    fclose(arq_inst);
+    fclose(arq_data);
 
     execute();
 
     // Se algo der errado, o programa aborta antes de chegar aqui
-    if(argc == 3)
+    if(argc == 4)
         write_results(argv[argc-1], EXIT_SUCCESS);
     else
         write_results(default_output_file, EXIT_SUCCESS);
@@ -137,29 +145,34 @@ void clear_all()
     }
 }
 
-void read_words(FILE **arq)
+void read_words(FILE **arq_data, FILE **arq_inst)
 {
     int i;
-    char word[33];
+    int word[7];
 
-    for (instr_count = 0; (!feof(*arq)); instr_count++)
+    for (instr_count = 0; (!feof(*arq_inst)); instr_count++)
     {
-        fscanf(*arq, "%s", word);
+        fscanf(*arq_inst, "%x", word);
         //printf("%s\n", word);
-        if (strcmp("*", word) == 0) break;
+        //if (strcmp("*", word) == 0) break;
         //getchar();
-        inst_mem[instr_count] = convert_to_int(word);
+        inst_mem[instr_count] = (int) word;
+    }
+    for (instr_count = 0; (!feof(*arq_data)); instr_count++)
+    {
+        fscanf(*arq_data, "%x", word);
+        data_mem[instr_count] = (int) word;
     }
 
     //printf("Segmento de dados\n");
-    for(data_count = 0; 1 == 1; data_count++)
+    /*for(data_count = 0; 1 == 1; data_count++)
     {
         fscanf(*arq, "%s", word);
         if(feof(*arq)) break;
         //printf("%s\n", word);
         //getchar();
         data_mem[data_count] = convert_to_int(word);
-    }
+    }*/
 
 }
 
