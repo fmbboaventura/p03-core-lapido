@@ -1,0 +1,1 @@
+simulador LapidoAssembler/assembled_files/dseg_bubblesort.asm.txt LapidoAssembler/assembled_files/pseg_bubblesort.asm.txt

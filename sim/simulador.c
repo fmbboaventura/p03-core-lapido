@@ -148,20 +148,24 @@ void clear_all()
 void read_words(FILE **arq_data, FILE **arq_inst)
 {
     int i;
-    int word[7];
+    int word;
 
-    for (instr_count = 0; (!feof(*arq_inst)); instr_count++)
+    printf("Lendo arquivos de entrada\n");
+    for (instr_count = 0; 1==1; instr_count++)
     {
-        fscanf(*arq_inst, "%x", word);
+        fscanf(*arq_inst, "%08x", &word);
+        if(feof(*arq_inst))break;
         //printf("%s\n", word);
         //if (strcmp("*", word) == 0) break;
         //getchar();
-        inst_mem[instr_count] = (int) word;
+        inst_mem[instr_count] = word;
     }
-    for (instr_count = 0; (!feof(*arq_data)); instr_count++)
+
+    for (data_count = 0; 1 == 1; data_count++)
     {
-        fscanf(*arq_data, "%x", word);
-        data_mem[instr_count] = (int) word;
+        fscanf(*arq_data, "%08x", &word);
+        if(feof(*arq_data)) break;
+        data_mem[data_count] = word;
     }
 
     //printf("Segmento de dados\n");

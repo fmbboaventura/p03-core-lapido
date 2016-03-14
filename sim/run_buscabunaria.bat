@@ -1,0 +1,1 @@
+simulador LapidoAssembler/assembled_files/dseg_buscabinaria.asm.txt LapidoAssembler/assembled_files/pseg_buscabinaria.asm.txt

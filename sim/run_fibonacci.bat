@@ -1,0 +1,1 @@
+simulador LapidoAssembler/assembled_files/dseg_sequenciadefibonacci.asm.txt LapidoAssembler/assembled_files/pseg_sequenciadefibonacci.asm.txt
