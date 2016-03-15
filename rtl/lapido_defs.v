@@ -5,7 +5,7 @@
  * Description: Arquivo contendo as definicoes de
  * varios aspectios do processador LAPI DOpaCA LAMBA
  ***************************************************/
-
+ 
 `define INSTRUCTION_WIDTH   32 // Tamanho da instrucao
 `define PC_WIDTH            32 // Tamanho do pc
 `define REGISTER_FILE_SIZE  16 // Numero de registradores de proposito geral
