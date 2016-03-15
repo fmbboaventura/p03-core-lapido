@@ -12,6 +12,7 @@
 `define GPR_WIDTH          32 // Tamanho do registrador de proposito geral
 `define GRP_ADDR_WIDTH      5 // Tamanho do endereco do registrador
 `define DATA_MEM_ADDR_WIDTH 5 // Tamanho do endereco da memoria de dados
+`define DATA_MEM_SIZE    1024 // Tamanho da memoria de dados
 `define FLAG_REG_WIDTH     32 // Tamanho do registrador de flags
 
 /***************** Instrucao NOP *******************/

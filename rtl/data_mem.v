@@ -19,7 +19,7 @@ module data_mem (
 
 );
 
-reg [31:0] ram [1023:0];
+reg [31:0] ram [`DATA_MEM_SIZE-1:0];
 
 integer ram_in; // Arquivo de entrada
 integer ram_out; // Arquivo de saida
@@ -29,15 +29,15 @@ reg [31:0] data;
 always @ (posedge clk or posedge rst) begin
 	if (rst) begin
 		ram_out = $fopen("data/data_out.txt", "w");
-		for (i = 0; i < 1024; i = i + 1) begin
+		for (i = 0; i < `DATA_MEM_SIZE; i = i + 1) begin
 			$fwrite(ram_out,"%08H\n", ram[i]);
 		end
 		$fclose(ram_out);
 
 		ram_in = $fopen("data/data_in.txt", "r");
-		for (i = 0; i < 1024; i = i + 1) begin
+		for (i = 0; i < `DATA_MEM_SIZE; i = i + 1) begin
 			$fscanf(ram_in,"%08H", data);
-			if($feof(ram_in)) i = 1024;
+			if($feof(ram_in)) i = `DATA_MEM_SIZE;
 			else ram[i] = data;
 		end
 		$fclose(ram_in);
