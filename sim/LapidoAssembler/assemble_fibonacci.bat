@@ -1,3 +1,3 @@
 call run_assembler ../sequenciadefibonacci.asm -p inst_in.txt -d data_in.txt
-copy /Y inst_in.txt ..\..\rtl\data\inst_in.txt
-copy /Y data_in.txt ..\..\rtl\data\data_in.txt
+copy /Y assembled_files\inst_in.txt ..\..\rtl\data\inst_in.txt
+copy /Y assembled_files\data_in.txt ..\..\rtl\data\data_in.txt
