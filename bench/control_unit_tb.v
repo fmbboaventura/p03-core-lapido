@@ -2,7 +2,7 @@
  * Module: control_unity_tb
  * Project: core_lapido
  * Author: Afonso Machado
- * Description: Test Bench criado para o modulo da 
+ * Description: Test Bench criado para o modulo da
  * unidade de controle, contendo as entradas de
  * opcode e funct e a saída para as suas respectivas
  * funções.
@@ -14,12 +14,19 @@
 
  	reg [5:0] opcode;  //Entrada do opcode
  	reg [5:0] funct;   // Entrada do funct se houver
+    reg stall_pipeline;
+
+    // Sinais para o estagio IF
+    wire is_jump;          // A instrucao eh um salto incondicional
+
+    // Sinais para o estagio ID
+    wire sel_j_jr;         // Seleciona a fonte do endereco do salto incondicional
 
  	wire [5:0] alu_funct;  // Seleciona a operacao da alu
     wire alu_src_mu;      // Seleciona o segundo operando da alu
-    wire sel_j_jr;         // Seleciona a fonte do endereco do salto incondicional
     wire [1:0] reg_dst_mux;// Seleciona o endereco do registrador de escrita
-    wire is_jump;          // A instrucao eh um salto incondicional
+    wire is_load;
+
 
     // Sinais para o estagio MEM
     wire mem_write_enable; // Habilita a escrita na memoria
@@ -27,6 +34,8 @@
     wire fl_write_enable;  // Habilita a escrita no registrador de flags
     wire sel_jt_jf;        // Seleciona entre jt e jf na fmu
     wire is_branch;        // A instrucao eh um desvio pc-relative
+    wire sel_jflag_branch;
+
 
     // Sinais para o estagio WB
     wire [1:0] wb_res_mux; // Seleciona o dado que sera escrito no registrador
@@ -38,29 +47,28 @@
     control_unit dut(
     	.opcode(opcode),
     	.funct(funct),
-
+        .stall_pipeline(stall_pipeline),
+        .is_jump(is_jump),
+        .sel_j_jr(sel_j_jr),
     	.alu_funct(alu_funct),
     	.alu_src_mux(alu_src_mux),
-    	.sel_j_jr(sel_j_jr),
+        .is_load(is_load),
     	.reg_dst_mux(reg_dst_mux),
-    	.is_jump(is_jump),
-
+        .sel_jflag_branch(sel_jflag_branch),
     	.mem_write_enable(mem_write_enable),
     	.sel_beq_bne(sel_beq_bne),
     	.fl_write_enable(fl_write_enable),
     	.sel_jt_jf(sel_jt_jf),
     	.is_branch(is_branch),
-
     	.wb_res_mux(wb_res_mux),
     	.reg_write_enable(reg_write_enable)
-
-
     	);
 
     initial begin
 
     	opcode = 0;
     	funct = 0;
+        stall_pipeline = 0;
 
         create_funct_array; //Criar um array contendo todas as opções de funct
 
@@ -136,19 +144,19 @@
 
             if(is_jump == 1'b1 && reg_dst_mux == `REG_DST_15 &&
                 sel_j_jr == `SEL_JR && reg_write_enable == 1'b1 &&
-                wb_res_mux == `WB_PC) 
+                wb_res_mux == `WB_PC)
                 begin
                     $display("OK!");
                 end
             else begin
-                $display("ERRO! @ %t , 
-                        Esperado (is_jump): %d, 
+                $display("ERRO! @ %t ,
+                        Esperado (is_jump): %d,
                         Esperado (reg_dst_mux): %d,
                         Esperado (sel_j_jr): %d,
                         Esperado (reg_write_enable): %d,
-                        Esperado (wb_res_mux): %d,  
+                        Esperado (wb_res_mux): %d,
 
-                        Obteve (is_jump): %d, 
+                        Obteve (is_jump): %d,
                         Obteve (reg_dst_mux): %d,
                         Obteve (sel_j_jr): %d,
                         Obteve (reg_write_enable): %d,
@@ -158,13 +166,13 @@
                         `REG_DST_15,
                         `SEL_JR,
                         1'b1,
-                        `WB_PC, 
+                        `WB_PC,
                         is_jump,
                         reg_dst_mux,
                         sel_j_jr,
                         reg_write_enable,
                         wb_res_mux,);
-            end 
+            end
         end
     endtask
 
@@ -176,18 +184,18 @@
             #1
 
             if(is_branch == 1'b1 && alu_src_mux == `ALU_SRC_REG &&
-                alu_funct == `FN_SUB && sel_beq_bne == `SEL_BEQ) 
+                alu_funct == `FN_SUB && sel_beq_bne == `SEL_BEQ)
                 begin
                     $display("OK!");
                 end
             else begin
-                $display("ERRO! @ %t , 
-                        Esperado (is_branch): %d, 
+                $display("ERRO! @ %t ,
+                        Esperado (is_branch): %d,
                         Esperado (alu_src_mux): %d,
                         Esperado (alu_funct): %d,
-                        Esperado (sel_beq_bne): %d,  
+                        Esperado (sel_beq_bne): %d,
 
-                        Obteve (is_branch): %d, 
+                        Obteve (is_branch): %d,
                         Obteve (alu_src_mux): %d,
                         Obteve (alu_funct): %d,
                         Obteve (sel_beq_bne): %d",
@@ -200,7 +208,7 @@
                         alu_src_mux,
                         alu_funct,
                         sel_beq_bne,);
-            end 
+            end
         end
     endtask
 
@@ -212,18 +220,18 @@
             #1
 
             if(is_branch == 1'b1 && alu_src_mux == `ALU_SRC_REG &&
-                alu_funct == `FN_SUB && sel_beq_bne == `SEL_BNE) 
+                alu_funct == `FN_SUB && sel_beq_bne == `SEL_BNE)
                 begin
                     $display("OK!");
                 end
             else begin
-                $display("ERRO! @ %t , 
-                        Esperado (is_branch): %d, 
+                $display("ERRO! @ %t ,
+                        Esperado (is_branch): %d,
                         Esperado (alu_src_mux): %d,
                         Esperado (alu_funct): %d,
-                        Esperado (sel_beq_bne): %d,  
+                        Esperado (sel_beq_bne): %d,
 
-                        Obteve (is_branch): %d, 
+                        Obteve (is_branch): %d,
                         Obteve (alu_src_mux): %d,
                         Obteve (alu_funct): %d,
                         Obteve (sel_beq_bne): %d",
@@ -236,7 +244,7 @@
                         alu_src_mux,
                         alu_funct,
                         sel_beq_bne,);
-            end 
+            end
         end
     endtask
 
@@ -252,9 +260,9 @@
             end
             else begin
                 $display("ERRO! @ %t,
-                         Esperado (is_branch): %d, 
-                         Esperado (sel_jt_jf):%d, 
-                         Obteve (is_branch): %d, 
+                         Esperado (is_branch): %d,
+                         Esperado (sel_jt_jf):%d,
+                         Obteve (is_branch): %d,
                          Obteve (sel_jt_jf): %d",
                          $time,
                          1'b1,
@@ -277,9 +285,9 @@
             end
             else begin
                 $display("ERRO! @ %t,
-                         Esperado (is_branch): %d, 
-                         Esperado (sel_jt_jf):%d, 
-                         Obteve (is_branch): %d, 
+                         Esperado (is_branch): %d,
+                         Esperado (sel_jt_jf):%d,
+                         Obteve (is_branch): %d,
                          Obteve (sel_jt_jf): %d",
                          $time,
                          1'b1,
@@ -302,9 +310,9 @@
             end
             else begin
                 $display("ERRO! @ %t,
-                         Esperado (wb_res_mux): %d, 
-                         Esperado (reg_write_enable):%d, 
-                         Obteve (wb_res_mux): %d, 
+                         Esperado (wb_res_mux): %d,
+                         Esperado (reg_write_enable):%d,
+                         Obteve (wb_res_mux): %d,
                          Obteve (reg_write_enable): %d",
                          $time,
                          `WB_IMM,
@@ -327,9 +335,9 @@
             end
             else begin
                 $display("ERRO! @ %t,
-                         Esperado (reg_dst_mux): %d, 
-                         Esperado (alu_src_mux):%d, 
-                         Obteve (reg_dst_mux): %d, 
+                         Esperado (reg_dst_mux): %d,
+                         Esperado (alu_src_mux):%d,
+                         Obteve (reg_dst_mux): %d,
                          Obteve (alu_src_mux): %d",
                          $time,
                          `REG_DST_RD,
@@ -354,10 +362,10 @@
             end
             else begin
                 $display("ERRO! @ %t,
-                         Esperado (reg_dst_mux): %d, 
+                         Esperado (reg_dst_mux): %d,
                          Esperado (alu_src_mux): %d,
-                         Esperado (is_jump): %d 
-                         Obteve (reg_dst_mux): %d, 
+                         Esperado (is_jump): %d
+                         Obteve (reg_dst_mux): %d,
                          Obteve (alu_src_mux): %d,
                          Obteve (is_jump) %d",
                          $time,
@@ -387,10 +395,10 @@
                 end
                 else begin
                 $display("ERRO! @ %t,
-                         Esperado (funct != FN_JR): %d, 
+                         Esperado (funct != FN_JR): %d,
                          Esperado (reg_write_enable): %d,
-                         Esperado (fl_write_enable): %d 
-                         Obteve (alu_funct): %d, 
+                         Esperado (fl_write_enable): %d
+                         Obteve (alu_funct): %d,
                          Obteve (reg_write_enable): %d,
                          Obteve (fl_write_enable) %d",
                          $time,
@@ -418,10 +426,10 @@
             end
             else begin
                 $display("ERRO! @ %t,
-                         Esperado (alu_funct): %d, 
+                         Esperado (alu_funct): %d,
                          Esperado (reg_write_enable): %d,
-                         Esperado (fl_write_enable): %d 
-                         Obteve (alu_funct): %d, 
+                         Esperado (fl_write_enable): %d
+                         Obteve (alu_funct): %d,
                          Obteve (reg_write_enable): %d,
                          Obteve (fl_write_enable) %d",
                          $time,
@@ -448,10 +456,10 @@
             end
             else begin
                 $display("ERRO! @ %t,
-                         Esperado (alu_funct): %d, 
+                         Esperado (alu_funct): %d,
                          Esperado (reg_write_enable): %d,
-                         Esperado (fl_write_enable): %d 
-                         Obteve (alu_funct): %d, 
+                         Esperado (fl_write_enable): %d
+                         Obteve (alu_funct): %d,
                          Obteve (reg_write_enable): %d,
                          Obteve (fl_write_enable) %d",
                          $time,
@@ -478,10 +486,10 @@
             end
             else begin
                 $display("ERRO! @ %t,
-                         Esperado (alu_funct): %d, 
+                         Esperado (alu_funct): %d,
                          Esperado (reg_write_enable): %d,
-                         Esperado (fl_write_enable): %d 
-                         Obteve (alu_funct): %d, 
+                         Esperado (fl_write_enable): %d
+                         Obteve (alu_funct): %d,
                          Obteve (reg_write_enable): %d,
                          Obteve (fl_write_enable) %d",
                          $time,
@@ -508,10 +516,10 @@
             end
             else begin
                 $display("ERRO! @ %t,
-                         Esperado (alu_funct): %d, 
+                         Esperado (alu_funct): %d,
                          Esperado (reg_write_enable): %d,
-                         Esperado (fl_write_enable): %d 
-                         Obteve (alu_funct): %d, 
+                         Esperado (fl_write_enable): %d
+                         Obteve (alu_funct): %d,
                          Obteve (reg_write_enable): %d,
                          Obteve (fl_write_enable) %d",
                          $time,
@@ -538,10 +546,10 @@
             end
             else begin
                 $display("ERRO! @ %t,
-                         Esperado (alu_funct): %d, 
+                         Esperado (alu_funct): %d,
                          Esperado (reg_write_enable): %d,
-                         Esperado (fl_write_enable): %d 
-                         Obteve (alu_funct): %d, 
+                         Esperado (fl_write_enable): %d
+                         Obteve (alu_funct): %d,
                          Obteve (reg_write_enable): %d,
                          Obteve (fl_write_enable) %d",
                          $time,
@@ -568,10 +576,10 @@
             end
             else begin
                 $display("ERRO! @ %t,
-                         Esperado (alu_funct): %d, 
+                         Esperado (alu_funct): %d,
                          Esperado (reg_write_enable): %d,
-                         Esperado (fl_write_enable): %d 
-                         Obteve (alu_funct): %d, 
+                         Esperado (fl_write_enable): %d
+                         Obteve (alu_funct): %d,
                          Obteve (reg_write_enable): %d,
                          Obteve (fl_write_enable) %d",
                          $time,
