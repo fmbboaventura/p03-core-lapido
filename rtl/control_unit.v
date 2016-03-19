@@ -13,18 +13,24 @@ module control_unit
 (
     input [5:0] opcode,   // opcode da instrucao
     input [5:0] funct,    // funct do formato R
+    input stall_pipeline,
+
+    // Sinais para o estagio IF
+    output reg is_jump,          // A instrucao eh um salto incondicional
+
+    // Sinais para o estagio ID
+    output reg sel_j_jr,         // Seleciona a fonte do endereco do salto incondicional
 
     // Sinais para o estagio EX
     output reg [5:0] alu_funct,  // Seleciona a operacao da alu
     output reg alu_src_mux,      // Seleciona o segundo operando da alu
-    output reg sel_j_jr,         // Seleciona a fonte do endereco do salto incondicional
     output reg [1:0] reg_dst_mux,// Seleciona o endereco do registrador de escrita
-    output reg is_jump,          // A instrucao eh um salto incondicional
+    output reg is_load,          // A instrucao eh um load
+    output reg fl_write_enable,  // Habilita a escrita no registrador de flags
 
     // Sinais para o estagio MEM
     output reg mem_write_enable, // Habilita a escrita na memoria
     output reg sel_beq_bne,      // Seleciona entre beq e bne
-    output reg fl_write_enable,  // Habilita a escrita no registrador de flags
     output reg sel_jt_jf,        // Seleciona entre jt e jf na fmu
     output reg is_branch,        // A instrucao eh um desvio pc-relative
 
@@ -37,6 +43,7 @@ module control_unit
 
 always @ ( opcode ) begin
     // Desabilita branches, saltos e escrita em blocos sequenciais
+    is_load = 1'b0;
     is_jump = 1'b0;
     is_branch = 1'b0;
     mem_write_enable = 1'b0;
@@ -45,6 +52,8 @@ always @ ( opcode ) begin
     reg_dst_mux = `REG_DST_RT;  // Seleciona rt como registrador de destino
     alu_src_mux = `ALU_SRC_IMM; // Seleciona o imediato como o operando da alu
     wb_res_mux  = `WB_ALU;      // Seleciona a saida da alu como o dado a ser escrito
+
+    if(!stall_pipeline) // Soh decodifica se nao ha bolha
     case (opcode)
         `OP_STORE: begin
             mem_write_enable = 1'b1;
@@ -52,6 +61,7 @@ always @ ( opcode ) begin
         `OP_LOAD: begin
             wb_res_mux  = `WB_MEM; // Seleciona saida da memoria como o dado a ser escrito
             reg_write_enable = 1'b1;
+            is_load = 1'b1;
         end
         `OP_J_TYPE: begin
             is_jump = 1'b1;

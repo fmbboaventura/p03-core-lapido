@@ -10,52 +10,36 @@
 module IF_stage (
     input clk,
     input rst,
+
+    // Do estagio MEM
     input [`PC_WIDTH - 1:0] branch_addr,
     input branch_taken,
+
+    // Do estagio ID
     input [`PC_WIDTH - 1:0] jump_addr,
     input is_jump,
 
+    // Do hazard_detection_unit
+    input stall_pipeline,
+
+    // Para o estagio ID
     output [`INSTRUCTION_WIDTH-1:0] instruction,
     output reg [`PC_WIDTH - 1:0] next_pc
 );
 
-wire pc_write;
-wire if_enable;
 reg [`PC_WIDTH - 1:0] pc;
 
-wire [`INSTRUCTION_WIDTH-1:0] imem_out; // Saida da Memoria de Instrucao
-
-clk_counter counter(
-    .clk(clk),
+instruction_mem imem(
     .rst(rst),
-    .if_enable(if_enable),
-    .pc_write(pc_write)
-);
-
-ram imem(
-    .read_file(rst), //
-    .write_file(1'b0),
-    .WE(1'b0),    // write enalbe. Memoria de instrucao nao pode ser escrita
-    .clk(clk),
-    .ADRESS(pc),
-    .DATA(`INSTRUCTION_WIDTH-1'bx),
-    .Q(imem_out)
-);
-
-mux2x1 mux(
-    .in_a(imem_out),
-    .in_b(`NOP_INSTRUCTION),
-    .sel(if_enable),
-    .out(instruction)
+    .addr(pc),
+    .instruction(instruction)
 );
 
 always @ (posedge clk or posedge rst) begin
     if (rst) begin
        pc <= `PC_WIDTH'b0;
     end else begin
-    // Substituir por assignment contínuo?
-    // Substituir por somadores e muxes?
-        if(pc_write) begin
+        if(!stall_pipeline) begin
             if(is_jump) begin pc <= jump_addr; end
             else if (branch_taken) begin pc <= branch_addr; end
             else begin pc <= next_pc; end
@@ -63,7 +47,5 @@ always @ (posedge clk or posedge rst) begin
         next_pc <= pc + 1;
     end
 end
-
-//assign next_pc = pc + 1;
 
 endmodule
