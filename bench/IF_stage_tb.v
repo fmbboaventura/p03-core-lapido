@@ -7,6 +7,8 @@
  ***************************************************/
  `include "lapido_defs.v"
 
+// ATENCAO: ESSE TESTE ESTA DESATUALIZADO
+// TODO: ATUALIZAR DE ACORDO AO ATUAL IF_stage
 module IF_stage_tb ();
 
     // Entradas

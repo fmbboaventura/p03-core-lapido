@@ -11,9 +11,9 @@ module register_file (
 	input clk,
 	input rst,
 	input en,
-	input [`GRP_ADDR_WIDTH:0] rd,
-	input [`GRP_ADDR_WIDTH:0] rs,
-	input [`GRP_ADDR_WIDTH:0] rt,
+	input [`GRP_ADDR_WIDTH-1:0] rd,
+	input [`GRP_ADDR_WIDTH-1:0] rs,
+	input [`GRP_ADDR_WIDTH-1:0] rt,
 	input [`GPR_WIDTH-1:0] data,
 
 	output [`GPR_WIDTH-1:0] data_rs,

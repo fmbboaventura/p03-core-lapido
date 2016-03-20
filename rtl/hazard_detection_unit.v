@@ -9,13 +9,13 @@
  ***************************************************/
 module hazard_detection_unit
 (
-    input ID_EX_mem_read,
+    input ID_EX_is_load,
     input [4:0] ID_EX_rt,
     input [4:0] IF_ID_rs,
     input [4:0] IF_ID_rt,
     output stall_pipeline);
 
-assign stall_pipeline = (ID_EX_mem_read &&
+assign stall_pipeline = (ID_EX_is_load &&
                         (ID_EX_rt == IF_ID_rs) ||
                         (ID_EX_rt == IF_ID_rt));
 
