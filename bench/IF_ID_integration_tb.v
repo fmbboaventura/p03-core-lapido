@@ -7,6 +7,7 @@
  * hazard_detection_unit.
  ***************************************************/
 `include "lapido_defs.v"
+`include "tb_util.v"
 module IF_ID_integration_tb ();
     // Entradas
     reg clk;
@@ -125,6 +126,8 @@ module IF_ID_integration_tb ();
         .out_data_rt(out_data_rt)
     );
 
+    tb_util util();
+
     // Gerador de clock
     always begin
         #5  clk =  ! clk;
@@ -133,8 +136,10 @@ module IF_ID_integration_tb ();
     reg [5:0] funct_array[14:0];
     reg [5:0] opcode_array[15:0];
     reg [`INSTRUCTION_WIDTH-1:0] inst;
+    reg [`INSTRUCTION_WIDTH-1:0] generated_instructions [`INST_MEM_SIZE-1:0];
     integer inst_counter;
     integer i;
+    integer expected_pc;
     reg [31:0] field;
 
     initial begin
@@ -144,6 +149,9 @@ module IF_ID_integration_tb ();
 
         set_up;
 
+        // for (i = 0; i<inst_counter; i=i+1) begin
+        //
+        // end
     end
 
     integer inst_in;
@@ -157,7 +165,18 @@ module IF_ID_integration_tb ();
             rst = 1;
             #20;
             rst = 0;
+            // Salva no registrador 0, o endereco alvo do jal
             dut_reg.registers[0] = inst_counter-2;
+        end
+    endtask
+
+    task test_instruction_fetch;
+        begin
+            for (i = 0; i < inst_counter; i = i+1) begin
+                inst = IF_ID_instruction;
+                expected_pc = i;
+                util.assert_equals(expected_pc, dut_IF.pc);
+            end
         end
     endtask
 
@@ -174,11 +193,11 @@ module IF_ID_integration_tb ();
                 inst = 32'b0;
                 inst[31:26] = `OP_R_TYPE;
                 inst[5:0]   = funct_array[i];
-                rand_zero_max(15, field); // rs
+                util.rand_zero_max(15, field); // rs
                 inst[25:21] = field[4:0];
 
                 if(funct_array[i] != `FN_JR) begin
-                    rand_zero_max(15, field); // rt
+                    util.rand_zero_max(15, field); // rt
                     inst[20:16] = field[4:0];
                 end
 
@@ -187,11 +206,12 @@ module IF_ID_integration_tb ();
                    funct_array[i] != `FN_LSR ||
                    funct_array[i] != `FN_ASL ||
                    funct_array[i] != `FN_ASR) begin
-                   rand_zero_max(15, field); // rd
+                   util.rand_zero_max(15, field); // rd
                    inst[15:11] = field[4:0];
                 end
 
                 $fwrite(inst_in,"%08H\n", inst);
+                generated_instructions[inst_counter] = inst;
                 inst_counter = inst_counter + 1;
                 $display("Instrucao gerada: %b", inst);
                 // dut_IF.imem.mem[inst_counter] = inst;
@@ -204,9 +224,9 @@ module IF_ID_integration_tb ();
                 inst = 32'b0;
                 inst[31:26] = opcode_array[i];
                 if (opcode_array[i] == `OP_JT || opcode_array[i] == `OP_JF) begin
-                    rand_zero_max(5, field); // flag code
+                    util.rand_zero_max(5, field); // flag code
                 end else begin
-                    rand_zero_max(15, field); //rs
+                    util.rand_zero_max(15, field); //rs
                 end
                 inst[25:21] = field[4:0];
 
@@ -217,17 +237,18 @@ module IF_ID_integration_tb ();
                     opcode_array[i] != `OP_LCH ||
                     opcode_array[i] != `OP_LOADLIT ||
                     opcode_array[i] != `OP_JAL) begin
-                    rand_zero_max(15, field); // rt
+                    util.rand_zero_max(15, field); // rt
                     inst[20:16] = field[4:0];
                 end
 
                 // Gerando imediato
                 if (opcode_array[i] != `OP_LOAD ||
                     opcode_array[i] != `OP_STORE) begin
-                    rand_zero_max(32'hFFFF, field); // rt
+                    util.rand_zero_max(32'hFFFF, field); // rt
                     inst[15:0] = field[15:0];
                 end
                 $fwrite(inst_in,"%08H\n", inst);
+                generated_instructions[inst_counter] = inst;
                 inst_counter = inst_counter + 1;
                 $display("Instrucao gerada: %b", inst);
             end
@@ -238,6 +259,7 @@ module IF_ID_integration_tb ();
             inst[31:26] = `OP_J_TYPE;
             inst[25:0]  = (inst_counter+2);
             $fwrite(inst_in,"%08H\n", inst);
+            generated_instructions[inst_counter] = inst;
             inst_counter = inst_counter + 1;
             $display("Instrucao gerada: %b", inst);
 
@@ -246,6 +268,7 @@ module IF_ID_integration_tb ();
             inst[31:26] = `OP_J_TYPE;
             inst[25:0]  = inst_counter;
             $fwrite(inst_in,"%08H\n", inst);
+            generated_instructions[inst_counter] = inst;
             inst_counter = inst_counter + 1;
             $display("Instrucao gerada: %b", inst);
 
@@ -255,9 +278,10 @@ module IF_ID_integration_tb ();
             inst[5:0]   = `FN_JR;
             //inst[25:0]  = (inst_counter-1);
             $fwrite(inst_in,"%08H\n", inst);
+            generated_instructions[inst_counter] = inst;
             inst_counter = inst_counter + 1;
             $display("Instrucao gerada: %b", inst);
-
+            $display("Foram geradas %d Instrucoes", inst_counter);
             $fclose(inst_in);
         end
     endtask
@@ -300,14 +324,6 @@ module IF_ID_integration_tb ();
             opcode_array[13] = `OP_LCL;
             opcode_array[14] = `OP_LCH;
             opcode_array[15] = `OP_LOADLIT;
-        end
-    endtask
-    // Gera numeros aleatorios de 32 bit entre 0 e max
-    task rand_zero_max;
-        input [31:0] max;
-        output [31:0] result;
-        begin
-            result = $unsigned($random) % max;
         end
     endtask
 endmodule // IF_ID_integration_tb
