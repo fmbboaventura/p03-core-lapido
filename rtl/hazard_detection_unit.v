@@ -16,7 +16,7 @@ module hazard_detection_unit
     output stall_pipeline);
 
 assign stall_pipeline = (ID_EX_is_load &&
-                        (ID_EX_rt == IF_ID_rs) ||
-                        (ID_EX_rt == IF_ID_rt));
+                        ((ID_EX_rt == IF_ID_rs) ||
+                        (ID_EX_rt == IF_ID_rt)));
 
 endmodule // hazard_detection_unit

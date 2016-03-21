@@ -137,6 +137,7 @@ always @ (posedge clk or posedge rst) begin
     if (rst) begin
         //pipeline_reg_out <= 0;
     end else begin
+        out_is_load <= is_load;
         out_wb_res_mux <= wb_res_mux;
         out_reg_write_enable <= reg_write_enable;
         out_mem_write_enable <= mem_write_enable;
