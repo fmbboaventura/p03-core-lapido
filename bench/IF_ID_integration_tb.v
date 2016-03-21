@@ -154,10 +154,10 @@ module IF_ID_integration_tb ();
             $display("------------------------------");
 
             generate_instruction_mem_input_file;
-
             rst = 1;
             #20;
             rst = 0;
+            dut_reg.registers[0] = inst_counter-2;
         end
     endtask
 
@@ -169,8 +169,8 @@ module IF_ID_integration_tb ();
             inst_in = $fopen("data/inst_in.txt", "w");
 
             // Cria um arquivo com instrucoes que sera lido pela memoria
-            $display("Gerando instrucoes do tipo R...");
-            for (i = 0; i < 15; i = i+1) begin
+            $display("Gerando instrucoes do tipo R (Exceto JR)...");
+            for (i = 0; i < 14; i = i+1) begin
                 inst = 32'b0;
                 inst[31:26] = `OP_R_TYPE;
                 inst[5:0]   = funct_array[i];
@@ -199,9 +199,65 @@ module IF_ID_integration_tb ();
                 // inst_counter = inst_counter + 1;
             end
 
+            $display("Gerando instrucoes do tipo I...");
             for (i = 2; i < 16; i = i+1) begin
+                inst = 32'b0;
+                inst[31:26] = opcode_array[i];
+                if (opcode_array[i] == `OP_JT || opcode_array[i] == `OP_JF) begin
+                    rand_zero_max(5, field); // flag code
+                end else begin
+                    rand_zero_max(15, field); //rs
+                end
+                inst[25:21] = field[4:0];
 
+                // As instrucoes dentro da condicao nao possuem o campo rt
+                if (opcode_array[i] != `OP_JT ||
+                    opcode_array[i] != `OP_JF ||
+                    opcode_array[i] != `OP_LCL ||
+                    opcode_array[i] != `OP_LCH ||
+                    opcode_array[i] != `OP_LOADLIT ||
+                    opcode_array[i] != `OP_JAL) begin
+                    rand_zero_max(15, field); // rt
+                    inst[20:16] = field[4:0];
+                end
+
+                // Gerando imediato
+                if (opcode_array[i] != `OP_LOAD ||
+                    opcode_array[i] != `OP_STORE) begin
+                    rand_zero_max(32'hFFFF, field); // rt
+                    inst[15:0] = field[15:0];
+                end
+                $fwrite(inst_in,"%08H\n", inst);
+                inst_counter = inst_counter + 1;
+                $display("Instrucao gerada: %b", inst);
             end
+
+            $display("Gerando instrucoes de salto incondicional (J/JR)...");
+            // um jump para duas instrucoes a frente
+            inst = 32'b0;
+            inst[31:26] = `OP_J_TYPE;
+            inst[25:0]  = (inst_counter+2);
+            $fwrite(inst_in,"%08H\n", inst);
+            inst_counter = inst_counter + 1;
+            $display("Instrucao gerada: %b", inst);
+
+            // um jump para o mesmo endereco
+            inst = 32'b0;
+            inst[31:26] = `OP_J_TYPE;
+            inst[25:0]  = inst_counter;
+            $fwrite(inst_in,"%08H\n", inst);
+            inst_counter = inst_counter + 1;
+            $display("Instrucao gerada: %b", inst);
+
+            // um jr (usando registrador 0) para a instrucao anterior
+            inst = 32'b0;
+            inst[31:26] = `OP_R_TYPE;
+            inst[5:0]   = `FN_JR;
+            //inst[25:0]  = (inst_counter-1);
+            $fwrite(inst_in,"%08H\n", inst);
+            inst_counter = inst_counter + 1;
+            $display("Instrucao gerada: %b", inst);
+
             $fclose(inst_in);
         end
     endtask
