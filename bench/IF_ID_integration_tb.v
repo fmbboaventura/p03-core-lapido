@@ -142,6 +142,7 @@ module IF_ID_integration_tb ();
     integer expected_pc;
     reg [31:0] field;
 
+    // Blocos initial, aways e assigns executam paralelamente
     initial begin
         clk = 0;
         rst = 0;
@@ -149,8 +150,17 @@ module IF_ID_integration_tb ();
         #20;
 
         set_up;
+    end
+
+    initial begin
+        #40; // Espera o set_up ser concluido
         test_instruction_fetch;
         $stop;
+    end
+
+    initial begin
+        #60; // Espera pela conclusao do set_up e do IF
+        test_instruction_decode;
     end
 
     integer inst_in;
@@ -168,6 +178,21 @@ module IF_ID_integration_tb ();
             dut_reg.registers[0] = inst_counter-1;
             // Salva no registrador 1, o endereco alvo do jal
             dut_reg.registers[1] = inst_counter-1;
+            // // Salva em cada registrador o seu numero
+            dut_reg.registers[2] = 2;
+            dut_reg.registers[3] = 3;
+            dut_reg.registers[4] = 4;
+            dut_reg.registers[5] = 5;
+            dut_reg.registers[6] = 6;
+            dut_reg.registers[7] = 7;
+            dut_reg.registers[8] = 8;
+            dut_reg.registers[9] = 9;
+            dut_reg.registers[10] = 10;
+            dut_reg.registers[11] = 11;
+            dut_reg.registers[12] = 12;
+            dut_reg.registers[13] = 13;
+            dut_reg.registers[14] = 14;
+            dut_reg.registers[15] = 15;
         end
     endtask
 
@@ -180,13 +205,23 @@ module IF_ID_integration_tb ();
                 inst = IF_ID_instruction;
                 expected_pc = i;
                 #10;
-                $display("Testando Instrucao %d...", IF_ID_instruction);
+                $display("Testando Instrucao no IF %d...", IF_ID_instruction);
                 util.assert_equals(generated_instructions[expected_pc], IF_ID_instruction);
                 $display("Testando pc %d...", expected_pc);
                 util.assert_equals(expected_pc, IF_ID_pc);
                 if (HDU_stall_pipeline) inst_counter = inst_counter-1;
                 else if(ID_IF_is_jump && ID_IF_jump_addr != i) i = ID_IF_jump_addr-1;
             end
+        end
+    endtask
+
+    task test_instruction_decode;
+        begin
+            $display("------------------------------");
+            $display("test_instruction_decode:");
+            $display("------------------------------");
+            $display("Testando Instrucao no ID %d...", dut_ID.instruction_reg);
+            util.assert_equals(generated_instructions[expected_pc-1], dut_ID.instruction_reg);
         end
     endtask
 
