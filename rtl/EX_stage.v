@@ -30,13 +30,13 @@ module EX_stage
 	//saidas do estagio EX
 	output reg [1:0] out_alu_flags,
 	output reg [`GPR_WIDTH-1:0 ] out_alu_data,
-	output reg [`GRP_ADDR_WIDTH-1:0] address_rs,
+	output reg [`GRP_ADDR_WIDTH-1:0] out_address_rs,
 	output reg [`GPR_WIDTH-1:0] out_add,
-	output reg [`GPR_WIDTH-1:0] data_rs,
-	output reg [`GPR_WIDTH-1:0] data_rt,
+	output reg [`GPR_WIDTH-1:0] out_data_rs,
+	output reg [`GPR_WIDTH-1:0] out_data_rt,
 	output reg [`GRP_ADDR_WIDTH-1:0] out_mux, 
 	output reg [`PC_WIDTH - 1:0] out_next_pc,
-	output reg [`GPR_WIDTH-1:0] out_imm,
+	output reg [`GPR_WIDTH-1:0] out_imm
 
 );
 
@@ -59,7 +59,7 @@ module EX_stage
 	add add(
 		.a(next_pc),
 		.b(imm),
-		.soma(out_add),
+		.soma(out_add)
 	);
 	
 endmodule
