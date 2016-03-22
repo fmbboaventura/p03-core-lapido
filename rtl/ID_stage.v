@@ -14,7 +14,7 @@ module ID_stage
 
     // Do estagio IF
     input [`INSTRUCTION_WIDTH-1:0] instruction,
-    input [`PC_WIDTH-1:0] next_pc,
+    input [`PC_WIDTH-1:0] pc,
 
     // Do banco de registradores
     input [`GPR_WIDTH-1:0] data_rs,
@@ -92,7 +92,7 @@ wire reg_write_enable; // Habilita a escrita no banco de registradores
 
 always @ (posedge clk) begin
     instruction_reg <= instruction;
-    out_next_pc <= next_pc;
+    out_next_pc <= pc+`PC_WIDTH'b1;
 end
 
 assign ir_opcode = instruction_reg[31:26];
