@@ -23,20 +23,47 @@ module EX_stage
 	input [`GRP_ADDR_WIDTH-1:0] address_rd,//saida address_rd do banco de registradores
 	input [`GRP_ADDR_WIDTH-1:0] address_rs,//saida address_rs do banco de registradores
 	input [`GPR_WIDTH-1:0] data_rs,//saida data_rs do banco de registradores
-    	input [`GPR_WIDTH-1:0] data_rt,//saida data_rt do banco de registradores
+    input [`GPR_WIDTH-1:0] data_rt,//saida data_rt do banco de registradores
 	input [`GPR_WIDTH-1:0] imm,//saida do signal extend.
 	input [`PC_WIDTH-1:0] next_pc,
+
+	// Propagar para o estagio MEM
+    input mem_write_enable, // Habilita a escrita na memoria
+    input sel_beq_bne,      // Seleciona entre beq e bne
+    input sel_jt_jf,        // Seleciona entre jt e jf na fmu
+    input is_branch,        // A instrucao eh um desvio pc-relative
+    input sel_jflag_branch, // seletor do tipo do branch
+
+	//Propagar para o estágio WB
+	input [1:0] wb_res_mux, // Seleciona o dado que sera escrito no registrador
+    input reg_write_enable, // Habilita a escrita no banco de registradores
+
+
 
 	//saidas do estagio EX
 	output reg [1:0] out_alu_flags,
 	output reg [`GPR_WIDTH-1:0 ] out_alu_data,
-	output reg [`GRP_ADDR_WIDTH-1:0] address_rs,
+	output reg [`GRP_ADDR_WIDTH-1:0] out_address_rs,
 	output reg [`GPR_WIDTH-1:0] out_add,
-	output reg [`GPR_WIDTH-1:0] data_rs,
-	output reg [`GPR_WIDTH-1:0] data_rt,
+	output reg [`GPR_WIDTH-1:0] out_data_rs,
+	output reg [`GPR_WIDTH-1:0] out_data_rt,
 	output reg [`GRP_ADDR_WIDTH-1:0] out_mux, 
 	output reg [`PC_WIDTH - 1:0] out_next_pc,
 	output reg [`GPR_WIDTH-1:0] out_imm,
+
+	// Sinais para o estagio MEM
+    output reg out_mem_write_enable, // Habilita a escrita na memoria
+    output reg out_sel_beq_bne,      // Seleciona entre beq e bne
+    output reg out_sel_jt_jf,        // Seleciona entre jt e jf na fmu
+    output reg out_is_branch,        // A instrucao eh um desvio pc-relative
+    output reg out_sel_jflag_branch, // seletor do tipo do branch
+    output reg out_fl_write_enable,
+
+	//Sinais para o estágio WB
+	output reg [1:0] out_wb_res_mux, // Seleciona o dado que sera escrito no registrador
+    output reg out_reg_write_enable	 // Habilita a escrita no banco de registradores
+
+
 
 );
 
@@ -59,8 +86,20 @@ module EX_stage
 	add add(
 		.a(next_pc),
 		.b(imm),
-		.soma(out_add),
+		.soma(out_add)
 	);
+
+always @(posedge clk) begin
+	out_mem_write_enable <= mem_write_enable;
+	out_sel_beq_bne <= sel_beq_bne;
+	out_sel_jt_jf <= sel_jt_jf;
+	out_is_branch <= is_branch;
+	out_sel_jflag_branch <= sel_jflag_branch;
+	out_fl_write_enable <= sel_fl_write_enable;
+
+	out_wb_res_mux <= wb_res_mux;
+	out_reg_write_enable <= out_reg_write_enable;
+end
 	
 endmodule
 	
