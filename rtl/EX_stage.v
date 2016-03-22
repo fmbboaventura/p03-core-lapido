@@ -59,7 +59,7 @@ module EX_stage
 	add add(
 		.a(next_pc),
 		.b(imm),
-		.soma(out_add),
+		.soma(out_add)
 	);
 	
 endmodule
