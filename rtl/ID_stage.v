@@ -92,7 +92,7 @@ wire reg_write_enable; // Habilita a escrita no banco de registradores
 
 always @ (posedge clk) begin
     instruction_reg <= instruction;
-    out_next_pc <= pc+`PC_WIDTH'b1;
+    out_next_pc <= pc+1;
 end
 
 assign ir_opcode = instruction_reg[31:26];
