@@ -209,7 +209,7 @@ module IF_ID_integration_tb ();
                 util.assert_equals(generated_instructions[expected_pc], IF_ID_instruction);
                 $display("Testando pc %d...", expected_pc);
                 util.assert_equals(expected_pc, IF_ID_pc);
-                if (HDU_stall_pipeline) inst_counter = inst_counter-1;
+                if (HDU_stall_pipeline) i = i-1;//inst_counter = inst_counter-1;
                 else if(ID_IF_is_jump && ID_IF_jump_addr != i) i = ID_IF_jump_addr-1;
             end
         end
