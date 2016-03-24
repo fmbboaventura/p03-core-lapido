@@ -23,14 +23,16 @@ module IF_stage (
     input stall_pipeline,
 
     // Para o estagio ID
-    output [`INSTRUCTION_WIDTH-1:0] instruction,
+    output reg [`INSTRUCTION_WIDTH-1:0] instruction,
     output reg [`PC_WIDTH - 1:0] pc
 );
+
+wire [`INSTRUCTION_WIDTH-1:0] imem_instruction;
 
 instruction_mem imem(
     .rst(rst),
     .addr(pc),
-    .instruction(instruction)
+    .instruction(imem_instruction)
 );
 
 always @ (posedge clk or posedge rst) begin
@@ -43,6 +45,11 @@ always @ (posedge clk or posedge rst) begin
             else begin pc = pc + `PC_WIDTH'b1; end
         end
     end
+end
+
+always @ (posedge clk) begin
+    if (branch_taken || is_jump) instruction <= `NOP_INSTRUCTION;
+    else instruction <= imem_instruction;
 end
 
 endmodule
