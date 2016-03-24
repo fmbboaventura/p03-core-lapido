@@ -12,6 +12,9 @@ module ID_stage
     input clk,
     input rst,
 
+    // Do estagio MEM. stall no branch_taken
+    input branch_taken,
+
     // Do estagio IF
     input [`INSTRUCTION_WIDTH-1:0] instruction,
     input [`PC_WIDTH-1:0] pc,
@@ -63,12 +66,13 @@ module ID_stage
     output reg [`GPR_WIDTH-1:0] out_data_rt
 );
 
-/**** Registrador de instrucao e campos da instrucao ****/
-reg [`INSTRUCTION_WIDTH-1:0] instruction_reg;
+/**** campos da instrucao ****/
 wire	[5:0]		ir_opcode;
 wire	[5:0]		ir_funct;
 
 /***************** Sinais de Controle *******************/
+wire insert_bubble;
+
 // Sinais para o estagio ID (este estagio)
 wire sel_j_jr;         // Seleciona a fonte do endereco do salto incondicional
 
@@ -90,19 +94,25 @@ wire sel_jflag_branch; // seletor do tipo do branch
 wire [1:0] wb_res_mux; // Seleciona o dado que sera escrito no registrador
 wire reg_write_enable; // Habilita a escrita no banco de registradores
 
-always @ (posedge clk) begin
-    instruction_reg <= instruction;
-    out_next_pc <= pc+1;
+// Propaga o pc + 1
+always @ (posedge clk or posedge rst) begin
+    if (rst) out_next_pc = `PC_WIDTH'b0;
+    else out_next_pc <= pc + `PC_WIDTH'b1;
 end
 
-assign ir_opcode = instruction_reg[31:26];
-assign ir_funct  = instruction_reg[5:0];
+assign ir_opcode = instruction[31:26];
+assign ir_funct  = instruction[5:0];
+
+// Saida do controle eh zero se tem bolha ou se precisa
+// flushar por causa de um branch tomado, ou se o rst
+// for 1
+assign insert_bubble = (stall_pipeline || branch_taken || rst);
 
 control_unit ctrl
 (
     .opcode(ir_opcode),
     .funct(ir_funct),
-    .stall_pipeline(stall_pipeline),
+    .stall_pipeline(insert_bubble),
     .is_jump(is_jump), // Para o estagio if
     .sel_j_jr(sel_j_jr),
     .alu_funct(alu_funct),
@@ -120,39 +130,53 @@ control_unit ctrl
 );
 
 // Para o banco de registradores
-assign rs = (instruction_reg[25:21] < `REGISTER_FILE_SIZE)?
-        instruction_reg[25:21] : `GRP_ADDR_WIDTH'hF;
-assign rt = (instruction_reg[20:16] < `REGISTER_FILE_SIZE)?
-        instruction_reg[20:16] : `GRP_ADDR_WIDTH'hF;
+assign rs = (instruction[25:21] < `REGISTER_FILE_SIZE)?
+        instruction[25:21] : `GRP_ADDR_WIDTH'hF;
+assign rt = (instruction[20:16] < `REGISTER_FILE_SIZE)?
+        instruction[20:16] : `GRP_ADDR_WIDTH'hF;
 
 // Para o estagio IF
-assign jump_addr = (sel_j_jr)? {6'b000000, instruction_reg[25:0]} : data_rs;// Para o estagio IF
+assign jump_addr = (sel_j_jr)? {6'b000000, instruction[25:0]} : data_rs;// Para o estagio IF
 
-always @ (posedge clk) begin
-    out_data_rs <= data_rs;
-    out_data_rt <= data_rt;
-end
-
+// Propagando dados do banco de registradores
 always @ (posedge clk or posedge rst) begin
     if (rst) begin
-        //pipeline_reg_out <= 0;
+        out_data_rs <= `GPR_WIDTH'b0;
+        out_data_rt <= `GPR_WIDTH'b0;
     end else begin
-        out_is_load <= is_load;
-        out_wb_res_mux <= wb_res_mux;
-        out_reg_write_enable <= reg_write_enable;
-        out_mem_write_enable <= mem_write_enable;
-        out_sel_beq_bne <= sel_beq_bne;
-        out_fl_write_enable <= fl_write_enable;
-        out_sel_jt_jf <= sel_jt_jf;
-        out_is_branch <= is_branch;
-        out_sel_jflag_branch <= sel_jflag_branch;
-        out_alu_funct <= alu_funct;
-        out_alu_src_mux <= alu_src_mux;
-        out_reg_dst_mux <= reg_dst_mux;
-        out_rd <= instruction_reg[15:11];
-        out_rs <= instruction_reg[25:21];
-        out_rt <= instruction_reg[20:16];
-        out_imm <= {{16{instruction_reg[15]}}, instruction_reg[15:0]};
+        out_data_rs <= data_rs;
+        out_data_rt <= data_rt;
+    end
+end
+
+// Propagando sinais de controle
+always @ (posedge clk) begin
+    out_is_load <= is_load;
+    out_wb_res_mux <= wb_res_mux;
+    out_reg_write_enable <= reg_write_enable;
+    out_mem_write_enable <= mem_write_enable;
+    out_sel_beq_bne <= sel_beq_bne;
+    out_fl_write_enable <= fl_write_enable;
+    out_sel_jt_jf <= sel_jt_jf;
+    out_is_branch <= is_branch;
+    out_sel_jflag_branch <= sel_jflag_branch;
+    out_alu_funct <= alu_funct;
+    out_alu_src_mux <= alu_src_mux;
+    out_reg_dst_mux <= reg_dst_mux;
+end
+
+// Propagando campos da instrucao e dados imediatos
+always @ (posedge clk or posedge rst) begin
+    if (rst) begin
+        out_rd  <= `GRP_ADDR_WIDTH'b0;
+        out_rs  <= `GRP_ADDR_WIDTH'b0;
+        out_rt  <= `GRP_ADDR_WIDTH'b0;
+        out_imm <= `GPR_WIDTH'b0;
+    end else begin
+        out_rd  <= instruction[15:11];
+        out_rs  <= instruction[25:21];
+        out_rt  <= instruction[20:16];
+        out_imm <= {{16{instruction[15]}}, instruction[15:0]};
     end
 end
 
