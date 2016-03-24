@@ -40,9 +40,9 @@ always @ (posedge clk or posedge rst) begin
        pc <= `PC_WIDTH'b0;
     end else begin
         if(!stall_pipeline) begin
-            if(is_jump) begin pc = jump_addr; end
-            else if (branch_taken) begin pc = branch_addr; end
-            else begin pc = pc + `PC_WIDTH'b1; end
+            if(is_jump) begin pc <= jump_addr; end
+            else if (branch_taken) begin pc <= branch_addr; end
+            else begin pc <= pc + `PC_WIDTH'b1; end
         end
     end
 end
