@@ -23,7 +23,7 @@ module IF_stage (
     input stall_pipeline,
 
     // Para o estagio ID
-    output reg [`INSTRUCTION_WIDTH-1:0] instruction,
+    output [`INSTRUCTION_WIDTH-1:0] instruction,
     output reg [`PC_WIDTH - 1:0] pc
 );
 
@@ -47,9 +47,12 @@ always @ (posedge clk or posedge rst) begin
     end
 end
 
-always @ (posedge clk) begin
-    if (branch_taken || is_jump) instruction <= `NOP_INSTRUCTION;
-    else instruction <= imem_instruction;
-end
+// sincronizar no proximo estagio
+assign instruction = (branch_taken || is_jump || rst) ? `NOP_INSTRUCTION : imem_instruction;
+
+// always @ (posedge clk or rst) begin
+//     if (branch_taken || is_jump || rst) instruction <= `NOP_INSTRUCTION;
+//     else instruction <= imem_instruction;
+// end
 
 endmodule

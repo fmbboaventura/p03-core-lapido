@@ -67,6 +67,7 @@ module ID_stage
 );
 
 /**** campos da instrucao ****/
+reg [`INSTRUCTION_WIDTH-1:0] instruction_reg;
 wire	[5:0]		ir_opcode;
 wire	[5:0]		ir_funct;
 
@@ -96,12 +97,13 @@ wire reg_write_enable; // Habilita a escrita no banco de registradores
 
 // Propaga o pc + 1
 always @ (posedge clk or posedge rst) begin
+    instruction_reg <= instruction;
     if (rst) out_next_pc = `PC_WIDTH'b0;
     else out_next_pc <= pc + `PC_WIDTH'b1;
 end
 
-assign ir_opcode = instruction[31:26];
-assign ir_funct  = instruction[5:0];
+assign ir_opcode = instruction_reg[31:26];
+assign ir_funct  = instruction_reg[5:0];
 
 // Saida do controle eh zero se tem bolha ou se precisa
 // flushar por causa de um branch tomado, ou se o rst
@@ -130,13 +132,13 @@ control_unit ctrl
 );
 
 // Para o banco de registradores
-assign rs = (instruction[25:21] < `REGISTER_FILE_SIZE)?
-        instruction[25:21] : `GRP_ADDR_WIDTH'hF;
-assign rt = (instruction[20:16] < `REGISTER_FILE_SIZE)?
-        instruction[20:16] : `GRP_ADDR_WIDTH'hF;
+assign rs = (instruction_reg[25:21] < `REGISTER_FILE_SIZE)?
+        instruction_reg[25:21] : `GRP_ADDR_WIDTH'hF;
+assign rt = (instruction_reg[20:16] < `REGISTER_FILE_SIZE)?
+        instruction_reg[20:16] : `GRP_ADDR_WIDTH'hF;
 
 // Para o estagio IF
-assign jump_addr = (sel_j_jr)? {6'b000000, instruction[25:0]} : data_rs;// Para o estagio IF
+assign jump_addr = (sel_j_jr)? {6'b000000, instruction_reg[25:0]} : data_rs;// Para o estagio IF
 
 // Propagando dados do banco de registradores
 always @ (posedge clk or posedge rst) begin
@@ -173,10 +175,10 @@ always @ (posedge clk or posedge rst) begin
         out_rt  <= `GRP_ADDR_WIDTH'b0;
         out_imm <= `GPR_WIDTH'b0;
     end else begin
-        out_rd  <= instruction[15:11];
-        out_rs  <= instruction[25:21];
-        out_rt  <= instruction[20:16];
-        out_imm <= {{16{instruction[15]}}, instruction[15:0]};
+        out_rd  <= instruction_reg[15:11];
+        out_rs  <= instruction_reg[25:21];
+        out_rt  <= instruction_reg[20:16];
+        out_imm <= {{16{instruction_reg[15]}}, instruction_reg[15:0]};
     end
 end
 
