@@ -12,7 +12,7 @@ module EX_stage
 	input clk,// Clock
 	input rst,// Reset
 
-	// Sinais para o estagio EX
+// Sinais para o estagio EX
 input [5:0] alu_funct,  // Seleciona a operacao da alu
 input alu_src_mux,      // Seleciona o segundo operando da alu
 input [1:0] reg_dst_mux,// Seleciona o endereco do registrador de escrita
@@ -112,5 +112,9 @@ always @(posedge clk) begin
 	out_imm <= imm; // imediato para salvar no banco de registradores
 	out_alu_res[31:0] <= alu_res[31:0]; // Resultado da alu para salvar no banco de registradores
 end
+
+//Entradas da alu
+assign op1 = data_rs; //Primeiro operando da Alu
+assign op2 = (alu_src_mux == `ALU_SRC_REG) ? data_rt : imm; //Segundo operando da Alu
 
 endmodule
