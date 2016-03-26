@@ -177,9 +177,9 @@ module IF_ID_integration_tb ();
             expected_pc = 0;
 
             // Salva no registrador 0, o endereco alvo do jr
-            dut_reg.registers[0] = inst_counter-1;
+            dut_reg.registers[0] = 15;//inst_counter-1;
             // Salva no registrador 1, o endereco alvo do jal
-            dut_reg.registers[1] = inst_counter;
+            dut_reg.registers[1] = 16;//inst_counter;
             // // Salva em cada registrador o seu numero
             dut_reg.registers[2] = 2;
             dut_reg.registers[3] = 3;
@@ -214,8 +214,9 @@ module IF_ID_integration_tb ();
     // end
 
     always @ (posedge clk) begin
-        if (expected_pc == ID_IF_jump_addr) begin
-            $display("Salto para o mesmo endereco encontrado.");
+        if (IF_ID_instruction == `INSTRUCTION_WIDTH'd8) begin
+            $display("%b", IF_ID_instruction);
+            $display("Salto para o mesmo endereco encontrado. %b", ID_IF_jump_addr);
             $display("Tempo: %t", $time);
             $display("Parando...");
             $stop;
@@ -368,6 +369,18 @@ module IF_ID_integration_tb ();
             inst_in = $fopen("data/inst_in.txt", "w");
 
             // Cria um arquivo com instrucoes que sera lido pela memoria
+
+            // um jal (usando r1) para a instrução 16
+            // O registrador e inicializado no set_up
+            $display("Gerando instrucao JAL...");
+            inst = 32'b0;
+            inst[31:26] = `OP_JAL;
+            inst[25:21] = 5'b00001;
+            $fwrite(inst_in,"%08H\n", inst);
+            generated_instructions[inst_counter] = inst;
+            inst_counter = inst_counter + 1;
+            $display("Instrucao gerada: %b", inst);
+
             $display("Gerando instrucoes do tipo R (Exceto JR)...");
             for (i = 0; i < 14; i = i+1) begin
                 inst = 32'b0;
@@ -395,6 +408,17 @@ module IF_ID_integration_tb ();
                 inst_counter = inst_counter + 1;
                 $display("Instrucao gerada: %b", inst);
             end
+
+            // um jr (usando registrador 0) para a instrucao 15
+            // O registrador eh inicializado no set_up
+            $display("Gerando instrucao JR...");
+            inst = 32'b0;
+            inst[31:26] = `OP_R_TYPE;
+            inst[5:0]   = `FN_JR;
+            $fwrite(inst_in,"%08H\n", inst);
+            generated_instructions[inst_counter] = inst;
+            inst_counter = inst_counter + 1;
+            $display("Instrucao gerada: %b", inst);
 
             $display("Gerando instrucoes do tipo I...");
             for (i = 3; i < 16; i = i+1) begin
@@ -430,35 +454,16 @@ module IF_ID_integration_tb ();
                 $display("Instrucao gerada: %b", inst);
             end
 
-            $display("Gerando instrucoes de salto incondicional (J/JR/JAL)...");
-            // um jal (usando r1) para duas instrucoes a frente
-            inst = 32'b0;
-            inst[31:26] = `OP_JAL;
-            inst[25:21] = 5'b00001;
-            //inst[25:0]  = (inst_counter+2)[25:0];
-            $fwrite(inst_in,"%08H\n", inst);
-            generated_instructions[inst_counter] = inst;
-            inst_counter = inst_counter + 1;
-            $display("Instrucao gerada: %b", inst);
-
-            // um jump para o mesmo endereco
+            // um jump para a instrucao 1
+            $display("Gerando instrucao J...");
             inst = 32'b0;
             inst[31:26] = `OP_J_TYPE;
-            inst[25:0]  = inst_counter[25:0];
+            inst[25:0]  = 26'b1;
             $fwrite(inst_in,"%08H\n", inst);
             generated_instructions[inst_counter] = inst;
             inst_counter = inst_counter + 1;
             $display("Instrucao gerada: %b", inst);
 
-            // um jr (usando registrador 0) para a instrucao anterior
-            inst = 32'b0;
-            inst[31:26] = `OP_R_TYPE;
-            inst[5:0]   = `FN_JR;
-            //inst[25:0]  = (inst_counter-1);
-            $fwrite(inst_in,"%08H\n", inst);
-            generated_instructions[inst_counter] = inst;
-            //inst_counter = inst_counter + 1;
-            $display("Instrucao gerada: %b", inst);
             $display("Foram geradas %d Instrucoes", inst_counter);
             $fclose(inst_in);
         end
