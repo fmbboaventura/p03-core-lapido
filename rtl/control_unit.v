@@ -41,7 +41,7 @@ module control_unit
     output reg reg_write_enable // Habilita a escrita no banco de registradores
 );
 
-always @ ( opcode ) begin
+always @ ( * ) begin
     // Desabilita branches, saltos e escrita em blocos sequenciais
     is_load = 1'b0;
     is_jump = 1'b0;
