@@ -11,6 +11,7 @@ module EX_stage
 (
 	input clk,// Clock
 	input rst,// Reset
+	input branch_taken, // Do estagio MEM. Insere bolha se o branch foi tomado
 
 	// Sinais para o estagio EX
 	input [5:0] alu_funct,  // Seleciona a operacao da alu
@@ -91,41 +92,67 @@ alu alu(
 	.flags(flag_out)
 );
 
-// Substitui o mux
-always @ (posedge clk) begin
-	case (reg_dst_mux)
-		`REG_DST_RD: out_reg_dest <= rd;
-		`REG_DST_RT: out_reg_dest <= rt;
-		`REG_DST_15: out_reg_dest <= `GRP_ADDR_WIDTH'hF;
-	endcase
+// Selecionando o endereco do registrador de destino
+always @ (posedge clk or posedge rst) begin
+	if (rst || branch_taken) begin
+		out_reg_dest <= `GRP_ADDR_WIDTH'b0;
+	end else begin
+		case (reg_dst_mux)
+			`REG_DST_RD: out_reg_dest <= rd;
+			`REG_DST_RT: out_reg_dest <= rt;
+			`REG_DST_15: out_reg_dest <= `GRP_ADDR_WIDTH'hF;
+		endcase
+	end
 end
 
 // Propagando sinais para o campo MEM do registrador de estagios
-always @(posedge clk) begin
-	out_mem_write_enable <= mem_write_enable;
-	out_sel_beq_bne <= sel_beq_bne;
-	out_sel_jt_jf <= sel_jt_jf;
-	out_is_branch <= is_branch;
-	out_sel_jflag_branch <= sel_jflag_branch;
-	out_branch_addr <= next_pc + imm; // Substitui o somador
+// Propagando dados relativos ao estagio MEM
+always @(posedge clk or posedge rst) begin
+	if (rst || branch_taken) begin
+		out_mem_write_enable <= 1'b0;
+		out_sel_beq_bne <= 1'b0;
+		out_sel_jt_jf <= 1'b0;
+		out_is_branch <= 1'b0;
+		out_sel_jflag_branch <= 1'b0;
+		out_branch_addr <= `PC_WIDTH'b0;
+	end else begin
+		out_mem_write_enable <= mem_write_enable;
+		out_sel_beq_bne <= sel_beq_bne;
+		out_sel_jt_jf <= sel_jt_jf;
+		out_is_branch <= is_branch;
+		out_sel_jflag_branch <= sel_jflag_branch;
+		out_branch_addr <= next_pc + imm; // Substitui o somador
+	end
 end
 
 // Escrevendo no registrador de flags
-always @ (posedge clk) begin
-	if (fl_write_enable) begin
-		out_flags[5] <= alu_res[32];
-		out_flags[4:0] <= flag_out[4:0];
+always @ (posedge clk or posedge rst) begin
+	if (rst || branch_taken) begin
+		out_flags <= 6'b0;
+	end else begin
+		if (fl_write_enable) begin
+			out_flags[5] <= alu_res[32];
+			out_flags[4:0] <= flag_out[4:0];
+		end
 	end
 end
 
 // Propagando sinais para o campo WB do registrador de estagios
 // Propagando dados relativos ao WB
-always @(posedge clk) begin
-	out_wb_res_mux <= wb_res_mux;
-	out_reg_write_enable <= out_reg_write_enable;
-	out_next_pc <= next_pc; // pc+1 para salvar no banco de registradores
-	out_imm <= imm; // imediato para salvar no banco de registradores
-	out_alu_res[31:0] <= alu_res[31:0]; // Resultado da alu para salvar no banco de registradores
+always @(posedge clk or posedge rst) begin
+	if (rst || branch_taken) begin
+		out_wb_res_mux <= 2'b0;
+		out_reg_write_enable <= 1'b0;
+		out_next_pc <= `PC_WIDTH'b0; // pc+1 para salvar no banco de registradores
+		out_imm <= `GPR_WIDTH'b0; // imediato para salvar no banco de registradores
+		out_alu_res <= `GPR_WIDTH'b0; // Resultado da alu para salvar no banco de registradores
+	end else begin
+		out_wb_res_mux <= wb_res_mux; // seleciona o que vai gravar no banco de registradores
+		out_reg_write_enable <= out_reg_write_enable; // Enable de escrita do register file
+		out_next_pc <= next_pc; // pc+1 para salvar no banco de registradores
+		out_imm <= imm; // imediato para salvar no banco de registradores
+		out_alu_res[31:0] <= alu_res[31:0]; // Resultado da alu para salvar no banco de registradores
+	end
 end
 
 endmodule
