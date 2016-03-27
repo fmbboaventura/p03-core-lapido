@@ -12,33 +12,41 @@ module EX_stage
 	input clk,// Clock
 	input rst,// Reset
 
-// Sinais para o estagio EX
-input [5:0] alu_funct,  // Seleciona a operacao da alu
-input alu_src_mux,      // Seleciona o segundo operando da alu
-input [1:0] reg_dst_mux,// Seleciona o endereco do registrador de escrita
-input fl_write_enable,  // Habilita a escrita no registrador de flags
+	// Sinais para o estagio EX
+	input [5:0] alu_funct,  // Seleciona a operacao da alu
+	input alu_src_mux,      // Seleciona o segundo operando da alu
+	input [1:0] reg_dst_mux,// Seleciona o endereco do registrador de escrita
+	input fl_write_enable,  // Habilita a escrita no registrador de flags
 
-// Sinais para o estagio MEM
-input mem_write_enable, // Habilita a escrita na memoria
-input sel_beq_bne,      // Seleciona entre beq e bne
-input sel_jt_jf,        // Seleciona entre jt e jf na fmu
-input is_branch,        // A instrucao eh um desvio pc-relative
+	// Sinais para o estagio MEM
+	input mem_write_enable, // Habilita a escrita na memoria
+	input sel_beq_bne,      // Seleciona entre beq e bne
+	input sel_jt_jf,        // Seleciona entre jt e jf na fmu
+	input is_branch,        // A instrucao eh um desvio pc-relative
 
-input sel_jflag_branch, // seletor do tipo do branch
+	input sel_jflag_branch, // seletor do tipo do branch
 
-// Sinais para o estagio WB
-input [1:0] wb_res_mux, // Seleciona o dado que sera escrito no registrador
-input reg_write_enable, // Habilita a escrita no banco de registradores
+	// Sinais para o estagio WB
+	input [1:0] wb_res_mux, // Seleciona o dado que sera escrito no registrador
+	input reg_write_enable, // Habilita a escrita no banco de registradores
 
 	//Campos das intrucoes
 	input [`GRP_ADDR_WIDTH-1:0] rs,
 	input [`GRP_ADDR_WIDTH-1:0] rt,
 	input [`GRP_ADDR_WIDTH-1:0] rd,
 
-	//
+	// Possiveis operando da alu
 	input [`GPR_WIDTH-1:0] data_rs,
 	input [`GPR_WIDTH-1:0] data_rt,
 	input [`GPR_WIDTH-1:0] imm,
+	input [`GPR_WIDTH-1:0] EX_MEM_data,
+	input [`GPR_WIDTH-1:0] MEM_WB_data,
+
+	// Do fowarding_unit
+	input [1:0] fowardA,
+	input [1:0] fowardB,
+
+	// pc+1 para propagar
 	input [`PC_WIDTH-1:0] next_pc,
 
     // Sinais para o estagio MEM
@@ -63,10 +71,17 @@ input reg_write_enable, // Habilita a escrita no banco de registradores
 	output reg [`GRP_ADDR_WIDTH-1:0] out_reg_dest
 );
 
-wire [31:0] op1;
-wire [31:0] op2;
+wire [`GPR_WIDTH-1:0] op1;
+wire [`GPR_WIDTH-1:0] op2;
 wire [32:0] alu_res;
 wire [4:0] flag_out;
+
+//Entradas da alu
+assign op1 = (fowardA == `FOWARD_EX) ? EX_MEM_data :
+			 (fowardA == `FOWARD_MEM) ? MEM_WB_data : data_rs;
+assign op2 = (alu_src_mux == `ALU_SRC_IMM) ? imm :
+			 (fowardB == `FOWARD_EX) ? EX_MEM_data :
+			 (fowardB == `FOWARD_MEM) ? MEM_WB_data : data_rt;
 
 alu alu(
 	.op1(op1),
@@ -112,9 +127,5 @@ always @(posedge clk) begin
 	out_imm <= imm; // imediato para salvar no banco de registradores
 	out_alu_res[31:0] <= alu_res[31:0]; // Resultado da alu para salvar no banco de registradores
 end
-
-//Entradas da alu
-assign op1 = data_rs; //Primeiro operando da Alu
-assign op2 = (alu_src_mux == `ALU_SRC_REG) ? data_rt : imm; //Segundo operando da Alu
 
 endmodule
