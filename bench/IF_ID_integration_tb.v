@@ -47,8 +47,6 @@ module IF_ID_integration_tb ();
     wire [4:0] out_rs;
     wire [`GPR_WIDTH-1:0] out_imm;
     wire [`PC_WIDTH-1:0] out_next_pc;
-    wire [`GPR_WIDTH-1:0] out_data_rs;
-    wire [`GPR_WIDTH-1:0] out_data_rt;
 
     // Entradas para o hazard_detection_unit
     wire [4:0] ID_HDU_out_rt;
@@ -122,9 +120,7 @@ module IF_ID_integration_tb ();
         .out_rs(out_rs),
         .out_rt(ID_HDU_out_rt),
         .out_imm(out_imm),
-        .out_next_pc(out_next_pc),
-        .out_data_rs(out_data_rs),
-        .out_data_rt(out_data_rt)
+        .out_next_pc(out_next_pc)
     );
 
     tb_util util();
@@ -144,12 +140,14 @@ module IF_ID_integration_tb ();
     reg [31:0] field;
     reg enable_test_IF;
     reg enable_test_ID;
+    reg was_a_jump; // se a ultima instrucao decodificada foi um pulo
 
     // Blocos initial, aways e assigns executam paralelamente
     initial begin
         clk = 0;
         rst = 0;
         branch_taken = 0; // TODO: testar branch
+        was_a_jump = 0;
         set_up;
     end
 
@@ -206,12 +204,9 @@ module IF_ID_integration_tb ();
         if (enable_test_IF) test_instruction_fetch;
     end
 
-    // always @ (posedge clk) begin
-    //     if (enable_test_ID) begin
-    //         $display("ID %t", $time);
-    //         $stop;
-    //     end
-    // end
+    always @ (posedge clk) begin
+        if (enable_test_ID) test_instruction_decode;
+    end
 
     always @ (posedge clk) begin
         if (IF_ID_instruction == `INSTRUCTION_WIDTH'd8) begin
@@ -245,75 +240,84 @@ module IF_ID_integration_tb ();
         end
     endtask
 
-    // task test_instruction_decode;
-    //     reg [5:0] ID_opcode;
-    //     reg [5:0] ID_funct;
-    //     reg [4:0] ID_rs;
-    //     reg [4:0] ID_rt;
-    //     reg [4:0] ID_rd;
-    //     reg [31:0] ID_imm;
-    //     reg [31:0] ID_jump_addr;
-    //     begin
-    //         $display("------------------------------");
-    //         $display("test_instruction_decode:");
-    //         $display("------------------------------");
-    //         $display("Testando Instrucao no ID %d...", dut_ID.instruction_reg);
-    //         util.assert_equals(generated_instructions[expected_pc-1], dut_ID.instruction_reg);
-    //
-    //         ID_opcode = dut_ID.instruction_reg[31:26];
-    //         ID_funct = dut_ID.instruction_reg[5:0];
-    //         ID_rs = dut_ID.instruction_reg[25:21];
-    //         ID_rt = dut_ID.instruction_reg[20:16];
-    //         ID_rd = dut_ID.instruction_reg[15:11];
-    //         ID_imm = {{16{dut_ID.instruction_reg[15]}}, dut_ID.instruction_reg[15:0]};
-    //         ID_jump_addr = {6'b000000, dut_ID.instruction_reg[25:0]};
-    //
-    //         $display("ID_stage: Testando campo rs %d...", ID_rs);
-    //         util.assert_equals(ID_rs, out_rs);
-    //         util.assert_equals(ID_rs, ID_REG_rs);
-    //
-    //         $display("ID_stage: Testando data_rs %d...", ID_rs);
-    //         if(ID_rs == 0 || ID_rs == 1) begin
-    //             util.assert_equals(inst_counter-1, REG_ID_data_rs);
-    //             util.assert_equals(inst_counter-1, out_data_rs);
-    //         end
-    //         else begin
-    //             util.assert_equals(ID_rs, REG_ID_data_rs);
-    //             util.assert_equals(ID_rs, out_data_rs);
-    //         end
-    //
-    //         $display("ID_stage: Testando campo rt %d...", ID_rt);
-    //         util.assert_equals(ID_rt, ID_HDU_out_rt);
-    //         util.assert_equals(ID_rt, ID_REG_rt);
-    //
-    //         $display("ID_stage: Testando data_rt %d...", ID_rt);
-    //         if(ID_rt == 0 || ID_rt == 1) begin
-    //             util.assert_equals(inst_counter-1, REG_ID_data_rt);
-    //             util.assert_equals(inst_counter-1, out_data_rt);
-    //         end
-    //         else begin
-    //             util.assert_equals(ID_rt, REG_ID_data_rt);
-    //             util.assert_equals(ID_rt, out_data_rt);
-    //         end
-    //
-    //         $display("ID_stage: Testando campo rd %d...", out_rd);
-    //         util.assert_equals(ID_rd, out_rd);
-    //
-    //         $display("ID_stage: Testando campo imediato...", out_imm);
-    //         util.assert_equals(ID_imm, out_imm);
-    //
-    //         $display("ID_stage: Testando is_jump...");
-    //         util.assert_equals((ID_opcode == `OP_JAL || ID_opcode == `OP_J_TYPE) ||
-    //             (ID_opcode == `OP_R_TYPE && ID_funct == `FN_JR), ID_IF_is_jump);
-    //
-    //         if(ID_IF_is_jump) begin
-    //             $display("ID_stage: Testando jump_addr %b %d...", dut_ID.sel_j_jr, ID_IF_jump_addr);
-    //             if(dut_ID.sel_j_jr) begin
-    //                 util.assert_equals(ID_jump_addr, ID_IF_jump_addr);
-    //             end else util.assert_equals((inst_counter-1), ID_IF_jump_addr);
-    //         end
-    //     end
-    // endtask
+    task test_instruction_decode;
+        reg [5:0] ID_opcode;
+        reg [5:0] ID_funct;
+        reg [4:0] ID_rs;
+        reg [4:0] ID_rt;
+        reg [4:0] ID_rd;
+        reg [31:0] ID_imm;
+        reg [31:0] ID_jump_addr;
+        reg [31:0] expected_instruction;
+        begin
+            $display("------------------------------");
+            $display("test_instruction_decode: %t", $time);
+            $display("------------------------------");
+            $display("Testando Instrucao no ID %d...", dut_ID.instruction_reg);
+            if (was_a_jump)
+                expected_instruction = `NOP_INSTRUCTION;
+            else
+                expected_instruction = generated_instructions[IF_ID_pc-1];
+
+            util.assert_equals(expected_instruction, dut_ID.instruction_reg);
+
+            ID_opcode = expected_instruction[31:26];
+            ID_funct = expected_instruction[5:0];
+            ID_rs = expected_instruction[25:21];
+            ID_rt = expected_instruction[20:16];
+            ID_rd = expected_instruction[15:11];
+            ID_imm = {{16{expected_instruction[15]}}, expected_instruction[15:0]};
+            ID_jump_addr = {6'b000000, expected_instruction[25:0]};
+
+            $display("ID_stage: Testando campo rs %d...", ID_rs);
+            util.assert_equals(ID_rs, out_rs);
+            util.assert_equals(ID_rs, ID_REG_rs);
+
+            $display("ID_stage: Testando saida do banco de registradores data_rs %d...", ID_rs);
+            if(ID_rs == 0) begin
+                util.assert_equals(15, REG_ID_data_rs);
+            end else if(ID_rs == 1) begin
+                util.assert_equals(16, REG_ID_data_rs);
+            end else begin
+                util.assert_equals(ID_rs, REG_ID_data_rs);
+            end
+
+            $display("ID_stage: Testando campo rt %d...", ID_rt);
+            util.assert_equals(ID_rt, ID_HDU_out_rt);
+            util.assert_equals(ID_rt, ID_REG_rt);
+
+            $display("ID_stage: Testando Testando saida do banco de registradores data_rt %d...", ID_rt);
+            if(ID_rt == 0) begin
+                util.assert_equals(15, REG_ID_data_rt);
+            end else if(ID_rt == 1) begin
+                util.assert_equals(16, REG_ID_data_rt);
+            end else begin
+                util.assert_equals(ID_rt, REG_ID_data_rt);
+            end
+
+            $display("ID_stage: Testando campo rd %d...", out_rd);
+            util.assert_equals(ID_rd, out_rd);
+
+            $display("ID_stage: Testando campo imediato...", out_imm);
+            util.assert_equals(ID_imm, out_imm);
+
+            $display("ID_stage: Testando is_jump...");
+            util.assert_equals((ID_opcode == `OP_JAL || ID_opcode == `OP_J_TYPE) ||
+                (ID_opcode == `OP_R_TYPE && ID_funct == `FN_JR), ID_IF_is_jump);
+            was_a_jump = ID_IF_is_jump;
+
+            if(ID_IF_is_jump) begin
+                $display("ID_stage: Testando jump_addr %b %d...", dut_ID.sel_j_jr, ID_IF_jump_addr);
+                if(dut_ID.sel_j_jr) begin
+                    util.assert_equals(ID_jump_addr, ID_IF_jump_addr);
+                end else if (ID_rs == 0) begin
+                    util.assert_equals(15, ID_IF_jump_addr);
+                end else if (ID_rs == 1) begin
+                    util.assert_equals(16, ID_IF_jump_addr);
+                end
+            end
+        end
+    endtask
 
     task test_reset;
         begin
