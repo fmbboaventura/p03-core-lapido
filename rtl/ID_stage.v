@@ -59,11 +59,7 @@ module ID_stage
     output reg [`GPR_WIDTH-1:0] out_imm,
 
     // pc + 1 para o proximo estagio
-    output reg [`PC_WIDTH-1:0] out_next_pc,
-
-    // Saida do banco de registradores
-    output reg [`GPR_WIDTH-1:0] out_data_rs,
-    output reg [`GPR_WIDTH-1:0] out_data_rt
+    output reg [`PC_WIDTH-1:0] out_next_pc
 );
 
 /**** campos da instrucao ****/
@@ -140,17 +136,6 @@ assign rt = (instruction_reg[20:16] < `REGISTER_FILE_SIZE)?
 // Para o estagio IF
 assign jump_addr = (sel_j_jr)? {6'b000000, instruction_reg[25:0]} : data_rs;// Para o estagio IF
 
-// Propagando dados do banco de registradores
-always @ (posedge clk or posedge rst) begin
-    if (rst) begin
-        out_data_rs <= `GPR_WIDTH'b0;
-        out_data_rt <= `GPR_WIDTH'b0;
-    end else begin
-        out_data_rs <= data_rs;
-        out_data_rt <= data_rt;
-    end
-end
-
 // Propagando sinais de controle
 always @ (posedge clk) begin
     out_is_load <= is_load;
@@ -175,10 +160,10 @@ always @ (posedge clk or posedge rst) begin
         out_rt  <= `GRP_ADDR_WIDTH'b0;
         out_imm <= `GPR_WIDTH'b0;
     end else begin
-        out_rd  <= instruction_reg[15:11];
-        out_rs  <= instruction_reg[25:21];
-        out_rt  <= instruction_reg[20:16];
-        out_imm <= {{16{instruction_reg[15]}}, instruction_reg[15:0]};
+        out_rd  <= instruction[15:11]; // ok usar a entrada porque faz no posedge
+        out_rs  <= instruction[25:21];
+        out_rt  <= instruction[20:16];
+        out_imm <= {{16{instruction[15]}}, instruction[15:0]};
     end
 end
 
