@@ -316,6 +316,140 @@ module IF_ID_integration_tb ();
                     util.assert_equals(16, ID_IF_jump_addr);
                 end
             end
+
+            //test_control_output(ID_opcode, ID_funct);
+        end
+    endtask
+
+    task test_control_output;
+        input [5:0] ID_opcode;
+        input [5:0] ID_funct;
+
+        // Sinais para o estagio EX
+        reg [5:0] exp_alu_funct;  // Seleciona a operacao da alu
+        reg exp_alu_src_mux;      // Seleciona o segundo operando da alu
+        reg [1:0] exp_reg_dst_mux;// Seleciona o endereco do registrador de escrita
+        reg exp_is_load;          // A instrucao eh um load
+        reg exp_fl_write_enable;  // Habilita a escrita no registrador de flags
+
+        // Sinais para o estagio MEM
+        reg exp_mem_write_enable; // Habilita a escrita na memoria
+        reg exp_sel_beq_bne;      // Seleciona entre beq e bne
+        reg exp_sel_jt_jf;        // Seleciona entre jt e jf na fmu
+        reg exp_is_branch;        // A instrucao eh um desvio pc-relative
+        reg exp_sel_jflag_branch; // seletor do tipo do branch
+
+        // Sinais para o estagio WB
+        reg [1:0] exp_wb_res_mux; // Seleciona o dado que sera escrito no registrador
+        reg exp_reg_write_enable; // Habilita a escrita no banco de registradores
+        begin
+            $display("------------------------------");
+            $display("test_control_output %t:", $time);
+            $display("------------------------------");
+
+            // gerando valores esperados
+            exp_alu_funct = (ID_opcode == `OP_R_TYPE) ? ID_funct :
+                (ID_opcode == `OP_ADDI) ? `FN_ADD :
+                (ID_opcode == `OP_ANDI) ? `FN_AND :
+                (ID_opcode == `OP_ORI)  ? `FN_OR  :
+                (ID_opcode == `OP_SLTI) ? `FN_SLT :
+                (ID_opcode == `OP_LCL)  ? `OP_LCL :
+                (ID_opcode == `OP_LCH)  ? `OP_LCH :
+                ((ID_opcode == `OP_BEQ) ||
+                 (ID_opcode == `OP_BNE)) ? `FN_SUB : 6'bx;
+
+            exp_alu_src_mux = ((ID_opcode == `OP_R_TYPE) ||
+                (ID_opcode == `OP_BEQ) ||
+                (ID_opcode == `OP_BNE)) ? `ALU_SRC_REG : `ALU_SRC_IMM;
+
+            exp_reg_dst_mux = (ID_opcode == `OP_R_TYPE) ? `REG_DST_RD :
+                (ID_opcode == `OP_JAL) ? `REG_DST_15 : `REG_DST_RT;
+
+            exp_is_load = (ID_opcode == `OP_LOAD);
+
+            exp_fl_write_enable = ((ID_opcode == `OP_R_TYPE) && (ID_funct != `FN_JR)) ||
+                (ID_opcode == `OP_ADDI) ||
+                (ID_opcode == `OP_ANDI) ||
+                (ID_opcode == `OP_ORI)  ||
+                (ID_opcode == `OP_SLTI) ||
+                (ID_opcode == `OP_LCL)  ||
+                (ID_opcode == `OP_LCH)  ||
+                (ID_opcode == `OP_BEQ)  ||
+                (ID_opcode == `OP_BNE);
+
+            exp_mem_write_enable = (ID_opcode == `OP_STORE);
+
+            exp_sel_beq_bne = (ID_opcode == `OP_BEQ) ? `SEL_BEQ :
+                (ID_opcode == `OP_BNE) ? `SEL_BNE : 1'bx;
+
+            exp_sel_jt_jf = (ID_opcode == `OP_JT) ? `SEL_JT :
+                (ID_opcode == `OP_JF) ? `SEL_JF : 1'bx;
+
+            exp_is_branch = (ID_opcode == `OP_BEQ) ||
+                (ID_opcode == `OP_BNE) ||
+                (ID_opcode == `OP_JT)  ||
+                (ID_opcode == `OP_JF);
+
+            exp_sel_jflag_branch =
+                ((ID_opcode == `OP_BEQ) || (ID_opcode == `OP_BNE)) ? `SEL_BRANCH :
+                ((ID_opcode == `OP_JT) || (ID_opcode == `OP_JF))   ? `SEL_JFLAG  :
+                1'bx;
+
+            exp_wb_res_mux = (ID_opcode == `OP_LOAD) ? `WB_MEM :
+                (ID_opcode == `OP_LOADLIT) ? `WB_IMM :
+                (ID_opcode == `OP_JAL) ? `WB_PC : `WB_ALU;
+
+            exp_reg_write_enable =  ((ID_opcode == `OP_R_TYPE) && (ID_funct != `FN_JR)) ||
+                (ID_opcode == `OP_ADDI)    ||
+                (ID_opcode == `OP_ANDI)    ||
+                (ID_opcode == `OP_ORI)     ||
+                (ID_opcode == `OP_SLTI)    ||
+                (ID_opcode == `OP_LCL)     ||
+                (ID_opcode == `OP_LCH)     ||
+                (ID_opcode == `OP_BEQ)     ||
+                (ID_opcode == `OP_BNE)     ||
+                (ID_opcode == `OP_LOAD)    ||
+                (ID_opcode == `OP_LOADLIT) ||
+                (ID_opcode == `OP_JAL);
+
+            // ---------------- estagio EX ------------------
+            $display("Testando alu_func %06h", out_alu_funct);
+            util.assert_equals(exp_alu_funct, out_alu_funct);
+
+            $display("Testando alu_src_mux %b", out_alu_src_mux);
+            util.assert_equals(exp_alu_src_mux, out_alu_src_mux);
+
+            $display("Testando reg_dst_mux %b", out_reg_dst_mux);
+            util.assert_equals(exp_reg_dst_mux, out_reg_dst_mux);
+
+            $display("Testando is_load %b", ID_HDU_out_is_load);
+            util.assert_equals(exp_is_load, ID_HDU_out_is_load);
+
+            $display("Testando fl_write_enable %b", out_fl_write_enable);
+            util.assert_equals(exp_fl_write_enable, out_fl_write_enable);
+
+            // ----------------- estagio MEM -----------------
+            $display("Testando mem_write_enable %b", out_mem_write_enable);
+            util.assert_equals(exp_mem_write_enable, out_mem_write_enable);
+
+            $display("Testando sel_beq_bne %b", out_sel_beq_bne);
+            util.assert_equals(exp_sel_beq_bne, out_sel_beq_bne);
+
+            $display("Testando sel_jt_jf %b", out_sel_jt_jf);
+            util.assert_equals(exp_sel_jt_jf, out_sel_jt_jf);
+
+            $display("Testando is_branch %b", out_is_branch);
+            util.assert_equals(exp_is_branch, out_is_branch);
+
+            $display("Testando sel_jflag_branch %b", out_sel_jflag_branch);
+            util.assert_equals(exp_sel_jflag_branch, out_sel_jflag_branch);
+
+            // ------------------- estagio WB -----------------
+            $display("Testando wb_res_mux %b", out_wb_res_mux);
+            util.assert_equals(exp_wb_res_mux, out_wb_res_mux);
+
+            $display("Testando reg_write_enable %b", out_reg_write_enable);
+            util.assert_equals(exp_reg_write_enable, out_reg_write_enable);
         end
     endtask
 
