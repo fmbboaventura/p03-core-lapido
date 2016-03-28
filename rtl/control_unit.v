@@ -33,7 +33,6 @@ module control_unit
     output reg sel_beq_bne,      // Seleciona entre beq e bne
     output reg sel_jt_jf,        // Seleciona entre jt e jf na fmu
     output reg is_branch,        // A instrucao eh um desvio pc-relative
-
     output reg sel_jflag_branch, // seletor do tipo do branch
 
     // Sinais para o estagio WB
@@ -80,6 +79,7 @@ always @ ( * ) begin
             alu_funct = `FN_SUB;    // Subtrai o rs com o rt
             sel_beq_bne = `SEL_BEQ; // Avalia a flag zero
             sel_jflag_branch = `SEL_BRANCH;
+            fl_write_enable = 1'b1;
         end
         `OP_BNE: begin
             is_branch = 1'b1;
@@ -87,6 +87,7 @@ always @ ( * ) begin
             alu_funct = `FN_SUB;    // Subtrai os registradores
             sel_beq_bne = `SEL_BNE; // Avalia a flag true
             sel_jflag_branch = `SEL_BRANCH;
+            fl_write_enable = 1'b1;
         end
         `OP_JT: begin
             is_branch = 1'b1;
