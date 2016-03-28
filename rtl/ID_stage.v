@@ -35,22 +35,22 @@ module ID_stage
     output is_jump,
 
     // Sinais para o estagio EX
-    output reg [5:0] out_alu_funct,  // Seleciona a operacao da alu
-    output reg out_alu_src_mux,      // Seleciona o segundo operando da alu
-    output reg [1:0] out_reg_dst_mux,// Seleciona o endereco do registrador de escrita
-    output reg out_is_load,          // A instrucao eh um load
-    output reg out_fl_write_enable,  // Habilita a escrita no registrador de flags
+    output [5:0] out_alu_funct,  // Seleciona a operacao da alu
+    output out_alu_src_mux,      // Seleciona o segundo operando da alu
+    output [1:0] out_reg_dst_mux,// Seleciona o endereco do registrador de escrita
+    output out_is_load,          // A instrucao eh um load
+    output out_fl_write_enable,  // Habilita a escrita no registrador de flags
 
     // Sinais para o estagio MEM
-    output reg out_mem_write_enable, // Habilita a escrita na memoria
-    output reg out_sel_beq_bne,      // Seleciona entre beq e bne
-    output reg out_sel_jt_jf,        // Seleciona entre jt e jf na fmu
-    output reg out_is_branch,        // A instrucao eh um desvio pc-relative
-    output reg out_sel_jflag_branch, // seletor do tipo do branch
+    output out_mem_write_enable, // Habilita a escrita na memoria
+    output out_sel_beq_bne,      // Seleciona entre beq e bne
+    output out_sel_jt_jf,        // Seleciona entre jt e jf na fmu
+    output out_is_branch,        // A instrucao eh um desvio pc-relative
+    output out_sel_jflag_branch, // seletor do tipo do branch
 
     // Sinais para o estagio WB
-    output reg [1:0] out_wb_res_mux, // Seleciona o dado que sera escrito no registrador
-    output reg out_reg_write_enable, // Habilita a escrita no banco de registradores
+    output [1:0] out_wb_res_mux, // Seleciona o dado que sera escrito no registrador
+    output out_reg_write_enable, // Habilita a escrita no banco de registradores
 
     // Campos das instrucoes
     output reg [4:0] out_rd,
@@ -73,24 +73,6 @@ wire insert_bubble;
 // Sinais para o estagio ID (este estagio)
 wire sel_j_jr;         // Seleciona a fonte do endereco do salto incondicional
 
-// Sinais para o estagio EX
-wire [5:0] alu_funct;  // Seleciona a operacao da alu
-wire alu_src_mux;      // Seleciona o segundo operando da alu
-wire [1:0] reg_dst_mux;// Seleciona o endereco do registrador de escrita
-wire is_load;          // A instrucao eh um load
-wire fl_write_enable;  // Habilita a escrita no registrador de flags
-
-// Sinais para o estagio MEM
-wire mem_write_enable; // Habilita a escrita na memoria
-wire sel_beq_bne;      // Seleciona entre beq e bne
-wire sel_jt_jf;        // Seleciona entre jt e jf na fmu
-wire is_branch;        // A instrucao eh um desvio pc-relative
-wire sel_jflag_branch; // seletor do tipo do branch
-
-// Sinais para o estagio WB
-wire [1:0] wb_res_mux; // Seleciona o dado que sera escrito no registrador
-wire reg_write_enable; // Habilita a escrita no banco de registradores
-
 // Propaga o pc + 1
 always @ (posedge clk or posedge rst) begin
     instruction_reg <= instruction;
@@ -112,19 +94,19 @@ control_unit ctrl
     .funct(ir_funct),
     .stall_pipeline(insert_bubble),
     .is_jump(is_jump), // Para o estagio if
-    .sel_j_jr(sel_j_jr),
-    .alu_funct(alu_funct),
-    .alu_src_mux(alu_src_mux),
-    .reg_dst_mux(reg_dst_mux),
-    .is_load(is_load),
-    .fl_write_enable(fl_write_enable),
-    .mem_write_enable(mem_write_enable),
-    .sel_beq_bne(sel_beq_bne),
-    .sel_jt_jf(sel_jt_jf),
-    .is_branch(is_branch),
-    .sel_jflag_branch(sel_jflag_branch),
-    .wb_res_mux(wb_res_mux),
-    .reg_write_enable(reg_write_enable)
+    .sel_j_jr(sel_j_jr), // Para este estagio
+    .alu_funct(out_alu_funct),
+    .alu_src_mux(out_alu_src_mux),
+    .reg_dst_mux(out_reg_dst_mux),
+    .is_load(out_is_load),
+    .fl_write_enable(out_fl_write_enable),
+    .mem_write_enable(out_mem_write_enable),
+    .sel_beq_bne(out_sel_beq_bne),
+    .sel_jt_jf(out_sel_jt_jf),
+    .is_branch(out_is_branch),
+    .sel_jflag_branch(out_sel_jflag_branch),
+    .wb_res_mux(out_wb_res_mux),
+    .reg_write_enable(out_reg_write_enable)
 );
 
 // Para o banco de registradores
@@ -135,22 +117,6 @@ assign rt = (instruction_reg[20:16] < `REGISTER_FILE_SIZE)?
 
 // Para o estagio IF
 assign jump_addr = (sel_j_jr)? {6'b000000, instruction_reg[25:0]} : data_rs;// Para o estagio IF
-
-// Propagando sinais de controle
-always @ (posedge clk) begin
-    out_is_load <= is_load;
-    out_wb_res_mux <= wb_res_mux;
-    out_reg_write_enable <= reg_write_enable;
-    out_mem_write_enable <= mem_write_enable;
-    out_sel_beq_bne <= sel_beq_bne;
-    out_fl_write_enable <= fl_write_enable;
-    out_sel_jt_jf <= sel_jt_jf;
-    out_is_branch <= is_branch;
-    out_sel_jflag_branch <= sel_jflag_branch;
-    out_alu_funct <= alu_funct;
-    out_alu_src_mux <= alu_src_mux;
-    out_reg_dst_mux <= reg_dst_mux;
-end
 
 // Propagando campos da instrucao e dados imediatos
 always @ (posedge clk or posedge rst) begin
