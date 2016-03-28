@@ -66,8 +66,8 @@ module MEM_stage_tb ();
 
 	initial begin
 
-		$monitor("Time: %t clk: %b rst: %b pc: %d next_pc: %d instruction: %H branch_addr: %d branch_taken: %b jump_addr: %d is_jump: %b",
-        $time, clk, rst, dut.pc, next_pc, instruction, branch_addr, branch_taken, jump_addr, is_jump);
+		$monitor("Time: %t clk: %b rst: %b ",
+        $time, clk, rst);
 
         clk = 0;
         rst = 0;
