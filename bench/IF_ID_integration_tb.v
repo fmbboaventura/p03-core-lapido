@@ -317,7 +317,7 @@ module IF_ID_integration_tb ();
                 end
             end
 
-            //test_control_output(ID_opcode, ID_funct);
+            test_control_output(ID_opcode, ID_funct);
         end
     endtask
 
@@ -346,6 +346,9 @@ module IF_ID_integration_tb ();
             $display("------------------------------");
             $display("test_control_output %t:", $time);
             $display("------------------------------");
+
+            $display("OPCODE: %02H", ID_opcode);
+            $display("FUNCT: %02H", ID_funct);
 
             // gerando valores esperados
             exp_alu_funct = (ID_opcode == `OP_R_TYPE) ? ID_funct :
@@ -406,14 +409,12 @@ module IF_ID_integration_tb ();
                 (ID_opcode == `OP_SLTI)    ||
                 (ID_opcode == `OP_LCL)     ||
                 (ID_opcode == `OP_LCH)     ||
-                (ID_opcode == `OP_BEQ)     ||
-                (ID_opcode == `OP_BNE)     ||
                 (ID_opcode == `OP_LOAD)    ||
                 (ID_opcode == `OP_LOADLIT) ||
                 (ID_opcode == `OP_JAL);
 
             // ---------------- estagio EX ------------------
-            $display("Testando alu_func %06h", out_alu_funct);
+            $display("Testando alu_func %b", out_alu_funct);
             util.assert_equals(exp_alu_funct, out_alu_funct);
 
             $display("Testando alu_src_mux %b", out_alu_src_mux);
