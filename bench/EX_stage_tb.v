@@ -56,7 +56,7 @@ module EX_stage_tb ();
     wire [4:0] flag_addr;
     wire [4:0] reg_dst;
 
-    IF_stage dut(
+    EX_stage dut(
     	.clk(clk),
 	    .rst(rst),
 
