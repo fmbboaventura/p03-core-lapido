@@ -11,7 +11,7 @@ module tb_util ();
         input [31:0] expected;
         input [31:0] actual;
         begin
-            if (actual == expected) $display("OK!");
+            if (actual === expected) $display("OK!");
             else begin
                 $display("ERRO! @ %t , Esperado: %d,  Obteve %d",
                 $time, expected, actual);
