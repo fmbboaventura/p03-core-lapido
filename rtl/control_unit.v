@@ -51,6 +51,10 @@ always @ ( * ) begin
     reg_dst_mux = `REG_DST_RT;  // Seleciona rt como registrador de destino
     alu_src_mux = `ALU_SRC_IMM; // Seleciona o imediato como o operando da alu
     wb_res_mux  = `WB_ALU;      // Seleciona a saida da alu como o dado a ser escrito
+    alu_funct = 6'bx;
+    sel_jt_jf = 1'bx;
+    sel_beq_bne = 1'bx;
+    sel_jflag_branch = 1'bx;
 
     if(!stall_pipeline) // Soh decodifica se nao ha bolha
     case (opcode)
