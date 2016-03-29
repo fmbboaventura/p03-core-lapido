@@ -107,51 +107,54 @@ module MEM_stage_tb ();
 					$time, 0, branch_taken);
 			end
 
+			j = 0;
+
 			for (i=0; i < 1024; i=i+1) begin
-				flag_code = flags_array[i];
+				flag_code = flags_array[j];
 				is_branch = 1;
-				sel_jt_jf = $random % 1;
-				sel_beq_bne = $random % 1;
-				sel_jflag_branch = $random % 1;
+				sel_jt_jf = $random % 2;
+				sel_beq_bne = $random % 2;
+				sel_jflag_branch = $random % 2;
 				#1
 
-				if(j < 6) begin
+				if(j == 5) begin
 					j = 0;
 				end
 
-				$display("Flag Atual: %d", flag_code);
-				$display("sel_jflag_branch", sel_jflag_branch);
+				$display("Flag Atual: %b", flag_code);
+				$display("sel_jflag_branch: ", sel_jflag_branch);
 				$display("sel_jt_jf: %d", sel_jt_jf);
 				$display("sel_beq_bne: %d", sel_beq_bne);
 
 				if(is_branch == 1 && sel_jt_jf == 0 && flag_code == `FL_TRUE) begin
 					$display("branch_taken: %d", branch_taken);
 					$display("Foi executado um 'jt'");
-					break;
+					#1000;
 				end
 
 				else if(is_branch == 1 && sel_jt_jf == 1 && flag_code == `FL_ZERO) begin
 					$display("branch_taken: %d", branch_taken);
 					$display("Foi executado um 'jf'");
-					break;
+					#1000;
 				end
 
 				else if(is_branch == 1 && sel_beq_bne == 0 && flag_code == `FL_ZERO) begin
 					$display("branch_taken: %d", branch_taken);
 					$display("Foi executado um 'beq'");
-					break;
+					#1000;
 				end
 
 				else if(is_branch == 1 && sel_beq_bne == 1 && flag_code == `FL_TRUE) begin
 					$display("branch_taken: %d", branch_taken);
 					$display("Foi executado um 'bne'");
-					break;
+					#1000;
 				end
 
 				else begin
 					$display("ERRO! @ %t, Esperado %d, Obtido %d",
 								$time, 1, branch_taken);
 				end
+				j=j+1;
 			end
 		end	
 	endtask
