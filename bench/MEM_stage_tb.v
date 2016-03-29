@@ -74,17 +74,31 @@ module MEM_stage_tb ();
         clk = 0;
         rst = 0;
 
+        #1
+
+        load_flags_array;
+        branch_resolution_unit;
+
+        $stop;
+        $finish;
+
 
 	end
 
 	integer i;
+	integer j;
 
 	task branch_resolution_unit;
 		begin
 			for (i=0; i < 6; i=i+1) begin
 				flag_code = flags_array[i];
 				is_branch = 0;
+				sel_jt_jf = $random % 1;
+				sel_beq_bne = $random % 1;
+				sel_jflag_branch = $random % 1;
 				#1
+
+				$display("Flag Atual: %d", flag_code);
 
 				$display("Testando is_branch 0");
 				if(branch_taken == 0)
@@ -93,42 +107,53 @@ module MEM_stage_tb ();
 					$time, 0, branch_taken);
 			end
 
-			for (i=0; i < 6; i=i+1) begin
+			for (i=0; i < 1024; i=i+1) begin
 				flag_code = flags_array[i];
 				is_branch = 1;
+				sel_jt_jf = $random % 1;
+				sel_beq_bne = $random % 1;
+				sel_jflag_branch = $random % 1;
 				#1
 
-				$display("Testando JT");
+				if(j < 6) begin
+					j = 0;
+				end
+
+				$display("Flag Atual: %d", flag_code);
+				$display("sel_jflag_branch", sel_jflag_branch);
+				$display("sel_jt_jf: %d", sel_jt_jf);
+				$display("sel_beq_bne: %d", sel_beq_bne);
+
+				if(is_branch == 1 && sel_jt_jf == 0 && flag_code == `FL_TRUE) begin
+					$display("branch_taken: %d", branch_taken);
+					$display("Foi executado um 'jt'");
+					break;
+				end
+
+				else if(is_branch == 1 && sel_jt_jf == 1 && flag_code == `FL_ZERO) begin
+					$display("branch_taken: %d", branch_taken);
+					$display("Foi executado um 'jf'");
+					break;
+				end
+
+				else if(is_branch == 1 && sel_beq_bne == 0 && flag_code == `FL_ZERO) begin
+					$display("branch_taken: %d", branch_taken);
+					$display("Foi executado um 'beq'");
+					break;
+				end
+
+				else if(is_branch == 1 && sel_beq_bne == 1 && flag_code == `FL_TRUE) begin
+					$display("branch_taken: %d", branch_taken);
+					$display("Foi executado um 'bne'");
+					break;
+				end
+
+				else begin
+					$display("ERRO! @ %t, Esperado %d, Obtido %d",
+								$time, 1, branch_taken);
+				end
 			end
-
-			for (i=0; i < 6; i=i+1) begin
-				flag_code = flags_array[i];
-				is_branch = 1;
-				#1
-
-				$display("Testando JF");
-			end
-
-			for (i=0; i < 6; i=i+1) begin
-				flag_code = flags_array[i];
-				is_branch = 1;
-				#1
-
-				$display("Testando beq");
-			end
-
-			for (i=0; i < 6; i=i+1) begin
-				flag_code = flags_array[i];
-				is_branch = 1;
-				#1
-
-				$display("Testando bne");
-			end
-
-
-		end
-
-	
+		end	
 	endtask
 
 	task load_flags_array;
