@@ -261,6 +261,11 @@ module IF_ID_integration_tb ();
 
             util.assert_equals(expected_instruction, dut_ID.instruction_reg);
 
+            if (!was_a_jump) begin
+                $display("Testando out_next_pc %d...", out_next_pc);
+                util.assert_equals(expected_instruction, generated_instructions[out_next_pc-1]);
+            end
+
             ID_opcode = expected_instruction[31:26];
             ID_funct = expected_instruction[5:0];
             ID_rs = expected_instruction[25:21];
