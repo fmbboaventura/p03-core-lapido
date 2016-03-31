@@ -1,3 +1,11 @@
+ /***************************************************
+ * Module: MEM_stage
+ * Project: core_lapido
+ * Author: Afonso Machado e Felipe Cordeiro
+ * Description: Modulo que representa o estágio de 
+ * memória do processador LAPIDO
+ ***************************************************/
+
  `include "lapido_defs.v"
 
 module MEM_stage
