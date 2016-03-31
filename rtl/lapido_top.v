@@ -12,7 +12,7 @@ module lapido_top (
     wire [`INSTRUCTION_WIDTH-1:0] IF_ID_instruction;
     wire [`PC_WIDTH - 1:0] IF_ID_pc;
 
-    // Do banco de registradores para o estagio ID
+    // Do banco de registradores para o estagio ID e EX 
     wire [`GPR_WIDTH-1:0] REG_ID_data_rs;
     wire [`GPR_WIDTH-1:0] REG_ID_data_rt;
 
@@ -153,7 +153,7 @@ module lapido_top (
             .wb_res_mux          (out_wb_res_mux),
             .reg_write_enable    (out_reg_write_enable),
             .rs                  (out_rs),
-            .rt                  (out_rt),
+            .rt                  (ID_HDU_out_rt),
             .rd                  (out_rd),
             .data_rs             (REG_ID_data_rs),
             .data_rt             (REG_ID_data_rt),
@@ -171,8 +171,16 @@ module lapido_top (
             .out_mem_addr        (EX_MEM_out_mem_addr),
             .out_mem_data        (EX_MEM_out_mem_data),
             .out_flags           (EX_MEM_out_flags),
-            .out_reg_dest        (EX_MEM_out_reg_dest)
+            .out_reg_dest        (EX_MEM_out_reg_dest),
+		// Sinais para o estagio MEM
+    		.out_mem_write_enable(EX_MEM_out_mem_write_enable), // Habilita a escrita na memoria
+   		.out_sel_beq_bne(EX_MEM_out_sel_beq_bne),      // Seleciona entre beq e bne
+ 		.out_sel_jt_jf(EX_MEM_out_sel_jt_jf),         // Seleciona entre jt e jf na fmu
+    		.out_is_branch(EX_MEM_out_is_branch),        // A instrucao eh um desvio pc-relative
+    		.out_sel_jflag_branch(EX_MEM_out_sel_jflag_branch), // seletor do tipo do branch
 
-
+    // Sinais para o estagio WB
+     .out_wb_res_mux(EX_MEM_out_wb_res_mux), // Seleciona o dado que sera escrito no registrador
+     .out_reg_write_enable(EX_MEM_out_reg_write_enable) // Habilita a escrita no banco de registradores
             );
 endmodule
