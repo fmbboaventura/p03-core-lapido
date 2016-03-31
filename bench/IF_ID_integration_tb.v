@@ -141,6 +141,7 @@ module IF_ID_integration_tb ();
     reg enable_test_IF;
     reg enable_test_ID;
     reg was_a_jump; // se a ultima instrucao decodificada foi um pulo
+    reg was_a_load;
 
     // Blocos initial, aways e assigns executam paralelamente
     initial begin
@@ -148,19 +149,9 @@ module IF_ID_integration_tb ();
         rst = 0;
         branch_taken = 0; // TODO: testar branch
         was_a_jump = 0;
+        was_a_load = 0;
         set_up;
     end
-
-    // initial begin
-    //     #40; // Espera o set_up ser concluido
-    //     test_instruction_fetch;
-    //     $stop;
-    // end
-    //
-    // initial begin
-    //     #60; // Espera pela conclusao do set_up e do IF
-    //     test_instruction_decode;
-    // end
 
     integer inst_in;
     task set_up;
@@ -236,6 +227,9 @@ module IF_ID_integration_tb ();
                 if(ID_IF_is_jump) expected_pc = ID_IF_jump_addr;
                 else if (branch_taken) expected_pc = branch_addr;
                 else expected_pc = expected_pc + 1;
+            end else begin
+                $display("load-use data hazard!");
+                //$stop;
             end
         end
     endtask
@@ -256,6 +250,9 @@ module IF_ID_integration_tb ();
             $display("Testando Instrucao no ID %d...", dut_ID.instruction_reg);
             if (was_a_jump)
                 expected_instruction = `NOP_INSTRUCTION;
+            else if (dut_ID.in_stall_pipeline)
+                // Nao decrementa porque o pc nao foi atualizado
+                expected_instruction = generated_instructions[IF_ID_pc];
             else
                 expected_instruction = generated_instructions[IF_ID_pc-1];
 
@@ -354,69 +351,86 @@ module IF_ID_integration_tb ();
 
             $display("OPCODE: %02H", ID_opcode);
             $display("FUNCT: %02H", ID_funct);
+            $display("ID stall: %b", dut_ID.in_stall_pipeline);
 
             // gerando valores esperados
-            exp_alu_funct = (ID_opcode == `OP_R_TYPE) ? ID_funct :
-                (ID_opcode == `OP_ADDI) ? `FN_ADD :
-                (ID_opcode == `OP_ANDI) ? `FN_AND :
-                (ID_opcode == `OP_ORI)  ? `FN_OR  :
-                (ID_opcode == `OP_SLTI) ? `FN_SLT :
-                (ID_opcode == `OP_LCL)  ? `OP_LCL :
-                (ID_opcode == `OP_LCH)  ? `OP_LCH :
-                ((ID_opcode == `OP_BEQ) ||
-                 (ID_opcode == `OP_BNE)) ? `FN_SUB : 6'bx;
+            if (dut_ID.in_stall_pipeline) begin
+                exp_is_load = 1'b0;
+                exp_is_branch = 1'b0;
+                exp_mem_write_enable = 1'b0;
+                exp_reg_write_enable = 1'b0;
+                exp_fl_write_enable = 1'b0;
+                exp_reg_dst_mux = `REG_DST_RT;  // Seleciona rt como registrador de destino
+                exp_alu_src_mux = `ALU_SRC_IMM; // Seleciona o imediato como o operando da alu
+                exp_wb_res_mux  = `WB_ALU;      // Seleciona a saida da alu como o dado a ser escrito
+                exp_alu_funct = 6'bx;
+                exp_sel_jt_jf = 1'bx;
+                exp_sel_beq_bne = 1'bx;
+                exp_sel_jflag_branch = 1'bx;
+            end else begin
+                exp_alu_funct = (ID_opcode == `OP_R_TYPE) ? ID_funct :
+                    (ID_opcode == `OP_ADDI) ? `FN_ADD :
+                    (ID_opcode == `OP_ANDI) ? `FN_AND :
+                    (ID_opcode == `OP_ORI)  ? `FN_OR  :
+                    (ID_opcode == `OP_SLTI) ? `FN_SLT :
+                    (ID_opcode == `OP_LCL)  ? `OP_LCL :
+                    (ID_opcode == `OP_LCH)  ? `OP_LCH :
+                    ((ID_opcode == `OP_BEQ) ||
+                     (ID_opcode == `OP_BNE)) ? `FN_SUB : 6'bx;
 
-            exp_alu_src_mux = ((ID_opcode == `OP_R_TYPE) ||
-                (ID_opcode == `OP_BEQ) ||
-                (ID_opcode == `OP_BNE)) ? `ALU_SRC_REG : `ALU_SRC_IMM;
+                exp_alu_src_mux = ((ID_opcode == `OP_R_TYPE) ||
+                    (ID_opcode == `OP_BEQ) ||
+                    (ID_opcode == `OP_BNE)) ? `ALU_SRC_REG : `ALU_SRC_IMM;
 
-            exp_reg_dst_mux = (ID_opcode == `OP_R_TYPE) ? `REG_DST_RD :
-                (ID_opcode == `OP_JAL) ? `REG_DST_15 : `REG_DST_RT;
+                exp_reg_dst_mux = (ID_opcode == `OP_R_TYPE) ? `REG_DST_RD :
+                    (ID_opcode == `OP_JAL) ? `REG_DST_15 : `REG_DST_RT;
 
-            exp_is_load = (ID_opcode == `OP_LOAD);
+                exp_is_load = (ID_opcode == `OP_LOAD);
+                was_a_load = exp_is_load;
 
-            exp_fl_write_enable = ((ID_opcode == `OP_R_TYPE) && (ID_funct != `FN_JR)) ||
-                (ID_opcode == `OP_ADDI) ||
-                (ID_opcode == `OP_ANDI) ||
-                (ID_opcode == `OP_ORI)  ||
-                (ID_opcode == `OP_SLTI) ||
-                (ID_opcode == `OP_LCL)  ||
-                (ID_opcode == `OP_LCH)  ||
-                (ID_opcode == `OP_BEQ)  ||
-                (ID_opcode == `OP_BNE);
+                exp_fl_write_enable = ((ID_opcode == `OP_R_TYPE) && (ID_funct != `FN_JR)) ||
+                    (ID_opcode == `OP_ADDI) ||
+                    (ID_opcode == `OP_ANDI) ||
+                    (ID_opcode == `OP_ORI)  ||
+                    (ID_opcode == `OP_SLTI) ||
+                    (ID_opcode == `OP_LCL)  ||
+                    (ID_opcode == `OP_LCH)  ||
+                    (ID_opcode == `OP_BEQ)  ||
+                    (ID_opcode == `OP_BNE);
 
-            exp_mem_write_enable = (ID_opcode == `OP_STORE);
+                exp_mem_write_enable = (ID_opcode == `OP_STORE);
 
-            exp_sel_beq_bne = (ID_opcode == `OP_BEQ) ? `SEL_BEQ :
-                (ID_opcode == `OP_BNE) ? `SEL_BNE : 1'bx;
+                exp_sel_beq_bne = (ID_opcode == `OP_BEQ) ? `SEL_BEQ :
+                    (ID_opcode == `OP_BNE) ? `SEL_BNE : 1'bx;
 
-            exp_sel_jt_jf = (ID_opcode == `OP_JT) ? `SEL_JT :
-                (ID_opcode == `OP_JF) ? `SEL_JF : 1'bx;
+                exp_sel_jt_jf = (ID_opcode == `OP_JT) ? `SEL_JT :
+                    (ID_opcode == `OP_JF) ? `SEL_JF : 1'bx;
 
-            exp_is_branch = (ID_opcode == `OP_BEQ) ||
-                (ID_opcode == `OP_BNE) ||
-                (ID_opcode == `OP_JT)  ||
-                (ID_opcode == `OP_JF);
+                exp_is_branch = (ID_opcode == `OP_BEQ) ||
+                    (ID_opcode == `OP_BNE) ||
+                    (ID_opcode == `OP_JT)  ||
+                    (ID_opcode == `OP_JF);
 
-            exp_sel_jflag_branch =
-                ((ID_opcode == `OP_BEQ) || (ID_opcode == `OP_BNE)) ? `SEL_BRANCH :
-                ((ID_opcode == `OP_JT) || (ID_opcode == `OP_JF))   ? `SEL_JFLAG  :
-                1'bx;
+                exp_sel_jflag_branch =
+                    ((ID_opcode == `OP_BEQ) || (ID_opcode == `OP_BNE)) ? `SEL_BRANCH :
+                    ((ID_opcode == `OP_JT) || (ID_opcode == `OP_JF))   ? `SEL_JFLAG  :
+                    1'bx;
 
-            exp_wb_res_mux = (ID_opcode == `OP_LOAD) ? `WB_MEM :
-                (ID_opcode == `OP_LOADLIT) ? `WB_IMM :
-                (ID_opcode == `OP_JAL) ? `WB_PC : `WB_ALU;
+                exp_wb_res_mux = (ID_opcode == `OP_LOAD) ? `WB_MEM :
+                    (ID_opcode == `OP_LOADLIT) ? `WB_IMM :
+                    (ID_opcode == `OP_JAL) ? `WB_PC : `WB_ALU;
 
-            exp_reg_write_enable =  ((ID_opcode == `OP_R_TYPE) && (ID_funct != `FN_JR)) ||
-                (ID_opcode == `OP_ADDI)    ||
-                (ID_opcode == `OP_ANDI)    ||
-                (ID_opcode == `OP_ORI)     ||
-                (ID_opcode == `OP_SLTI)    ||
-                (ID_opcode == `OP_LCL)     ||
-                (ID_opcode == `OP_LCH)     ||
-                (ID_opcode == `OP_LOAD)    ||
-                (ID_opcode == `OP_LOADLIT) ||
-                (ID_opcode == `OP_JAL);
+                exp_reg_write_enable =  ((ID_opcode == `OP_R_TYPE) && (ID_funct != `FN_JR)) ||
+                    (ID_opcode == `OP_ADDI)    ||
+                    (ID_opcode == `OP_ANDI)    ||
+                    (ID_opcode == `OP_ORI)     ||
+                    (ID_opcode == `OP_SLTI)    ||
+                    (ID_opcode == `OP_LCL)     ||
+                    (ID_opcode == `OP_LCH)     ||
+                    (ID_opcode == `OP_LOAD)    ||
+                    (ID_opcode == `OP_LOADLIT) ||
+                    (ID_opcode == `OP_JAL);
+            end
 
             // ---------------- estagio EX ------------------
             $display("Testando alu_func %b", out_alu_funct);
@@ -564,8 +578,52 @@ module IF_ID_integration_tb ();
             inst_counter = inst_counter + 1;
             $display("Instrucao gerada: %b", inst);
 
-            $display("Gerando instrucoes do tipo I...");
-            for (i = 3; i < 16; i = i+1) begin
+            // Sorteia registrador para usar no rt do load
+            util.rand_zero_max(15, field);
+            $display("Gerando instrucao LOAD para o registrador %d...", field);
+            inst = 32'b0;
+            inst[31:26] = `OP_LOAD;
+            inst[20:16] = field; // registrador destino do load
+            $fwrite(inst_in,"%08H\n", inst);
+            generated_instructions[inst_counter] = inst;
+            inst_counter = inst_counter + 1;
+            $display("Instrucao gerada: %b", inst);
+
+            $display("Gerando instrucao dependente do registrador rt = %d...", field);
+            inst = 32'b0;
+            inst[31:26] = `OP_R_TYPE;
+            inst[20:16] = field; // registrador destino do load
+            inst[25:21] = 5'hF;
+            inst[5:0] = `FN_ADD;
+            $fwrite(inst_in,"%08H\n", inst);
+            generated_instructions[inst_counter] = inst;
+            inst_counter = inst_counter + 1;
+            $display("Instrucao gerada: %b", inst);
+
+            // Sorteia registrador para usar no rt do load
+            util.rand_zero_max(15, field);
+            $display("Gerando instrucao LOAD para o registrador %d...", field);
+            inst = 32'b0;
+            inst[31:26] = `OP_LOAD;
+            inst[20:16] = field; // registrador destino do load
+            $fwrite(inst_in,"%08H\n", inst);
+            generated_instructions[inst_counter] = inst;
+            inst_counter = inst_counter + 1;
+            $display("Instrucao gerada: %b", inst);
+
+            $display("Gerando instrucao dependente do registrador rs = %d...", field);
+            inst = 32'b0;
+            inst[31:26] = `OP_R_TYPE;
+            inst[25:21] = field; // registrador destino do load
+            inst[20:16] = 5'hf; // registrador destino do load
+            inst[5:0] = `FN_ADD;
+            $fwrite(inst_in,"%08H\n", inst);
+            generated_instructions[inst_counter] = inst;
+            inst_counter = inst_counter + 1;
+            $display("Instrucao gerada: %b", inst);
+
+            $display("Gerando instrucoes do tipo I (Exceto LOAD)...");
+            for (i = 4; i < 16; i = i+1) begin
                 inst = 32'b0;
                 inst[31:26] = opcode_array[i];
                 if (opcode_array[i] == `OP_JT || opcode_array[i] == `OP_JF) begin
