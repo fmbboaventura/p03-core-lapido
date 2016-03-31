@@ -68,7 +68,10 @@ module lapido_top (
     wire [1:0] EX_MEM_out_wb_res_mux; // Seleciona o dado que sera escrito no registrador
     wire EX_MEM_out_reg_write_enable; // Habilita a escrita no banco de registradores
 
-    //Saidas
+	wire WB_reg_write_enable;
+	wire [`GRP_ADDR_WIDTH-1:0] WB_reg_dest;
+	wire [`GPR_WIDTH-1:0] WB_res;
+
     wire [`GPR_WIDTH-1:0] EX_MEM_out_imm;
     wire [`PC_WIDTH-1:0] EX_MEM_out_next_pc;
     wire [`PC_WIDTH-1:0] EX_MEM_out_branch_addr;
@@ -183,4 +186,36 @@ module lapido_top (
      .out_wb_res_mux(EX_MEM_out_wb_res_mux), // Seleciona o dado que sera escrito no registrador
      .out_reg_write_enable(EX_MEM_out_reg_write_enable) // Habilita a escrita no banco de registradores
             );
+
+	register_file reg_file (
+		.clk(clk),
+		.rst(rst),
+		.en(WB_reg_write_enable),
+		.rd(WB_reg_dest),
+		.rs(ID_REG_rs),
+		.rt(ID_REG_rt),
+		.data(WB_res),
+		.data_rs(REG_ID_data_rs),
+		.data_rt(REG_ID_data_rt)
+	);
+
+	hazard_detection_unit hdu
+    (
+        .ID_EX_is_load(ID_HDU_out_is_load),
+        .ID_EX_rt(ID_HDU_out_rt),
+        .IF_ID_rs(IF_ID_instruction[25:21]),
+        .IF_ID_rt(IF_ID_instruction[20:16]),
+        .stall_pipeline(HDU_stall_pipeline)
+    );
+
+	fowarding_unit fu (
+		.ID_EX_rs(ID_REG_rs),
+    		.ID_EX_rt(ID_REG_rt),
+    		.EX_MEM_reg_write_enable(EX_MEM_out_reg_write_enable),
+    		.EX_MEM_rd(EX_MEM_out_reg_dest),
+    		.MEM_WB_reg_write_enable(WB_reg_write_enable),
+    		.MEM_WB_rd(WB_reg_dest),
+    		.fowardA(fowardA),
+    		.fowardB(fowardB)
+	);
 endmodule
