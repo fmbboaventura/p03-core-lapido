@@ -56,99 +56,100 @@ always @ ( * ) begin
     sel_beq_bne = 1'bx;
     sel_jflag_branch = 1'bx;
 
-    if(!stall_pipeline) // Soh decodifica se nao ha bolha
-    case (opcode)
-        `OP_STORE: begin
-            mem_write_enable = 1'b1;
-        end
-        `OP_LOAD: begin
-            wb_res_mux  = `WB_MEM; // Seleciona saida da memoria como o dado a ser escrito
-            reg_write_enable = 1'b1;
-            is_load = 1'b1;
-        end
-        `OP_J_TYPE: begin
-            is_jump = 1'b1;
-            sel_j_jr = `SEL_J; // Seleciona o imediato como endereco do salto
-        end
-        `OP_JAL: begin
-            is_jump = 1'b1;
-            reg_dst_mux = `REG_DST_15; // Seleciona o registrador 15
-            sel_j_jr = `SEL_JR;        // Seleciona o valor do registrador como endereco do salto
-            reg_write_enable = 1'b1;
-            wb_res_mux = `WB_PC;       // Seleciona o pc+1 para ser escrito no r15
-        end
-        `OP_BEQ: begin
-            is_branch = 1'b1;
-            alu_src_mux = `ALU_SRC_REG; //  Seleciona o rt
-            alu_funct = `FN_SUB;    // Subtrai o rs com o rt
-            sel_beq_bne = `SEL_BEQ; // Avalia a flag zero
-            sel_jflag_branch = `SEL_BRANCH;
-            fl_write_enable = 1'b1;
-        end
-        `OP_BNE: begin
-            is_branch = 1'b1;
-            alu_src_mux = `ALU_SRC_REG; //  Seleciona o rt
-            alu_funct = `FN_SUB;    // Subtrai os registradores
-            sel_beq_bne = `SEL_BNE; // Avalia a flag true
-            sel_jflag_branch = `SEL_BRANCH;
-            fl_write_enable = 1'b1;
-        end
-        `OP_JT: begin
-            is_branch = 1'b1;
-            sel_jt_jf = `SEL_JT;
-            sel_jflag_branch =`SEL_JFLAG;
-        end
-        `OP_JF: begin
-            is_branch = 1'b1;
-            sel_jt_jf = `SEL_JF;
-            sel_jflag_branch =`SEL_JFLAG;
-        end
-        `OP_LOADLIT: begin
-            wb_res_mux = `WB_IMM;
-            reg_write_enable = 1'b1;
-        end
-        `OP_R_TYPE: begin
-            reg_dst_mux = `REG_DST_RD;  // Seleciona rd como registrador de destino
-            alu_src_mux = `ALU_SRC_REG; // Seleciona dado do registrador como operando da alu
-            case (funct)
-                `FN_JR: begin
-                    is_jump = 1'b1;
-                end
-                default: begin
-                    alu_funct = funct;
-                    reg_write_enable = 1'b1;
-                    fl_write_enable  = 1'b1;
-                end
-            endcase
-        end
-        default: begin
-            reg_write_enable = 1'b1;
-            fl_write_enable = 1'b1;
+    if(!stall_pipeline) begin// Soh decodifica se nao ha bolha
+        case (opcode)
+            `OP_STORE: begin
+                mem_write_enable = 1'b1;
+            end
+            `OP_LOAD: begin
+                wb_res_mux  = `WB_MEM; // Seleciona saida da memoria como o dado a ser escrito
+                reg_write_enable = 1'b1;
+                is_load = 1'b1;
+            end
+            `OP_J_TYPE: begin
+                is_jump = 1'b1;
+                sel_j_jr = `SEL_J; // Seleciona o imediato como endereco do salto
+            end
+            `OP_JAL: begin
+                is_jump = 1'b1;
+                reg_dst_mux = `REG_DST_15; // Seleciona o registrador 15
+                sel_j_jr = `SEL_JR;        // Seleciona o valor do registrador como endereco do salto
+                reg_write_enable = 1'b1;
+                wb_res_mux = `WB_PC;       // Seleciona o pc+1 para ser escrito no r15
+            end
+            `OP_BEQ: begin
+                is_branch = 1'b1;
+                alu_src_mux = `ALU_SRC_REG; //  Seleciona o rt
+                alu_funct = `FN_SUB;    // Subtrai o rs com o rt
+                sel_beq_bne = `SEL_BEQ; // Avalia a flag zero
+                sel_jflag_branch = `SEL_BRANCH;
+                fl_write_enable = 1'b1;
+            end
+            `OP_BNE: begin
+                is_branch = 1'b1;
+                alu_src_mux = `ALU_SRC_REG; //  Seleciona o rt
+                alu_funct = `FN_SUB;    // Subtrai os registradores
+                sel_beq_bne = `SEL_BNE; // Avalia a flag true
+                sel_jflag_branch = `SEL_BRANCH;
+                fl_write_enable = 1'b1;
+            end
+            `OP_JT: begin
+                is_branch = 1'b1;
+                sel_jt_jf = `SEL_JT;
+                sel_jflag_branch =`SEL_JFLAG;
+            end
+            `OP_JF: begin
+                is_branch = 1'b1;
+                sel_jt_jf = `SEL_JF;
+                sel_jflag_branch =`SEL_JFLAG;
+            end
+            `OP_LOADLIT: begin
+                wb_res_mux = `WB_IMM;
+                reg_write_enable = 1'b1;
+            end
+            `OP_R_TYPE: begin
+                reg_dst_mux = `REG_DST_RD;  // Seleciona rd como registrador de destino
+                alu_src_mux = `ALU_SRC_REG; // Seleciona dado do registrador como operando da alu
+                case (funct)
+                    `FN_JR: begin
+                        is_jump = 1'b1;
+                    end
+                    default: begin
+                        alu_funct = funct;
+                        reg_write_enable = 1'b1;
+                        fl_write_enable  = 1'b1;
+                    end
+                endcase
+            end
+            default: begin
+                reg_write_enable = 1'b1;
+                fl_write_enable = 1'b1;
 
-            case (opcode)
-                `OP_ADDI: begin
-                    alu_funct = `FN_ADD;
-                end
-                `OP_ANDI: begin
-                    alu_funct = `FN_AND;
-                end
-                `OP_ORI: begin
-                    alu_funct = `FN_OR;
-                end
-                `OP_SLTI: begin
-                    alu_funct = `FN_SLT;
-                end
-                `OP_LCL: begin
-                    alu_funct = `OP_LCL;
-                end
-                `OP_LCH: begin
-                    alu_funct = `OP_LCH;
-                end
-                default: begin
-                end
-            endcase
-        end
-    endcase
+                case (opcode)
+                    `OP_ADDI: begin
+                        alu_funct = `FN_ADD;
+                    end
+                    `OP_ANDI: begin
+                        alu_funct = `FN_AND;
+                    end
+                    `OP_ORI: begin
+                        alu_funct = `FN_OR;
+                    end
+                    `OP_SLTI: begin
+                        alu_funct = `FN_SLT;
+                    end
+                    `OP_LCL: begin
+                        alu_funct = `OP_LCL;
+                    end
+                    `OP_LCH: begin
+                        alu_funct = `OP_LCH;
+                    end
+                    default: begin
+                    end
+                endcase
+            end
+        endcase
+    end
 end
 
 endmodule // control_unit

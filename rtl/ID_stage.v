@@ -69,6 +69,7 @@ wire	[5:0]		ir_funct;
 
 /***************** Sinais de Controle *******************/
 wire insert_bubble;
+reg in_stall_pipeline;
 
 // Sinais para o estagio ID (este estagio)
 wire sel_j_jr;         // Seleciona a fonte do endereco do salto incondicional
@@ -76,6 +77,7 @@ wire sel_j_jr;         // Seleciona a fonte do endereco do salto incondicional
 // Propaga o pc + 1
 always @ (posedge clk or posedge rst) begin
     instruction_reg <= instruction;
+    in_stall_pipeline <= stall_pipeline;
     if (rst) out_next_pc = `PC_WIDTH'b0;
     else out_next_pc <= pc + `PC_WIDTH'b1;
 end
@@ -86,7 +88,7 @@ assign ir_funct  = instruction_reg[5:0];
 // Saida do controle eh zero se tem bolha ou se precisa
 // flushar por causa de um branch tomado, ou se o rst
 // for 1
-assign insert_bubble = (stall_pipeline || branch_taken || rst);
+assign insert_bubble = (in_stall_pipeline || branch_taken || rst);
 
 control_unit ctrl
 (
