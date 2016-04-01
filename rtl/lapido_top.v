@@ -82,10 +82,18 @@ module lapido_top (
     wire [`GRP_ADDR_WIDTH-1:0] EX_MEM_out_reg_dest;
 
     //--------------------------------------------------------------------------------------
-    //---------------ESTÁGIO ID----------------
+    //---------------ESTÁGIO MEM----------------
 
+    wire MEM_out_branch_taken;
 
-
+    //saídas do estágio MEM
+    wire [1:0] MEM_WB_out_wb_res_mux;
+    wire MEM_WB_out_reg_write_enable;
+    wire [`PC_WIDTH - 1:0] MEM_WB_out_next_pc;
+    wire [31:0] MEM_WB_out_mem_data;//
+    wire [31:0] MEM_WB_out_alu_res;//
+    wire [31:0] MEM_WB_out_imm;//
+    wire [4:0]  MEM_WB_out_reg_dst;//
 
 
 
@@ -218,4 +226,37 @@ module lapido_top (
     		.fowardA(fowardA),
     		.fowardB(fowardB)
 	);
+
+    MEM_stage mem_stage (
+        .clk                 (clk),
+        .rst                 (rst),
+        .wb_res_mux          (EX_MEM_out_wb_res_mux),
+        .reg_write_enable    (EX_MEM_out_reg_write_enable),
+
+        .is_branch           (EX_MEM_out_is_branch),
+        .sel_jflag_branch    (EX_MEM_out_sel_jflag_branch),
+        .sel_beq_bne         (EX_MEM_out_sel_beq_bne),
+        .sel_jt_jf           (EX_MEM_out_sel_jt_jf),
+        .mem_write           (EX_MEM_out_mem_write_enable),
+
+        //.flag_code           (),
+        .flags               (EX_MEM_out_flags),
+        .in_next_pc          (EX_MEM_out_next_pc),
+        .branch_addr         (MEM_branch_addr),
+        .alu_res             (EX_MEM_out_alu_res),
+        .in_mem_addr         (EX_MEM_out_mem_addr),
+        .in_mem_data         (EX_MEM_out_mem_data),
+        .in_immediate        (EX_MEM_out_imm),
+        .in_reg_dst          (EX_MEM_out_reg_dest),
+
+        .out_branch_taken    (MEM_branch_taken),
+        .out_wb_res_mux      (MEM_WB_out_wb_res_mux),
+        .out_reg_write_enable(MEM_WB_out_reg_write_enable),
+        .out_next_pc         (MEM_WB_out_next_pc),
+        .out_mem_data        (MEM_WB_out_mem_data), //É ESSE MESMO?
+        .out_alu_res         (MEM_WB_out_alu_res),
+        .out_imm             (MEM_WB_out_imm),
+        .out_reg_dst         (MEM_WB_out_reg_dst)
+
+        );
 endmodule
