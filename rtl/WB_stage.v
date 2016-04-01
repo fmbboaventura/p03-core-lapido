@@ -9,7 +9,6 @@
  `include "lapido_defs.v"
 
  module WB_stage (
- 	input clk,    // Clock
 
  	input [1:0] wb_res_mux,//
     input reg_write_enable,//
@@ -19,17 +18,18 @@
     input [31:0] imm,//
     input [4:0]  reg_dst,//
 
-    output reg out_reg_write_enable,
-    output reg [`PC_WIDTH-1: 0] out_wb_res,
-    output reg [4:0] out_reg_dst
+    output out_reg_write_enable,
+    output [`PC_WIDTH-1: 0] out_wb_res,
+    output [4:0] out_reg_dst
  	
  );
- 
-	assign out_wb_res = (wb_res_mux) ? alu_res : mem_data : next_pc : imm
 
-	always @ (posedge clk) begin
-		out_reg_write_enable <= reg_write_enable;
-		out_reg_dst <= reg_dst;
-	end
+ 	assign out_wb_res = (wb_res_mux == `WB_ALU) ? alu_res : 
+ 						(wb_res_mux == `WB_MEM) ? mem_data :
+						(wb_res_mux == `WB_PC) ? next_pc : imm;
+ 
+
+	assign out_reg_write_enable = reg_write_enable;
+	assign out_reg_dst = reg_dst;
 
  endmodule

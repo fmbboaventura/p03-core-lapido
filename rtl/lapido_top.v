@@ -259,4 +259,19 @@ module lapido_top (
         .out_reg_dst         (MEM_WB_out_reg_dst)
 
         );
+
+    WB_stage wb_stage (
+        .wb_res_mux          (MEM_WB_out_wb_res_mux),
+        .reg_write_enable    (MEM_WB_out_reg_write_enable),
+        .next_pc             (MEM_WB_out_next_pc),
+        .mem_data            (MEM_WB_out_mem_data),
+        .alu_res             (MEM_WB_out_alu_res),
+        .imm                 (MEM_WB_out_imm),
+        .reg_dst             (MEM_WB_out_reg_dst),
+
+        .out_reg_write_enable(WB_reg_write_enable),
+        .out_wb_res          (WB_res),
+        .out_reg_dst         (WB_reg_dest)
+
+        );
 endmodule
