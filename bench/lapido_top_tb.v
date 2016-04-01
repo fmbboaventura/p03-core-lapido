@@ -1,9 +1,11 @@
 /***************************************************
  * Module: lapido_top_tb
  * Project:
- * Author:
+ * Author: Filipe Boaventura
  * Description:
  ***************************************************/
+ `include "lapido_defs.v"
+ `include "tb_util.v"
 module lapido_top_tb ();
 
     // Entradas
@@ -11,11 +13,16 @@ module lapido_top_tb ();
     reg rst;
 
     lapido_top dut(.clk(clk), .rst(rst));
+    tb_util util();
+
+    integer cont;
+    reg cont_en;
 
     initial begin
         clk = 0;
         rst = 0;
-        #10;
+        cont = 0;
+        cont_en = 0;
         set_up;
     end
 
@@ -24,15 +31,44 @@ module lapido_top_tb ();
         #5  clk =  ! clk;
     end
 
+    always @ (posedge clk) begin
+        if (!cont_en)
+            $display("Instrucao no ID: %H", dut.id_stage.instruction_reg);
+    end
+
+    always @ (posedge clk) begin
+        if (cont_en) begin
+            cont = cont + 1;
+        end else begin
+            check_halt;
+        end
+    end
+
+    always @ (posedge clk) begin
+        if(cont == 3) begin
+            $display("Parado. Tempo: %t", $time);
+            $stop;
+        end
+    end
+
     task set_up;
     begin
         $display("------------------------------");
         $display("set_up:");
         $display("------------------------------");
         rst = 1;
-        #10; // Para povoar a memoria, o read_file tem que estar ativo quando o clock for de 0 para 1
-
+        #10;
         rst = 0;
+    end
+    endtask
+
+    task check_halt;
+    begin
+         if((dut.ID_IF_jump_addr == dut.IF_ID_pc-1) && dut.ID_IF_is_jump) begin
+            $display("Halt encontrado. Parando...");
+            $display("Tempo: %t", $time);
+            cont_en = 1;
+        end
     end
     endtask
 
