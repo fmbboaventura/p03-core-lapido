@@ -95,6 +95,8 @@ module lapido_top (
     wire [31:0] MEM_WB_out_imm;//
     wire [4:0]  MEM_WB_out_reg_dst;//
 
+    wire [`GRP_ADDR_WIDTH-1:0] EX_MEM_out_rs;
+
 
 
     IF_stage if_stage(
@@ -192,7 +194,9 @@ module lapido_top (
 
     // Sinais para o estagio WB
      .out_wb_res_mux(EX_MEM_out_wb_res_mux), // Seleciona o dado que sera escrito no registrador
-     .out_reg_write_enable(EX_MEM_out_reg_write_enable) // Habilita a escrita no banco de registradores
+     .out_reg_write_enable(EX_MEM_out_reg_write_enable), // Habilita a escrita no banco de registradores
+
+     .out_rs              (EX_MEM_out_rs)
             );
 
 	register_file reg_file (
@@ -239,7 +243,7 @@ module lapido_top (
         .sel_jt_jf           (EX_MEM_out_sel_jt_jf),
         .mem_write           (EX_MEM_out_mem_write_enable),
 
-        //.flag_code           (),
+        .flag_code           (EX_MEM_out_rs),
         .flags               (EX_MEM_out_flags),
         .in_next_pc          (EX_MEM_out_next_pc),
         .branch_addr         (MEM_branch_addr),
