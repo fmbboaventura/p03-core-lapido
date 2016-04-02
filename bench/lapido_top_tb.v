@@ -1,9 +1,14 @@
-/***************************************************
+/******************************************************
  * Module: lapido_top_tb
- * Project:
+ * Project: core_lapido
  * Author: Filipe Boaventura
- * Description:
- ***************************************************/
+ * Description: Modulo para facilitar na execucao de
+ * programas de teste no processador LAPI DOpaCA LAMBA.
+ * os arquivos de saida do assembler devem ser colocados
+ * no diretorio rtl/data, com os nomes data_in.txt para
+ * o segmento de dados, e inst_in.txt, para o segmento
+ * de instrucoes.
+ ******************************************************/
  `include "lapido_defs.v"
  `include "tb_util.v"
 module lapido_top_tb ();
@@ -64,7 +69,7 @@ module lapido_top_tb ();
 
     task check_halt;
     begin
-         if((dut.ID_IF_jump_addr == dut.IF_ID_pc-1) && dut.ID_IF_is_jump) begin
+         if((dut.ID_jump_addr == dut.IF_pc-1) && dut.ID_is_jump) begin
             $display("Halt encontrado. Parando...");
             $display("Tempo: %t", $time);
             cont_en = 1;

@@ -70,7 +70,7 @@ module EX_stage
 	output reg [`GPR_WIDTH-1:0] out_mem_data,
 	output reg [5:0] out_flags,
 	output reg [`GRP_ADDR_WIDTH-1:0] out_reg_dest,
-	output reg [`GRP_ADDR_WIDTH-1:0] out_rs
+	output reg [`GRP_ADDR_WIDTH-1:0] flag_code
 );
 
 wire [`GPR_WIDTH-1:0] op1;
@@ -117,7 +117,7 @@ always @(posedge clk or posedge rst) begin
 		out_sel_jflag_branch <= 1'b0;
 		out_branch_addr <= `PC_WIDTH'b0;
 	end else begin
-		out_rs <= rs;
+		flag_code <= rs;
 		out_mem_write_enable <= mem_write_enable;
 		out_sel_beq_bne <= sel_beq_bne;
 		out_sel_jt_jf <= sel_jt_jf;
