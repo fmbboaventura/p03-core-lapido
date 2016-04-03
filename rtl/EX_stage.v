@@ -150,7 +150,7 @@ always @(posedge clk or posedge rst) begin
 		out_alu_res <= `GPR_WIDTH'b0; // Resultado da alu para salvar no banco de registradores
 	end else begin
 		out_wb_res_mux <= wb_res_mux; // seleciona o que vai gravar no banco de registradores
-		out_reg_write_enable <= out_reg_write_enable; // Enable de escrita do register file
+		out_reg_write_enable <= reg_write_enable; // Enable de escrita do register file
 		out_next_pc <= next_pc; // pc+1 para salvar no banco de registradores
 		out_imm <= imm; // imediato para salvar no banco de registradores
 		out_alu_res[31:0] <= alu_res[31:0]; // Resultado da alu para salvar no banco de registradores
