@@ -75,15 +75,24 @@ module EX_stage
 
 wire [`GPR_WIDTH-1:0] op1;
 wire [`GPR_WIDTH-1:0] op2;
+wire [`GPR_WIDTH-1:0] mem_addr;
+wire [`GPR_WIDTH-1:0] mem_data;
 wire [32:0] alu_res;
 wire [4:0] flag_out;
 
 //Entradas da alu
 assign op1 = (fowardA == `FOWARD_EX) ? EX_MEM_data :
 			 (fowardA == `FOWARD_MEM) ? MEM_WB_data : data_rs;
+
+assign mem_addr = (fowardA == `FOWARD_EX) ? EX_MEM_data :
+			      (fowardA == `FOWARD_MEM) ? MEM_WB_data : data_rs;
+
 assign op2 = (alu_src_mux == `ALU_SRC_IMM) ? imm :
 			 (fowardB == `FOWARD_EX) ? EX_MEM_data :
 			 (fowardB == `FOWARD_MEM) ? MEM_WB_data : data_rt;
+
+assign mem_data = (fowardB == `FOWARD_EX) ? EX_MEM_data :
+			      (fowardB == `FOWARD_MEM) ? MEM_WB_data : data_rt;
 
 alu alu(
 	.op1(op1),
@@ -116,6 +125,8 @@ always @(posedge clk or posedge rst) begin
 		out_is_branch <= 1'b0;
 		out_sel_jflag_branch <= 1'b0;
 		out_branch_addr <= `PC_WIDTH'b0;
+		out_mem_addr <= `DATA_MEM_ADDR_WIDTH'b0;
+		out_mem_data <= 32'b0;
 	end else begin
 		flag_code <= rs;
 		out_mem_write_enable <= mem_write_enable;
@@ -124,6 +135,8 @@ always @(posedge clk or posedge rst) begin
 		out_is_branch <= is_branch;
 		out_sel_jflag_branch <= sel_jflag_branch;
 		out_branch_addr <= next_pc + imm; // Substitui o somador
+		out_mem_addr <= mem_addr;
+		out_mem_data <= mem_data;
 	end
 end
 
