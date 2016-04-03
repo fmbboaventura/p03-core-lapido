@@ -89,10 +89,6 @@ module lapido_top (
 	wire [`GRP_ADDR_WIDTH-1:0] WB_reg_dest;
 	wire [`GPR_WIDTH-1:0] WB_res;
 
-	// TODO: resolver isso aqui
-    wire [`GPR_WIDTH-1:0] EX_MEM_data;
-    wire [`GPR_WIDTH-1:0] MEM_WB_data;
-
     IF_stage if_stage(
     	.rst            (rst),
     	.clk            (clk),
@@ -163,8 +159,8 @@ module lapido_top (
         .data_rs              (REG_data_rs),
         .data_rt              (REG_data_rt),
         .branch_taken         (MEM_branch_taken),
-        .EX_MEM_data          (EX_MEM_data),
-        .MEM_WB_data          (MEM_WB_data),
+        .EX_MEM_data          (EX_alu_res),
+        .MEM_WB_data          (WB_res),
         .fowardA              (FU_fowardA),
         .fowardB              (FU_fowardB),
 
