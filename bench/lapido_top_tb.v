@@ -38,7 +38,8 @@ module lapido_top_tb ();
 
     always @ (posedge clk) begin
         if (!cont_en)
-            $display("Instrucao no ID: %H", dut.id_stage.instruction_reg);
+            $display("Instrucao no ID: %H tempo: %t",
+                dut.id_stage.instruction_reg, $time);
     end
 
     always @ (posedge clk) begin
@@ -54,6 +55,11 @@ module lapido_top_tb ();
             $display("Parado. Tempo: %t", $time);
             $stop;
         end
+    end
+
+    always @ (posedge clk) begin
+        display_branch_jump_target;
+        check_branch_jump_out_of_bounds;
     end
 
     task set_up;
@@ -73,6 +79,26 @@ module lapido_top_tb ();
             $display("Halt encontrado. Parando...");
             $display("Tempo: %t", $time);
             cont_en = 1;
+        end
+    end
+    endtask
+
+    task check_branch_jump_out_of_bounds;
+    begin
+        if(^dut.id_stage.instruction_reg === 1'bx) begin
+            $display("ERRO! %t Salto/branch para endereco invalido!", $time);
+            $stop;
+        end
+    end
+    endtask
+
+    task display_branch_jump_target;
+    begin
+        if(dut.ID_is_jump) begin
+            $display("Salto para o endereco: %d", dut.ID_jump_addr);
+        end
+        if (dut.MEM_branch_taken) begin
+            $display("Desvio para o endereco: %d", dut.MEM_branch_addr);
         end
     end
     endtask
