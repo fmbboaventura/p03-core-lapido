@@ -223,11 +223,12 @@ module lapido_top (
         .wb_res_mux          (EX_wb_res_mux),
         .reg_write_enable    (EX_reg_write_enable),
 
-        .is_branch           (EX_is_branch),
-        .sel_jflag_branch    (EX_sel_jflag_branch),
-        .sel_beq_bne         (EX_sel_beq_bne),
-        .sel_jt_jf           (EX_sel_jt_jf),
+        //.is_branch           (EX_is_branch),
+        //.sel_jflag_branch    (EX_sel_jflag_branch),
+        //.sel_beq_bne         (EX_sel_beq_bne),
+        //.sel_jt_jf           (EX_sel_jt_jf),
         .mem_write           (EX_mem_write_enable),
+        .branch_taken        (EX_MEM_branch_taken), 
 
         .flag_code           (EX_flag_code),
         .flags               (EX_flags),

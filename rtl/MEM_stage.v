@@ -18,11 +18,12 @@ module MEM_stage
     input reg_write_enable,
 
 	//Entradas de sinais do registrador EX/MEM para o MEM
-	input is_branch,
-	input sel_jflag_branch,
-	input sel_beq_bne,
-	input sel_jt_jf,
+	//input is_branch,
+	//input sel_jflag_branch,
+	//input sel_beq_bne,
+	//input sel_jt_jf,
 	input mem_write,
+	input branch_taken,
 
 	//Entrada de dados
 	input [4:0] flag_code,
@@ -36,7 +37,7 @@ module MEM_stage
 	input [4:0] in_reg_dst,//registrador onde vai ser escrito os dados
 
     // Resultado do branch. Nao precisa ir para o MEM/WB
-    output out_branch_taken,
+    output reg out_branch_taken,
 
 	//saídas do estágio MEM
 	output reg [1:0] out_wb_res_mux,
@@ -50,17 +51,6 @@ module MEM_stage
 
 	wire [31:0] wire_out_mem_data;
 	wire wire_out_bru;
-
-	 bru branch_resolution_unit
-	 (
-	 	.flag_code(flag_code),
-	 	.flags_in(flags),
-	 	.sel_jt_jf(sel_jt_jf),
-	 	.sel_beq_bne(sel_beq_bne),
-	 	.sel_jflag_branch(sel_jflag_branch),
-	 	.is_branch(is_branch),
-	 	.branch_taken(out_branch_taken)
-	 );
 
 	 data_mem data_memory
 	 (
@@ -80,6 +70,8 @@ module MEM_stage
 		out_alu_res <= alu_res;
 		out_reg_dst <= in_reg_dst;
 		out_imm <= in_immediate;
+		out_branch_taken <= branch_taken;
+
 	end
 
 endmodule
