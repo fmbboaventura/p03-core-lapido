@@ -95,7 +95,7 @@ module lapido_top (
     	.jump_addr      (ID_jump_addr),
     	.is_jump        (ID_is_jump),
     	.branch_taken   (MEM_branch_taken),
-    	.branch_addr	(MEM_branch_addr),
+    	.branch_addr	(EX_branch_addr),
     	.stall_pipeline (HDU_stall_pipeline),
     	.instruction    (IF_instruction),
     	.pc             (IF_pc)
@@ -245,6 +245,7 @@ module lapido_top (
         .out_alu_res         (MEM_alu_res),
         .out_imm             (MEM_imm),
         .out_reg_dst         (MEM_reg_dst)
+
 
         );
 
