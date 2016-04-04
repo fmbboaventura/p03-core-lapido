@@ -52,10 +52,10 @@ module EX_stage
 
     // Sinais para o estagio MEM
     output reg out_mem_write_enable, // Habilita a escrita na memoria
-    output reg out_sel_beq_bne,      // Seleciona entre beq e bne
-    output reg out_sel_jt_jf,        // Seleciona entre jt e jf na fmu
-    output reg out_is_branch,        // A instrucao eh um desvio pc-relative
-    output reg out_sel_jflag_branch, // seletor do tipo do branch
+    //output reg out_sel_beq_bne,      // Seleciona entre beq e bne
+    //output reg out_sel_jt_jf,        // Seleciona entre jt e jf na fmu
+    //output reg out_is_branch,        // A instrucao eh um desvio pc-relative
+    //output reg out_sel_jflag_branch, // seletor do tipo do branch
 
     // Sinais para o estagio WB
     output reg [1:0] out_wb_res_mux, // Seleciona o dado que sera escrito no registrador
@@ -68,9 +68,9 @@ module EX_stage
 	output reg [`GPR_WIDTH-1:0] out_alu_res,
 	output reg [`GPR_WIDTH-1:0] out_mem_addr,
 	output reg [`GPR_WIDTH-1:0] out_mem_data,
-	output reg [5:0] out_flags,
 	output reg [`GRP_ADDR_WIDTH-1:0] out_reg_dest,
-	output reg [`GRP_ADDR_WIDTH-1:0] flag_code
+	//output reg [`GRP_ADDR_WIDTH-1:0] flag_code
+	output reg EX_MEM_branch_taken
 );
 
 wire [`GPR_WIDTH-1:0] op1;
@@ -78,7 +78,8 @@ wire [`GPR_WIDTH-1:0] op2;
 wire [`GPR_WIDTH-1:0] mem_addr;
 wire [`GPR_WIDTH-1:0] mem_data;
 wire [32:0] alu_res;
-wire [4:0] flag_out;
+wire [4:0] alu_flag_out;
+wire [5:0] out_flags;
 
 //Entradas da alu
 assign op1 = (fowardA == `FOWARD_EX) ? EX_MEM_data :
@@ -99,8 +100,31 @@ alu alu(
 	.op2(op2),
 	.alu_funct(alu_funct),
 	.alu_res(alu_res),
-	.flags(flag_out)
+	.flags(alu_flag_out)
 );
+
+bru branch_resolution_unit
+	(
+	 	.flag_code(rs),
+	 	.flags_in(out_flags),
+	 	.sel_jt_jf(sel_jt_jf),
+	 	.sel_beq_bne(sel_beq_bne),
+	 	.sel_jflag_branch(sel_jflag_branch),
+	 	.is_branch(is_branch),
+	 	.branch_taken(EX_MEM_branch_taken)
+	);
+
+flags flags(
+	.clk            (clk),
+	.rst            (rst),
+	.branch_taken   (branch_taken),
+	.alu_res        (alu_res),
+	.alu_flags      (alu_flag_out),
+	.fl_write_enable(fl_write_enable),
+	.out_flags      (out_flags)
+
+
+	);
 
 // Selecionando o endereco do registrador de destino
 always @ (posedge clk or posedge rst) begin
@@ -120,35 +144,23 @@ end
 always @(posedge clk or posedge rst) begin
 	if (rst || branch_taken) begin
 		out_mem_write_enable <= 1'b0;
-		out_sel_beq_bne <= 1'b0;
-		out_sel_jt_jf <= 1'b0;
-		out_is_branch <= 1'b0;
-		out_sel_jflag_branch <= 1'b0;
+		//out_sel_beq_bne <= 1'b0;
+		//out_sel_jt_jf <= 1'b0;
+		//out_is_branch <= 1'b0;
+		//out_sel_jflag_branch <= 1'b0;
 		out_branch_addr <= `PC_WIDTH'b0;
 		out_mem_addr <= `DATA_MEM_ADDR_WIDTH'b0;
 		out_mem_data <= 32'b0;
 	end else begin
-		flag_code <= rs;
+		//flag_code <= rs;
 		out_mem_write_enable <= mem_write_enable;
-		out_sel_beq_bne <= sel_beq_bne;
-		out_sel_jt_jf <= sel_jt_jf;
-		out_is_branch <= is_branch;
-		out_sel_jflag_branch <= sel_jflag_branch;
+		//out_sel_beq_bne <= sel_beq_bne;
+		//out_sel_jt_jf <= sel_jt_jf;
+		//out_is_branch <= is_branch;
+		//out_sel_jflag_branch <= sel_jflag_branch;
 		out_branch_addr <= next_pc + imm; // Substitui o somador
 		out_mem_addr <= mem_addr;
 		out_mem_data <= mem_data;
-	end
-end
-
-// Escrevendo no registrador de flags
-always @ (posedge clk or posedge rst) begin
-	if (rst || branch_taken) begin
-		out_flags <= 6'b0;
-	end else begin
-		if (fl_write_enable) begin
-			out_flags[5] <= alu_res[32];
-			out_flags[4:0] <= flag_out[4:0];
-		end
 	end
 end
 

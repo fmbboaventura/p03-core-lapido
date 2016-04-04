@@ -68,6 +68,7 @@ module lapido_top (
     wire [5:0] EX_flags;
     wire [`GRP_ADDR_WIDTH-1:0] EX_reg_dest;
 	wire [`GRP_ADDR_WIDTH-1:0] EX_flag_code;
+    wire EX_MEM_branch_taken;
 
     // ----------------- Saidas do estagio MEM ----------------
     wire [1:0] MEM_wb_res_mux;
@@ -173,14 +174,15 @@ module lapido_top (
         .out_flags            (EX_flags),
         .out_reg_dest         (EX_reg_dest),
     	.out_mem_write_enable (EX_mem_write_enable), // Habilita a escrita na memoria
-		.out_sel_beq_bne	  (EX_sel_beq_bne),      // Seleciona entre beq e bne
-		.out_sel_jt_jf        (EX_sel_jt_jf),         // Seleciona entre jt e jf na fmu
-    	.out_is_branch        (EX_is_branch),        // A instrucao eh um desvio pc-relative
-    	.out_sel_jflag_branch (EX_sel_jflag_branch),
+		//.out_sel_beq_bne	  (EX_sel_beq_bne),      // Seleciona entre beq e bne
+		//.out_sel_jt_jf        (EX_sel_jt_jf),         // Seleciona entre jt e jf na fmu
+    	//.out_is_branch        (EX_is_branch),        // A instrucao eh um desvio pc-relative
+    	//.out_sel_jflag_branch (EX_sel_jflag_branch),
     	.out_wb_res_mux       (EX_wb_res_mux), // Seleciona o dado que sera escrito no registrador
     	.out_reg_write_enable (EX_reg_write_enable), // Habilita a escrita no banco de registradores
 
-    	.flag_code              (EX_flag_code)
+    	.flag_code              (EX_flag_code),
+        .EX_MEM_branch_taken (EX_MEM_branch_taken),
     );
 
 	register_file reg_file (
