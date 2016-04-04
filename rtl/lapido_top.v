@@ -182,7 +182,7 @@ module lapido_top (
     	.out_reg_write_enable (EX_reg_write_enable), // Habilita a escrita no banco de registradores
 
     	.flag_code              (EX_flag_code),
-        .EX_MEM_branch_taken (EX_MEM_branch_taken),
+        .EX_MEM_branch_taken (EX_MEM_branch_taken)
     );
 
 	register_file reg_file (
