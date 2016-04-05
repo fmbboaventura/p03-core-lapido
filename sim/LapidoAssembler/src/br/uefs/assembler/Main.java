@@ -161,7 +161,19 @@ public class Main {
             for (int i =0; i < aux.length; i++) {
                 String s = aux[i];
                 if (s.length() > 0) {
-                    if(s.contains(";")) {
+                    if (s.equals("NOP")) {
+                            int rs = 0;
+                            int rt = 0;
+                            int rd = 0;
+                            int opcode = opcodeMap.get("ADDI");
+                            int instruction = opcode << sftOpcode;
+                            instruction = instruction | (rs << sftRs);
+                            instruction = instruction | (rt << sftRt);
+                            instruction = instruction | rd;
+                            System.out.println("Escrevendo Instrucao: " + s);
+                            writeAssembled(progBw, instruction);
+                        }
+                    else if(s.contains(";")) {
                         break;
                     } else if (s.equals(".PSEG") || s.equals(".MODULE") || s.equals(".END")){
                         break;
@@ -180,8 +192,10 @@ public class Main {
 
                         String cond = null; // Condição do jt/jf
                         if(s.contains(".")){
-                            String[] split = s.split(".");
+                            String[] split = s.split("\\.");
                             if (split.length > 2) reportSyntaxError(currentLine, "Problema na traducao da instrucao");
+                            //System.out.println(split[0]);
+                            //System.out.println(split[1]);
                             s = split[0];
                             cond = split[1];
                         }
