@@ -26,7 +26,7 @@ module bru (
     
     assign jt_jf_ok = (sel_jt_jf) ? flags_in[flag_code_safe] : !flags_in[flag_code_safe];
 
-    assign beq_bne_ok = (sel_beq_bne)? flags_in[`FL_TRUE] : !flags_in[`FL_ZERO];
+    assign beq_bne_ok = (sel_beq_bne)? flags_in[`FL_TRUE] : flags_in[`FL_ZERO];
 
     assign branch_taken = (sel_jflag_branch)? beq_bne_ok & is_branch : jt_jf_ok & is_branch;
 
