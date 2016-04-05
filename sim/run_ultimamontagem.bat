@@ -1,0 +1,1 @@
+simulador LapidoAssembler/assembled_files/data_in.txt LapidoAssembler/assembled_files/inst_in.txt
