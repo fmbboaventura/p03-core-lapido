@@ -292,7 +292,7 @@ public class Main {
                                 } else if(s.equals("JAL")) {
                                     int rs = Integer.parseInt(aux[i + 1].substring(1));
                                     instruction = instruction | (rs << sftRs);
-                                } else if (s.equals("PASSA")) { // addi com zero
+                                } else if (s.equals("PASSA") || s.equals("PASSB")) { // addi com zero
                                     int rs = Integer.parseInt(aux[i + 2].substring(1));
                                     int rt = Integer.parseInt(aux[i + 1].substring(1));
                                     instruction = instruction | (rs << sftRs);
@@ -398,12 +398,12 @@ public class Main {
         String[] firstSplit, aux;
 
         line = line.trim().toUpperCase();
-        
+
         firstSplit = line.split("\\s+"); // Remove 1 ou mais espaços em branco
 
         for (String s1 : firstSplit) { // Percorre para remover eventuais ','
             if(s1.length() > 0){
-                if(s1.endsWith(";") && s1.length() > 1)
+                if(!s1.startsWith(";") && s1.endsWith(";") && s1.length() > 1)
                     s1 = s1.split(";")[0];
                 if(s1.contains(",")){
                     aux = s1.split(",");
