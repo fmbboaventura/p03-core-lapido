@@ -75,7 +75,6 @@ module lapido_top (
     wire [31:0] MEM_alu_res;
     wire [31:0] MEM_imm;
     wire [4:0]  MEM_reg_dst;
-    wire [`PC_WIDTH - 1:0] MEM_branch_addr;
     wire EX_branch_taken;
 
     // ----------------- Saidas do fowarding unit ----------------
