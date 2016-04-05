@@ -16,7 +16,7 @@ add wave -noupdate -group ID_stage -radix unsigned /lapido_top_tb/dut/id_stage/c
 add wave -noupdate -group ID_stage -radix unsigned /lapido_top_tb/dut/id_stage/rst
 add wave -noupdate -group ID_stage -radix unsigned /lapido_top_tb/dut/id_stage/branch_taken
 add wave -noupdate -group ID_stage -radix hexadecimal /lapido_top_tb/dut/id_stage/instruction_reg
-add wave -noupdate -group ID_stage -radix hexadecimal -childformat {{{/lapido_top_tb/dut/id_stage/instruction[31]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[30]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[29]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[28]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[27]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[26]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[25]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[24]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[23]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[22]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[21]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[20]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[19]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[18]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[17]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[16]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[15]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[14]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[13]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[12]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[11]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[10]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[9]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[8]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[7]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[6]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[5]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[4]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[3]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[2]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[1]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[0]} -radix hexadecimal}} -subitemconfig {{/lapido_top_tb/dut/id_stage/instruction[31]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[30]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[29]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[28]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[27]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[26]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[25]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[24]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[23]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[22]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[21]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[20]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[19]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[18]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[17]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[16]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[15]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[14]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[13]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[12]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[11]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[10]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[9]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[8]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[7]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[6]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[5]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[4]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[3]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[2]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[1]} {-radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[0]} {-radix hexadecimal}} /lapido_top_tb/dut/id_stage/instruction
+add wave -noupdate -group ID_stage -radix hexadecimal -childformat {{{/lapido_top_tb/dut/id_stage/instruction[31]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[30]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[29]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[28]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[27]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[26]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[25]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[24]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[23]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[22]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[21]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[20]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[19]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[18]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[17]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[16]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[15]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[14]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[13]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[12]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[11]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[10]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[9]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[8]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[7]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[6]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[5]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[4]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[3]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[2]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[1]} -radix hexadecimal} {{/lapido_top_tb/dut/id_stage/instruction[0]} -radix hexadecimal}} -subitemconfig {{/lapido_top_tb/dut/id_stage/instruction[31]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[30]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[29]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[28]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[27]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[26]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[25]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[24]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[23]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[22]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[21]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[20]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[19]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[18]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[17]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[16]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[15]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[14]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[13]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[12]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[11]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[10]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[9]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[8]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[7]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[6]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[5]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[4]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[3]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[2]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[1]} {-height 15 -radix hexadecimal} {/lapido_top_tb/dut/id_stage/instruction[0]} {-height 15 -radix hexadecimal}} /lapido_top_tb/dut/id_stage/instruction
 add wave -noupdate -group ID_stage -radix unsigned /lapido_top_tb/dut/id_stage/pc
 add wave -noupdate -group ID_stage -radix unsigned /lapido_top_tb/dut/id_stage/data_rs
 add wave -noupdate -group ID_stage -radix unsigned /lapido_top_tb/dut/id_stage/data_rt
@@ -73,10 +73,6 @@ add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex
 add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/fowardB
 add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/next_pc
 add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/out_mem_write_enable
-add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/out_sel_beq_bne
-add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/out_sel_jt_jf
-add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/out_is_branch
-add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/out_sel_jflag_branch
 add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/out_wb_res_mux
 add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/out_reg_write_enable
 add wave -noupdate -expand -group EX_stage -radix decimal /lapido_top_tb/dut/ex_stage/out_imm
@@ -87,13 +83,11 @@ add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex
 add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/out_mem_data
 add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/out_flags
 add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/out_reg_dest
-add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/flag_code
 add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/op1
 add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/op2
 add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/mem_addr
 add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/mem_data
 add wave -noupdate -expand -group EX_stage -radix decimal /lapido_top_tb/dut/ex_stage/alu_res
-add wave -noupdate -expand -group EX_stage -radix unsigned /lapido_top_tb/dut/ex_stage/flag_out
 add wave -noupdate -group reg_file -radix unsigned /lapido_top_tb/dut/reg_file/clk
 add wave -noupdate -group reg_file -radix unsigned /lapido_top_tb/dut/reg_file/rst
 add wave -noupdate -group reg_file -radix unsigned /lapido_top_tb/dut/reg_file/en
@@ -116,34 +110,26 @@ add wave -noupdate -group fu -radix unsigned /lapido_top_tb/dut/fu/MEM_WB_reg_wr
 add wave -noupdate -group fu -radix unsigned /lapido_top_tb/dut/fu/MEM_WB_rd
 add wave -noupdate -group fu -radix unsigned /lapido_top_tb/dut/fu/fowardA
 add wave -noupdate -group fu -radix unsigned /lapido_top_tb/dut/fu/fowardB
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/clk
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/rst
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/wb_res_mux
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/reg_write_enable
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/is_branch
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/sel_jflag_branch
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/sel_beq_bne
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/sel_jt_jf
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/mem_write
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/flag_code
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/in_next_pc
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/branch_addr
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/flags
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/alu_res
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/in_mem_addr
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/in_mem_data
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/in_immediate
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/in_reg_dst
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_branch_taken
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_wb_res_mux
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_reg_write_enable
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_next_pc
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_mem_data
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_alu_res
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_imm
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_reg_dst
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/wire_out_mem_data
-add wave -noupdate -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/wire_out_bru
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/clk
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/rst
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/wb_res_mux
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/reg_write_enable
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/mem_write
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/in_next_pc
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/alu_res
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/in_mem_addr
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/in_mem_data
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/in_immediate
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/in_reg_dst
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_wb_res_mux
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_reg_write_enable
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_next_pc
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_mem_data
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_alu_res
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_imm
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/out_reg_dst
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/wire_out_mem_data
+add wave -noupdate -expand -group MEM_stage -radix unsigned /lapido_top_tb/dut/mem_stage/wire_out_bru
 add wave -noupdate -group WB_stage -radix unsigned /lapido_top_tb/dut/wb_stage/wb_res_mux
 add wave -noupdate -group WB_stage -radix unsigned /lapido_top_tb/dut/wb_stage/reg_write_enable
 add wave -noupdate -group WB_stage -radix unsigned /lapido_top_tb/dut/wb_stage/next_pc
@@ -155,7 +141,7 @@ add wave -noupdate -group WB_stage -radix unsigned /lapido_top_tb/dut/wb_stage/o
 add wave -noupdate -group WB_stage -radix unsigned /lapido_top_tb/dut/wb_stage/out_wb_res
 add wave -noupdate -group WB_stage -radix unsigned /lapido_top_tb/dut/wb_stage/out_reg_dst
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {195 ps} 0}
+WaveRestoreCursors {{Cursor 1} {0 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 142
 configure wave -valuecolwidth 79
@@ -171,4 +157,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ps
 update
-WaveRestoreZoom {172 ps} {216 ps}
+WaveRestoreZoom {0 ps} {44 ps}

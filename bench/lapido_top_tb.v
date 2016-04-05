@@ -97,7 +97,7 @@ module lapido_top_tb ();
         if(dut.ID_is_jump) begin
             $display("Salto para o endereco: %d", dut.ID_jump_addr);
         end
-        if (dut.MEM_branch_taken) begin
+        if (dut.EX_branch_taken) begin
             $display("Desvio para o endereco: %d", dut.MEM_branch_addr);
         end
     end

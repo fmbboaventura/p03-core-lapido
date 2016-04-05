@@ -43,10 +43,10 @@ module ID_stage
 
     // Sinais para o estagio MEM
     output out_mem_write_enable, // Habilita a escrita na memoria
-    output reg out_sel_beq_bne,      // Seleciona entre beq e bne
-    output reg out_sel_jt_jf,        // Seleciona entre jt e jf na fmu
-    output reg out_is_branch,        // A instrucao eh um desvio pc-relative
-    output reg out_sel_jflag_branch, // seletor do tipo do branch
+    output out_sel_beq_bne,      // Seleciona entre beq e bne
+    output out_sel_jt_jf,        // Seleciona entre jt e jf na fmu
+    output out_is_branch,        // A instrucao eh um desvio pc-relative
+    output out_sel_jflag_branch, // seletor do tipo do branch
 
     // Sinais para o estagio WB
     output [1:0] out_wb_res_mux, // Seleciona o dado que sera escrito no registrador
@@ -122,24 +122,16 @@ assign jump_addr = (sel_j_jr)? {6'b000000, instruction_reg[25:0]} : data_rs;// P
 
 // Propagando campos da instrucao e dados imediatos
 always @ (posedge clk or posedge rst) begin
-    if (rst || branch_taken) begin
+    if (rst) begin
         out_rd  <= `GRP_ADDR_WIDTH'b0;
         out_rs  <= `GRP_ADDR_WIDTH'b0;
         out_rt  <= `GRP_ADDR_WIDTH'b0;
         out_imm <= `GPR_WIDTH'b0;
-        out_sel_jt_jf <= 1'b0;
-        out_sel_beq_bne <= 1'b0;
-        out_is_branch <= 1'b0;
-        out_sel_jflag_branch <= 1'b0;
     end else begin
         out_rd  <= instruction[15:11]; // ok usar a entrada porque faz no posedge
         out_rs  <= instruction[25:21];
         out_rt  <= instruction[20:16];
         out_imm <= {{16{instruction[15]}}, instruction[15:0]};
-        //out_sel_beq_bne <= sel_beq_bne;
-        //out_sel_jt_jf <= sel_jt_jf;
-        //out_is_branch <= is_branch;
-        //out_sel_jflag_branch <= sel_jflag_branch;
     end
 end
 

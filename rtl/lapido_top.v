@@ -65,10 +65,7 @@ module lapido_top (
     wire [`GPR_WIDTH-1:0] EX_alu_res;
     wire [`GPR_WIDTH-1:0] EX_mem_addr;
     wire [`GPR_WIDTH-1:0] EX_mem_data;
-    wire [5:0] EX_flags;
     wire [`GRP_ADDR_WIDTH-1:0] EX_reg_dest;
-	wire [`GRP_ADDR_WIDTH-1:0] EX_flag_code;
-    wire EX_MEM_branch_taken;
 
     // ----------------- Saidas do estagio MEM ----------------
     wire [1:0] MEM_wb_res_mux;
@@ -79,7 +76,7 @@ module lapido_top (
     wire [31:0] MEM_imm;
     wire [4:0]  MEM_reg_dst;
     wire [`PC_WIDTH - 1:0] MEM_branch_addr;
-    wire MEM_branch_taken;
+    wire EX_branch_taken;
 
     // ----------------- Saidas do fowarding unit ----------------
     wire [1:0] FU_fowardA;
@@ -95,7 +92,7 @@ module lapido_top (
     	.clk            (clk),
     	.jump_addr      (ID_jump_addr),
     	.is_jump        (ID_is_jump),
-    	.branch_taken   (MEM_branch_taken),
+    	.branch_taken   (EX_branch_taken),
     	.branch_addr	(EX_branch_addr),
     	.stall_pipeline (HDU_stall_pipeline),
     	.instruction    (IF_instruction),
@@ -107,7 +104,7 @@ module lapido_top (
         .rst                 (rst),
         .clk                 (clk),
 
-        .branch_taken        (MEM_branch_taken),
+        .branch_taken        (EX_branch_taken),
         .instruction         (IF_instruction),
         .pc                  (IF_pc),
         .data_rs             (REG_data_rs),
@@ -159,30 +156,22 @@ module lapido_top (
         .imm                  (ID_imm),
         .data_rs              (REG_data_rs),
         .data_rt              (REG_data_rt),
-        .branch_taken         (MEM_branch_taken),
+        .branch_taken         (EX_branch_taken),
         .EX_MEM_data          (EX_alu_res),
         .MEM_WB_data          (WB_res),
         .fowardA              (FU_fowardA),
         .fowardB              (FU_fowardB),
-
         .out_imm              (EX_out_imm),
         .out_next_pc          (EX_next_pc),
         .out_branch_addr      (EX_branch_addr),
         .out_alu_res          (EX_alu_res),
         .out_mem_addr         (EX_mem_addr),
         .out_mem_data         (EX_mem_data),
-        .out_flags            (EX_flags),
         .out_reg_dest         (EX_reg_dest),
     	.out_mem_write_enable (EX_mem_write_enable), // Habilita a escrita na memoria
-		//.out_sel_beq_bne	  (EX_sel_beq_bne),      // Seleciona entre beq e bne
-		//.out_sel_jt_jf        (EX_sel_jt_jf),         // Seleciona entre jt e jf na fmu
-    	//.out_is_branch        (EX_is_branch),        // A instrucao eh um desvio pc-relative
-    	//.out_sel_jflag_branch (EX_sel_jflag_branch),
     	.out_wb_res_mux       (EX_wb_res_mux), // Seleciona o dado que sera escrito no registrador
     	.out_reg_write_enable (EX_reg_write_enable), // Habilita a escrita no banco de registradores
-
-    	.flag_code              (EX_flag_code),
-        .EX_MEM_branch_taken (EX_MEM_branch_taken)
+        .out_branch_taken (EX_branch_taken)
     );
 
 	register_file reg_file (
@@ -222,25 +211,13 @@ module lapido_top (
         .rst                 (rst),
         .wb_res_mux          (EX_wb_res_mux),
         .reg_write_enable    (EX_reg_write_enable),
-
-        //.is_branch           (EX_is_branch),
-        //.sel_jflag_branch    (EX_sel_jflag_branch),
-        //.sel_beq_bne         (EX_sel_beq_bne),
-        //.sel_jt_jf           (EX_sel_jt_jf),
         .mem_write           (EX_mem_write_enable),
-        .branch_taken        (EX_MEM_branch_taken), 
-
-        .flag_code           (EX_flag_code),
-        .flags               (EX_flags),
         .in_next_pc          (EX_next_pc),
-        .branch_addr         (EX_branch_addr),
         .alu_res             (EX_alu_res),
         .in_mem_addr         (EX_mem_addr),
         .in_mem_data         (EX_mem_data),
         .in_immediate        (EX_out_imm),
         .in_reg_dst          (EX_reg_dest),
-
-        .out_branch_taken    (MEM_branch_taken),
         .out_wb_res_mux      (MEM_wb_res_mux),
         .out_reg_write_enable(MEM_reg_write_enable),
         .out_next_pc         (MEM_next_pc),
@@ -248,8 +225,6 @@ module lapido_top (
         .out_alu_res         (MEM_alu_res),
         .out_imm             (MEM_imm),
         .out_reg_dst         (MEM_reg_dst)
-
-
         );
 
     WB_stage wb_stage (

@@ -2,7 +2,7 @@
  * Module: MEM_stage
  * Project: core_lapido
  * Author: Afonso Machado e Felipe Cordeiro
- * Description: Modulo que representa o estágio de 
+ * Description: Modulo que representa o estágio de
  * memória do processador LAPIDO
  ***************************************************/
 
@@ -16,28 +16,14 @@ module MEM_stage
 	//Sinal para o estágio wb
 	input [1:0] wb_res_mux,
     input reg_write_enable,
-
-	//Entradas de sinais do registrador EX/MEM para o MEM
-	//input is_branch,
-	//input sel_jflag_branch,
-	//input sel_beq_bne,
-	//input sel_jt_jf,
 	input mem_write,
-	input branch_taken,
 
-	//Entrada de dados
-	input [4:0] flag_code,
 	input [`PC_WIDTH - 1:0] in_next_pc,
-	input [`PC_WIDTH - 1:0] branch_addr,
-	input [5:0] flags,
 	input [31:0] alu_res,
 	input [31:0] in_mem_addr,//saida rs_data do banco de registradores
 	input [31:0] in_mem_data,//saida rt_data do banco de registradores
 	input [31:0] in_immediate,//
 	input [4:0] in_reg_dst,//registrador onde vai ser escrito os dados
-
-    // Resultado do branch. Nao precisa ir para o MEM/WB
-    output reg out_branch_taken,
 
 	//saídas do estágio MEM
 	output reg [1:0] out_wb_res_mux,
@@ -70,8 +56,6 @@ module MEM_stage
 		out_alu_res <= alu_res;
 		out_reg_dst <= in_reg_dst;
 		out_imm <= in_immediate;
-		out_branch_taken <= branch_taken;
-
 	end
 
 endmodule
