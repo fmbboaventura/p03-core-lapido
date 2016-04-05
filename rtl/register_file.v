@@ -47,8 +47,8 @@ always @ (posedge clk or posedge rst) begin
 	end
 end
 
-assign data_rs = registers[rs];
+assign data_rs = (en & (rd == rs)) ? data : registers[rs];
 
-assign data_rt = registers[rt];
+assign data_rt = (en & (rd == rt)) ? data : registers[rt];
 
 endmodule

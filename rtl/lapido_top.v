@@ -134,6 +134,10 @@ module lapido_top (
 
     );
 
+	// Para o fowarding no estágio MEM
+	wire [`GPR_WIDTH-1:0] EX_MEM_data;
+	assign EX_MEM_data = (EX_wb_res_mux == `WB_ALU) ? EX_alu_res : EX_out_imm;
+
     EX_stage ex_stage (
         .clk                  (clk),
         .rst                  (rst),
@@ -156,7 +160,7 @@ module lapido_top (
         .data_rs              (REG_data_rs),
         .data_rt              (REG_data_rt),
         .branch_taken         (EX_branch_taken),
-        .EX_MEM_data          (EX_alu_res),
+        .EX_MEM_data          (EX_MEM_data),
         .MEM_WB_data          (WB_res),
         .fowardA              (FU_fowardA),
         .fowardB              (FU_fowardB),
