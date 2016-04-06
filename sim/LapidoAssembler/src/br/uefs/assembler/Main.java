@@ -73,7 +73,7 @@ public class Main {
         }
 
         System.out.println("\n-----------------------------------");
-        System.out.printf("Traducao Conluida em %fs\n", (System.nanoTime() - beginTime)/1000000000.0f);
+        System.out.printf("Traducao Conluida em %fs\n", (System.nanoTime() - beginTime) / 1000000000.0f);
         System.out.println("-----------------------------------");
     }
 
@@ -112,17 +112,20 @@ public class Main {
                         labelMap.put(label, codeLineCnt);
                         System.out.println("Label encontrada:");
                         System.out.println(label + " " + codeLineCnt + "\n");
-                    } else if (s.equals(".dseg")) {
-                        System.out.println("Segmento de dados encontrado");
-                        codeLineCnt = 0;
-                        break;
-                    } else if (s.equals(".pseg") || s.equals(".module")) {
-                        break;
-                    }
+                    } else {
+                        incrementLineCount = true;
+                        if (s.equals(".dseg")) {
+                            System.out.println("Segmento de dados encontrado");
+                            codeLineCnt = 0;
+                            break;
+                        } else if (s.equals(".pseg") || s.equals(".module")) {
+                            break;
+                        }
 
-                    if (incrementLineCount) {
-                        codeLineCnt++;
-                        break;
+                        if (incrementLineCount) {
+                            codeLineCnt++;
+                            break;
+                        }
                     }
                 }
             }
@@ -158,40 +161,38 @@ public class Main {
             //line = line.trim().toUpperCase();
             aux = parseLine(line);//line.split("\\s+");
 
-            for (int i =0; i < aux.length; i++) {
+            for (int i = 0; i < aux.length; i++) {
                 String s = aux[i];
                 if (s.length() > 0) {
                     if (s.equals("NOP")) {
-                            int rs = 0;
-                            int rt = 0;
-                            int rd = 0;
-                            int opcode = opcodeMap.get("ADDI");
-                            int instruction = opcode << sftOpcode;
-                            instruction = instruction | (rs << sftRs);
-                            instruction = instruction | (rt << sftRt);
-                            instruction = instruction | rd;
-                            System.out.println("Escrevendo Instrucao: " + s);
-                            writeAssembled(progBw, instruction);
-                        }
-                    else if(s.contains(";")) {
+                        int rs = 0;
+                        int rt = 0;
+                        int rd = 0;
+                        int opcode = opcodeMap.get("ADDI");
+                        int instruction = opcode << sftOpcode;
+                        instruction = instruction | (rs << sftRs);
+                        instruction = instruction | (rt << sftRt);
+                        instruction = instruction | rd;
+                        System.out.println("Escrevendo Instrucao: " + s);
+                        writeInstruction(progBw, instruction);
+                    } else if (s.contains(";")) {
                         break;
-                    } else if (s.equals(".PSEG") || s.equals(".MODULE") || s.equals(".END")){
+                    } else if (s.equals(".PSEG") || s.equals(".MODULE") || s.equals(".END")) {
                         break;
-                    } else if (s.equals(".DSEG")){
+                    } else if (s.equals(".DSEG")) {
                         System.out.println("Lendo segmento de dados...");
                         break;
                     } else if (s.equals(".WORD")) {
                         int word = Integer.parseInt(aux[1]);
-                        System.out.println("Escrevendo constante: " + word );
+                        System.out.println("Escrevendo constante: " + word);
                         writeAssembled(dataBw, word);
                         break;
-                    }else if (s.contains(":")){
+                    } else if (s.contains(":")) {
                         continue;
-                    }
-                    else {
+                    } else {
 
                         String cond = null; // Condição do jt/jf
-                        if(s.contains(".")){
+                        if (s.contains(".")) {
                             String[] split = s.split("\\.");
                             if (split.length > 2) reportSyntaxError(currentLine, "Problema na traducao da instrucao");
                             //System.out.println(split[0]);
@@ -209,15 +210,15 @@ public class Main {
 
                                 int rd = Integer.parseInt(aux[i + 1].substring(1));
 
-                                if (s.equals("ZEROS")){
+                                if (s.equals("ZEROS")) {
                                     instruction = instruction | (rd << sftRd);
                                     instruction = instruction | (rd << sftRs);
                                     instruction = instruction | (rd << sftRt);
-                                } else if(s.equals("JR")){
+                                } else if (s.equals("JR")) {
                                     instruction = instruction | (rd << sftRs);
-                                } else if(s.equals("RET")){
+                                } else if (s.equals("RET")) {
                                     instruction = instruction | (0x0F << sftRs);
-                                } else{
+                                } else {
                                     instruction = instruction | (rd << sftRd);
 
                                     int rs = Integer.parseInt(aux[i + 2].substring(1));
@@ -233,18 +234,18 @@ public class Main {
 
                                 instruction = instruction | funct;
                                 System.out.println("Escrevendo Instrucao: " + s);
-                                writeAssembled(progBw, instruction);
+                                writeInstruction(progBw, instruction);
 
                                 break;
                             case 'i':
                                 //int rs = Integer.parseInt(aux[i + 1].substring(1))
-                                if(s.equals("JT") || s.equals("JF")){
+                                if (s.equals("JT") || s.equals("JF")) {
 
                                     int flagCode = flagMap.get(cond);
                                     instruction = instruction | (flagCode << sftRs);
                                     instruction = instruction | computeBranchOffset(aux[i + 1], codeLineCnt);
 
-                                } else if (s.equals("BEQ") || s.equals("BNE")){
+                                } else if (s.equals("BEQ") || s.equals("BNE")) {
                                     int rs = Integer.parseInt(aux[i + 1].substring(1));
                                     int rt = Integer.parseInt(aux[i + 2].substring(1));
 
@@ -254,9 +255,10 @@ public class Main {
                                 } else if (s.equals("LCL") || s.equals("LCH")) {
                                     int rt = Integer.parseInt(aux[i + 1].substring(1));
                                     instruction = instruction | (rt << sftRt);
+                                    instruction = instruction | (rt << sftRs);
 
                                     int imm = 0;
-                                    if(aux[i + 2].equals("HIGHBYTE")){
+                                    if (aux[i + 2].equals("HIGHBYTE")) {
                                         imm = labelMap.containsKey(aux[i + 3]) ?
                                                 labelMap.get(aux[i + 3]) :
                                                 Integer.parseInt(aux[i + 3]);
@@ -270,26 +272,26 @@ public class Main {
                                         imm = Integer.parseInt(aux[i + 2]);
                                     }
                                     instruction = instruction | imm;
-                                } else if(s.equals("LOAD")){
+                                } else if (s.equals("LOAD")) {
                                     int rs = Integer.parseInt(aux[i + 2].substring(1));
                                     int rt = Integer.parseInt(aux[i + 1].substring(1));
 
                                     instruction = instruction | (rs << sftRs);
                                     instruction = instruction | (rt << sftRt);
-                                } else if(s.equals("STORE")){
+                                } else if (s.equals("STORE")) {
                                     int rs = Integer.parseInt(aux[i + 1].substring(1));
                                     int rt = Integer.parseInt(aux[i + 2].substring(1));
 
                                     instruction = instruction | (rs << sftRs);
                                     instruction = instruction | (rt << sftRt);
-                                } else if(s.equals("LOADLIT")) {
+                                } else if (s.equals("LOADLIT")) {
                                     int rt = Integer.parseInt(aux[i + 1].substring(1));
                                     int imm = Integer.parseInt(aux[i + 2]);
-                                    imm =  0xFFFF & imm;
+                                    imm = 0xFFFF & imm;
 
                                     instruction = instruction | (rt << sftRt);
                                     instruction = instruction | imm;
-                                } else if(s.equals("JAL")) {
+                                } else if (s.equals("JAL")) {
                                     int rs = Integer.parseInt(aux[i + 1].substring(1));
                                     instruction = instruction | (rs << sftRs);
                                 } else if (s.equals("PASSA") || s.equals("PASSB")) { // addi com zero
@@ -320,16 +322,16 @@ public class Main {
                                 }
 
                                 System.out.println("Escrevendo Instrucao: " + s);
-                                writeAssembled(progBw, instruction);
+                                writeInstruction(progBw, instruction);
                                 break;
                             case 'j':
                                 int addr = labelMap.get(aux[i + 1]);
                                 instruction = instruction | addr;
                                 System.out.println("Escrevendo Instrucao: " + s);
-                                writeAssembled(progBw, instruction);
+                                writeInstruction(progBw, instruction);
                                 break;
                         }
-                        codeLineCnt++;
+                        //codeLineCnt++;
                         break;
                     }
                 }
@@ -393,7 +395,7 @@ public class Main {
         flagIn.close();
     }
 
-    private static String[] parseLine(String line){
+    private static String[] parseLine(String line) {
         LinkedList<String> parsedLineList = new LinkedList<>();
         String[] firstSplit, aux;
 
@@ -402,14 +404,14 @@ public class Main {
         firstSplit = line.split("\\s+"); // Remove 1 ou mais espaços em branco
 
         for (String s1 : firstSplit) { // Percorre para remover eventuais ','
-            if(s1.length() > 0){
-                if(!s1.startsWith(";") && s1.endsWith(";") && s1.length() > 1)
+            if (s1.length() > 0) {
+                if (!s1.startsWith(";") && s1.endsWith(";") && s1.length() > 1)
                     s1 = s1.split(";")[0];
-                if(s1.contains(",")){
+                if (s1.contains(",")) {
                     aux = s1.split(",");
 
                     for (String s2 : aux) {
-                        if(s2.length() > 0){
+                        if (s2.length() > 0) {
                             parsedLineList.add(s2);
                         }
                     }
@@ -439,15 +441,17 @@ public class Main {
         //        }
     }
 
-    private static char identifyType(int opcode)
-    {
+    private static void writeInstruction(BufferedWriter writer, int data) throws IOException {
+        writeAssembled(writer, data);
+        codeLineCnt++;
+    }
+
+    private static char identifyType(int opcode) {
         char result;
 
-        if (opcode == 0x00)
-        {
+        if (opcode == 0x00) {
             result = 'r';
-        }
-        else if (opcode == 0x01 || // lcl
+        } else if (opcode == 0x01 || // lcl
                 opcode == 0x03 || // jal
                 opcode == 0x04 || // beq
                 opcode == 0x05 || // bne
@@ -463,13 +467,10 @@ public class Main {
                 opcode == 0x2b)   // store
         {
             result = 'i';
-        }
-        else if (opcode == 0x02) // jump
+        } else if (opcode == 0x02) // jump
         {
             result = 'j';
-        }
-        else
-        {
+        } else {
             reportSyntaxError(currentLine, String.format("ERRO!! OPCODE 0x%02X DESCONHECIDO!!", opcode));
             result = 'e';
         }
@@ -477,7 +478,7 @@ public class Main {
         return result;
     }
 
-    private static int computeBranchOffset(String label, int codeLineCnt){
+    private static int computeBranchOffset(String label, int codeLineCnt) {
         int labelAddr = labelMap.get(label);
         // instrução alvo - (instrução atual +1)
         return (labelAddr - (codeLineCnt + 1)) & 0x0000ffff;

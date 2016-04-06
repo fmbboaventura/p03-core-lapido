@@ -710,6 +710,8 @@ void decode_i_type(unsigned int instruction, int opcode)
     else if (opcode == 0x09)
     {
         printf("JT\n");
+        printf("Flag code: %d\n", rs);
+        printf("Flag status: %d\n", flags[rs]);
         // rd contém o código da condição
         // if (rd == 0x04 && flags[F_NEG]      ||
         //     rd == 0x05 && flags[F_ZERO]     ||
@@ -723,11 +725,14 @@ void decode_i_type(unsigned int instruction, int opcode)
             printf("Pulou\n");
                 pc = pc + imm;
         }
+        //getchar();
     }
     // jf
     else if (opcode == 0x10)
     {
         printf("JF\n");
+        printf("Flag code: %d\n", rs);
+        printf("Flag status: %d\n", flags[rs]);
         // rd contém o código da condição
         // if (rd == 0x04 && !flags[F_NEG]      ||
         //     rd == 0x05 && !flags[F_ZERO]     ||
@@ -741,6 +746,7 @@ void decode_i_type(unsigned int instruction, int opcode)
             printf("Pulou\n");
                 pc = pc + imm;
         }
+        //getchar();
     }
     // slti
     else if (opcode == 0x0a)

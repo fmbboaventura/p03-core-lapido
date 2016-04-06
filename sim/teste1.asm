@@ -69,7 +69,8 @@ L5:	inca	r0,r0
         deca    r2,r2
 	lcl	r3,0
 	lch	r3,32768
-    subdec  r3,r3,r1
+    sub  r3,r3,r1
+    deca r3,r3
 	jt.overflow L6
 	nop
 	store	r0,r1
