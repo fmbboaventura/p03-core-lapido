@@ -72,8 +72,7 @@ wire [`GPR_WIDTH-1:0] op1;
 wire [`GPR_WIDTH-1:0] op2;
 wire [`GPR_WIDTH-1:0] mem_addr;
 wire [`GPR_WIDTH-1:0] mem_data;
-wire [32:0] alu_res;
-wire [4:0] alu_flag_out;
+wire [31:0] alu_res;
 wire [5:0] in_flags;
 wire [5:0] out_flags;
 wire [5:0] foward_flag;
@@ -98,11 +97,8 @@ alu alu(
 	.op2(op2),
 	.alu_funct(alu_funct),
 	.alu_res(alu_res),
-	.flags(alu_flag_out)
+	.flags(in_flags)
 );
-
-assign in_flags[5] = alu_res[32];
-assign in_flags[4:0] = alu_flag_out[4:0];
 
 flags flags(
 	.clk            (clk),

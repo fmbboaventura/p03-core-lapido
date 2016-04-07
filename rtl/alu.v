@@ -5,17 +5,15 @@
  * Description: Unidade Logico Aritmetica do
  * processador LAPI DOpaCA LAMBA. Este modulo opera
  * dois valores de 32 bis, de acordo com o código de
- * seleção de operacao da alu. A saida eh um valor de
- * 33 bits, onde o 33th bit deve ser usado como a flag
- * carry e os demais 32 bits são o resultado da opera-
- * cao em si. O modulo tambem apresenta uma saida de
- * 5 bits para as flags restantes. A saida flags esta
- * organizada da seginte forma:
+ * seleção de operacao da alu. As saidas sao um valor
+ * de 32 bits, e uma saida de 6 bits para as flags.
+ * A saida flags esta organizada da seginte forma:
  * flags[0] = flag zero
  * flags[1] = flag true
  * flags[2] = flag neg
  * flags[3] = flag overflow
  * flags[4] = flag negzero
+ * flags[5] = flag carry
  ***************************************************/
  `include "lapido_defs.v"
 
@@ -25,26 +23,32 @@ module alu
     input signed [31:0] op2,   // Segundo operando
     input [5:0]  alu_funct, // Operacao da alu
 
-    output reg signed [32:0] alu_res, // O 33th bit eh o carry da alu
-    output reg [4:0] flags     // Demais flags
+    output reg [31:0] alu_res, // resultado da alu
+    output reg [5:0] flags     // flags
 );
 
+reg [32:0] unsigned_res;
+
 always @ ( * ) begin // quando qualquer entrada mudar, faca...
+    unsigned_res = 32'b0;
     case (alu_funct)
         `FN_ADD: begin
             alu_res = op1 + op2;
+            unsigned_res = $unsigned(op1) + $unsigned(op2);
             flags[`FL_OVERFLOW] =
                 (!op1[31] && !op2[31] && alu_res[31]) ||
                 (op1[31] && op2[31] && !alu_res[31]);
             end
         `FN_SUB: begin
             alu_res = op1 - op2;
+            unsigned_res = $unsigned(op1) - $unsigned(op2);
             flags[`FL_OVERFLOW] =
                 (!op1[31] && op2[31] && alu_res[31]) ||
                 (op1[31] && !op2[31] && !alu_res[31]);
             end
         `FN_ASL: begin
             alu_res = op1 <<< 1;
+            unsigned_res[32] = op1[31];
             flags[`FL_OVERFLOW] = op1[31] ^ op1[30];
             end
         default: begin
@@ -76,6 +80,7 @@ always @ ( * ) begin // quando qualquer entrada mudar, faca...
                 end
             `FN_LSL: begin
                 alu_res = op1 << 1;
+                unsigned_res[32] = op1[31];
                 end
             `FN_LSR: begin
                 alu_res = op1 >> 1;
@@ -106,6 +111,7 @@ always @ ( * ) begin // quando qualquer entrada mudar, faca...
     flags[`FL_TRUE] = !flags[`FL_ZERO];
     flags[`FL_NEG] = alu_res[31];
     flags[`FL_NEGZERO] = flags[`FL_NEG] | flags[`FL_ZERO];
+    flags[`FL_CARRY] = unsigned_res[32];
 end
 
 endmodule // alu
