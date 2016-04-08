@@ -1,6 +1,14 @@
+/***************************************************
+ * Module: bru
+ * Project: core_lapido
+ * Author: Afonso Machado
+ * Description: Módulo onde é realizada a resolução
+ * das flags disparadas pelo resulatdo da alu
+ ***************************************************/
+
 module flags (
 	input clk,
-	input rst,  // Asynchronous reset active low
+	input rst,
 	input branch_taken,
 	input [5:0] in_flags,
 	input fl_write_enable,

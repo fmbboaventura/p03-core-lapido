@@ -3,7 +3,7 @@
  * Project: core_lapido
  * Author: Gadiel Xavier
  * Description: Modulo responsavel pelo calculo das
-instrucoes aritimeticas e de endereco.
+ * instrucoes aritimeticas e de endereco.
  ***************************************************/
 `include "lapido_defs.v"
 
