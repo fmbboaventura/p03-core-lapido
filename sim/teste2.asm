@@ -28,7 +28,7 @@ SKIP:
      inca r4,r4
      sub r3,r4,r5
      jf.zero L1
-     nop   
+     nop
      passa r5,r0
      lcl r3, LOWBYTE STACK ;VER
      lch r3, HIGHBYTE STACK ;VER
@@ -54,8 +54,8 @@ DIV: sub r1,r1,r2
      j DIV ;VER
      nop
 ADD: add r1,r1,r2
-RET: jr r7
+RET: jr r15
      nop
 .dseg
-STACK:  
+STACK:
 .end
