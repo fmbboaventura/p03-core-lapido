@@ -113,6 +113,7 @@ always @ ( * ) begin
                 case (funct)
                     `FN_JR: begin
                         is_jump = 1'b1;
+                        sel_j_jr = `SEL_JR;
                     end
                     default: begin
                         alu_funct = funct;
