@@ -1,6 +1,6 @@
 .module test
 
-; escreve o tamanho do array na posicao 27 (decimal) da memoria, e a partir dai o array inicial 
+; escreve o tamanho do array na posicao 27 (decimal) da memoria, e a partir dai o array inicial
 ; escrevendo o array ordenado por ordem inversa por cima do mesmo
 
 
@@ -21,7 +21,7 @@ main:		;Implementacao do algoritmo selection sort aplicado a um array
 LOOP:   inca r1,r1	;
         load r3,r1	;
         sub r6,r2,r3	;r6 nao e utilizado apenas interessa o resultado presente à saida da ALU para as flags
-        jt.negzero TROCA	;r2<=r3 faz troca de posicao no array
+        jf.negzero TROCA	;r2<=r3 faz troca de posicao no array
         nop
 CONT:
         sub r6,r4,r1	;r6 nao e utilizado ...
@@ -32,12 +32,12 @@ CONT:
         jt.zero FIM	;r4=r0 array ja esta todo ordenado pode terminar
         nop
         inca r0,r0	;actualiza ponteiro para o elemento a ser testado
-        load r2,r0	;le elemento seguinte do array 
+        load r2,r0	;le elemento seguinte do array
         passa r1,r0	;r1 passa a apontar para a posicao onde vai ser colocado o elemento ordenado
         j LOOP
         nop
 TROCA:
-        store r0,r3	;Troca a posicao dos elementos na memoria 
+        store r0,r3	;Troca a posicao dos elementos na memoria
         store r1,r2	;
         passa r5,r2	;r5 serve apenas como registo temporario
         passa r2,r3	;troca o conteudo dos registos, pois r2 tem o elemento a colocar na posicao final
