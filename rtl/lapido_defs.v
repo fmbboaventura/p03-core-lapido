@@ -44,6 +44,7 @@
 `define OP_LCL     6'h01
 `define OP_LCH     6'h07
 `define OP_LOADLIT 6'h06
+`define OP_PASSB      6'h11
 
 /******************* funct *********************/
 `define FN_ADD  6'h20
@@ -61,7 +62,6 @@
 `define FN_ASR  6'h03
 `define FN_SLT  6'h2A
 `define FN_JR   6'h08
-//TODO: Alu op e alu ctrl?
 
 /***************** Controle ********************/
 // Seletores do registrador de destino

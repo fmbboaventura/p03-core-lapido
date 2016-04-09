@@ -127,6 +127,10 @@ always @ ( * ) begin
                 fl_write_enable = 1'b1;
 
                 case (opcode)
+                    `OP_PASSB: begin
+                        alu_funct = `FN_ADD;
+                        fl_write_enable = 1'b0;
+                    end
                     `OP_ADDI: begin
                         alu_funct = `FN_ADD;
                     end

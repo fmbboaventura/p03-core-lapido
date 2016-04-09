@@ -8,7 +8,7 @@ JT      09
 JF      10
 ADDI    08
 PASSA   08
-PASSB   08
+PASSB   11
 INCA    08
 DECA    08
 ANDI    0C

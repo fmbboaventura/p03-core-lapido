@@ -458,6 +458,7 @@ public class Main {
                 opcode == 0x06 || // loadlit
                 opcode == 0x07 || // lch
                 opcode == 0x08 || // addi
+                opcode == 0x11 || // passb
                 opcode == 0x09 || // jt
                 opcode == 0x0a || // slti
                 opcode == 0x0c || // andi

@@ -257,6 +257,7 @@ char identify_type(int opcode)
              opcode == 0x06 || // loadlit
              opcode == 0x07 || // lch
              opcode == 0x08 || // addi
+             opcode == 0x11 || // addi
              opcode == 0x09 || // jt
              opcode == 0x0a || // slti
              opcode == 0x0c || // andi
@@ -705,6 +706,13 @@ void decode_i_type(unsigned int instruction, int opcode)
         flags[F_TRUE] = (registers[rd] != 0);
         flags[F_NEGZERO] = (registers[rd] <= 0);
         flags[F_NEG] = (registers[rd] < 0);
+    }
+    // passb
+    else if (opcode == 0x11)
+    {
+        printf("passb\n");
+        registers[rd] = temp_rs + imm;
+        // não seta flags
     }
     // jt
     else if (opcode == 0x09)
