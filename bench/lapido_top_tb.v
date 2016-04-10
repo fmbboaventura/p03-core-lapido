@@ -21,13 +21,19 @@ module lapido_top_tb ();
     tb_util util();
 
     integer cont;
-    reg cont_en;
+    integer inst_cont;
+    integer clk_cont;
+    integer bubbles;
+    reg halt_found;
 
     initial begin
         clk = 0;
         rst = 0;
         cont = 0;
-        cont_en = 0;
+        inst_cont = 0;
+        clk_cont = 0;
+        bubbles = 0;
+        halt_found = 0;
         set_up;
     end
 
@@ -37,13 +43,39 @@ module lapido_top_tb ();
     end
 
     always @ (posedge clk) begin
-        if (!cont_en)
+        if(!halt_found) begin
+            clk_cont = clk_cont + 1;
+            inst_cont = inst_cont + 1;
+            if(dut.ID_is_jump) begin
+                bubbles = bubbles + 1;
+            end else if (dut.EX_branch_taken) begin
+                bubbles = bubbles + 3;
+            end else if (dut.HDU_stall_pipeline) begin
+                bubbles = bubbles + 2;
+            end
+        end
+    end
+
+    always @ (posedge clk) begin
+        if(!halt_found) begin
+            if(dut.ID_is_jump) begin
+                inst_cont = inst_cont - 1;
+            end else if (dut.EX_branch_taken) begin
+                inst_cont = inst_cont - 3;
+            end else if (dut.HDU_stall_pipeline) begin
+                inst_cont = inst_cont - 2;
+            end
+        end
+    end
+
+    always @ (posedge clk) begin
+        if (!halt_found)
             $display("Instrucao no ID: %H tempo: %t",
                 dut.id_stage.instruction_reg, $time);
     end
 
     always @ (posedge clk) begin
-        if (cont_en) begin
+        if (halt_found) begin
             cont = cont + 1;
         end else begin
             check_halt;
@@ -53,6 +85,7 @@ module lapido_top_tb ();
     always @ (posedge clk) begin
         if(cont == 3) begin
             $display("Parado. Tempo: %t", $time);
+            $display("CPI: %d", (clk_cont/(inst_cont-bubbles)));
             $stop;
         end
     end
@@ -78,7 +111,7 @@ module lapido_top_tb ();
          if((dut.ID_jump_addr == dut.IF_pc-1) && dut.ID_is_jump) begin
             $display("Halt encontrado. Parando...");
             $display("Tempo: %t", $time);
-            cont_en = 1;
+            halt_found = 1;
         end
     end
     endtask
